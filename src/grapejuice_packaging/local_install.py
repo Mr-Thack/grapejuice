@@ -3,7 +3,6 @@ import subprocess
 import sys
 import tarfile
 from pathlib import Path
-
 from setuptools import Command
 
 import grapejuice_common.variables as v
@@ -27,7 +26,7 @@ def _xdg_mime_default(desktop_entry: str, mime: str):
 
 
 def _do_install(*_):
-    assert os.path.exists("pyproject.toml"), \
+    assert os.path.exists("setup.py"), \
         "Project file not found, make sure you're in the Grapejuice root!"
 
     src_path = os.path.join(os.path.abspath(os.getcwd()), "src")
