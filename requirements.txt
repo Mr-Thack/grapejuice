@@ -1,0 +1,9 @@
+psutil
+pip
+PyGObject
+PyGObject-stubs
+packaging
+wheel
+setuptools
+dbus-python
+requests
