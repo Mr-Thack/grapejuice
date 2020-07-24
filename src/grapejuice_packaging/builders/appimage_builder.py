@@ -14,7 +14,7 @@ class AppImageBuilder(PackageBuilder):
     _script_name = "__main__"
 
     def build(self):
-        assert os.path.exists("pyproject.toml") and os.path.isdir("src")
+        assert os.path.exists("setup.py") and os.path.isdir("src")
 
         app_image = TaskSequence("Build AppImage")
         app_dir = os.path.join(self._build_dir, "grapejuice.AppDir")

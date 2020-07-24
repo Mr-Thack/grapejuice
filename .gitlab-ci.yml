@@ -22,7 +22,7 @@ grapejuice:linux_package:
     script:
         - export PYTHONPATH=$(pwd)/src
         - python3 -m pip install -r requirements.dev.txt
-        - python3 -m pip -r requirements.txt
+        - python3 -m pip install -r requirements.txt
         - python3 -m grapejuice_packaging linux_package --dist-dir artifacts/linux_package
 
 grapejuice:debian_package:
