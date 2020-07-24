@@ -81,8 +81,9 @@ def main(in_args=None):
     if in_args is None:
         in_args = sys.argv
 
-    if in_args[1].lower() == "grapejuiced":
-        return run_daemon_instead(in_args[2:])
+    if len(in_args) > 1:
+        if in_args[1].lower() == "grapejuiced":
+            return run_daemon_instead(in_args[2:])
 
     if random.randint(0, 10) == 5:
         print("beep beep")
