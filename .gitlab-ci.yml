@@ -4,8 +4,8 @@ grapejuice:test:
     stage: test
     script:
         - export PYTHONPATH=$(pwd)/src
-        - pip install -r requirements.dev.txt
-        - pip install -r requirements.txt
+        - python3 -m pip -r requirements.dev.txt
+        - python3 -m pip -r requirements.txt
         - python3 -m pytest tests
 
 grapejuice:test_local_installation:
@@ -21,8 +21,8 @@ grapejuice:linux_package:
             - artifacts/
     script:
         - export PYTHONPATH=$(pwd)/src
-        - pip install -r requirements.dev.txt
-        - pip install -r requirements.txt
+        - python3 -m pip -r requirements.dev.txt
+        - python3 -m pip -r requirements.txt
         - python3 -m grapejuice_packaging linux_package --dist-dir artifacts/linux_package
 
 grapejuice:debian_package:
@@ -42,8 +42,8 @@ grapejuice:appimage:
         paths:
             - artifacts/
     script:
-        - pip install -r requirements.dev.txt
-        - pip install -r requirements.txt
+        - python3 -m pip -r requirements.dev.txt
+        - python3 -m pip -r requirements.txt
         - export PYTHONPATH=$(pwd)/src
         - python3 -m grapejuice_packaging app_image
         - mkdir -p artifacts
