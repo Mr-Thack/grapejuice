@@ -1,4 +1,7 @@
+*.spec
+
 **/*.glade~
+**/*.glade#
 Python*
 *.tgz
 
