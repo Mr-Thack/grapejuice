@@ -34,8 +34,8 @@ What works:
 - Roblox Studio
 - Team Create
 - Play Solo
+- Test Server
 
 What doesn't work:
 - The Roblox game client
-- Test server
 - Plugin gui's may cause seizures with some rendering methods. More about this issue is discussed in the [Troubleshooting Guide](https://gitlab.com/brinkervii/grapejuice/wikis/Troubleshooting)
