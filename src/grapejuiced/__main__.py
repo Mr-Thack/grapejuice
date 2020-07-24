@@ -1,5 +1,6 @@
 import argparse
 import signal
+import subprocess
 import sys
 
 from grapejuice_common.ipc.pid_file import PIDFile, daemon_pid_file
@@ -22,18 +23,6 @@ def spawn(pid_file: PIDFile):
     state.start()
 
 
-def func_daemon(*_):
-    pid_file = daemon_pid_file()
-
-    if pid_file.is_running():
-        print("> Another daemon is already running, quitting...")
-        return
-
-    self_test.post.run()
-
-    spawn(pid_file)
-
-
 def func_kill(*_):
     print("> You swing your sword...")
 
@@ -44,6 +33,23 @@ def func_kill(*_):
 
     else:
         print("> You swing at the air, because there is no daemon. You take 20 damage as you hit your leg.")
+
+
+def func_daemon(args):
+    if args.kill:
+        subprocess.check_call([
+            sys.executable, "-m", "grapejuiced", "kill"
+        ])
+
+    pid_file = daemon_pid_file()
+
+    if pid_file.is_running():
+        print("> Another daemon is already running, quitting...")
+        return
+
+    self_test.post.run()
+
+    spawn(pid_file)
 
 
 def main(in_args=None):
@@ -59,6 +65,7 @@ def main(in_args=None):
     parser_kill.set_defaults(func=func_kill)
 
     parser_daemon = subparsers.add_parser("daemonize")
+    parser_daemon.add_argument("--kill", action="store_true")
     parser_daemon.set_defaults(func=func_daemon)
 
     args = parser.parse_args(in_args[1:])

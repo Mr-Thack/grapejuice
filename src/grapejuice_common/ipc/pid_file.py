@@ -93,6 +93,7 @@ class PIDFile:
     def kill(self):
         if self.is_running():
             os.kill(self.pid, signal.SIGINT)
+            self._remove_file()
 
 
 def daemon_pid_file():
