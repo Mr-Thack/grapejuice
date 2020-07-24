@@ -4,7 +4,7 @@ grapejuice:test:
     stage: test
     script:
         - export PYTHONPATH=$(pwd)/src
-        - python3 -m pip -r requirements.dev.txt
+        - python3 -m pip install -r requirements.dev.txt
         - python3 -m pip -r requirements.txt
         - python3 -m pytest tests
 
@@ -21,7 +21,7 @@ grapejuice:linux_package:
             - artifacts/
     script:
         - export PYTHONPATH=$(pwd)/src
-        - python3 -m pip -r requirements.dev.txt
+        - python3 -m pip install -r requirements.dev.txt
         - python3 -m pip -r requirements.txt
         - python3 -m grapejuice_packaging linux_package --dist-dir artifacts/linux_package
 
@@ -42,7 +42,7 @@ grapejuice:appimage:
         paths:
             - artifacts/
     script:
-        - python3 -m pip -r requirements.dev.txt
+        - python3 -m pip install -r requirements.dev.txt
         - python3 -m pip -r requirements.txt
         - export PYTHONPATH=$(pwd)/src
         - python3 -m grapejuice_packaging app_image
