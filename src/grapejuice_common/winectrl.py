@@ -174,15 +174,6 @@ def prefix_exists():
 
 
 @log_function
-def run_exe(exe_path, *args):
-    prepare()
-    if len(args) > 0:
-        os.spawnlp(os.P_NOWAIT, variables.wine_binary(), variables.wine_binary(), exe_path, *args)
-    else:
-        os.spawnlp(os.P_NOWAIT, variables.wine_binary(), variables.wine_binary(), exe_path)
-
-
-@log_function
 def run_exe_nowait(exe_path, *args) -> ProcessWrapper:
     prepare()
 
