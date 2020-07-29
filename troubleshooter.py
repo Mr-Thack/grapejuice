@@ -460,6 +460,11 @@ def main():
     with open("/tmp/grapejuice-report.csv", "w+") as fp:
         print(CSVReport.to_string(), file=fp)
         print("", file=fp)
+        print("""
+##################
+### LOG OUTPUT ###
+##################
+        """, file=fp)
         print(report, file=fp)
 
     if os.path.exists(WINEPREFIX_PATH) and os.path.isdir(WINEPREFIX_PATH):
