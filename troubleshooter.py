@@ -583,7 +583,7 @@ def main():
     CSVReport.add_row("KEY", "VALUE", True, [])
 
     for k, v in VARS.items():
-        CSVReport.add_row(k, v, True, [])
+        CSVReport.add_row(k, v.replace(USERNAME, "[REDACTED]"), True, [])
 
     report_path = "/tmp/grapejuice-report.csv"
 
