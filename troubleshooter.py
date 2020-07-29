@@ -14,7 +14,7 @@ import uuid
 from datetime import datetime
 from typing import List
 
-TROUBLESHOOTER_VERSION = 6
+TROUBLESHOOTER_VERSION = 7
 
 TMP = os.path.join(os.path.sep, "tmp")
 assert os.path.exists(TMP), "Fatal error: /tmp does not exist"
@@ -122,6 +122,7 @@ def which(bin_name: str):
 
 
 class CommonFixes:
+    wine32 = "Install a version of Wine that is capable of 32-bit support"
     fresh_wine = "Install a recent version of Wine (4.0 or higher)"
     wine64 = "Install a version of Wine that is capable of 64-bit support"
     c_tools = "Install C development tools for your distribution"
@@ -443,8 +444,8 @@ def run_wine_test_command(prefix: WinePrefix):
     return prefix, out
 
 
-@check("Can we make a valid 32-bit wineprefix?", fixes=[CommonFixes.wine64])
-def can_make_valid_64_bit_prefix():
+@check("Can we make a valid 32-bit wineprefix?", fixes=[CommonFixes.wine32])
+def can_make_valid_32_bit_prefix():
     prefix, out = run_wine_test_command(WinePrefix(arch="win32"))
     Log.info(out)
     del prefix
