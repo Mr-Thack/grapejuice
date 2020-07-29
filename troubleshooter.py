@@ -14,7 +14,7 @@ import uuid
 from datetime import datetime
 from typing import List
 
-TROUBLESHOOTER_VERSION = 5
+TROUBLESHOOTER_VERSION = 6
 
 TMP = os.path.join(os.path.sep, "tmp")
 assert os.path.exists(TMP), "Fatal error: /tmp does not exist"
@@ -518,8 +518,9 @@ def yes_no(msg: str):
     while querying:
         response = input(f"{msg} [y/n]\n> ").strip().lower()
 
-        if response == "y" or result == "n":
+        if response == "y" or response == "n":
             querying = False
+
             if response == "y":
                 result = True
 
