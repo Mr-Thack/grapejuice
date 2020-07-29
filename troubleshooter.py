@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime
 from typing import List
 
-TROUBLESHOOTER_VERSION = 3
+TROUBLESHOOTER_VERSION = 4
 
 TMP = os.path.join(os.path.sep, "tmp")
 assert os.path.exists(TMP), "Fatal error: /tmp does not exist"
@@ -461,17 +461,6 @@ def can_make_valid_64_bit_prefix():
         return True
 
     return False
-
-
-@check("Does Wine support Windows 10?", fixes=[CommonFixes.fresh_wine])
-def wine_supports_windows_10():
-    prefix = WinePrefix()
-    out = prefix.run(["winecfg", "/v", "win10"])
-    Log.info(out)
-
-    del prefix
-
-    return True
 
 
 @check("Can we access the Grapejuice package?", fixes=[CommonFixes.follow_guide])
