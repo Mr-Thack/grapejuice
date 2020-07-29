@@ -310,6 +310,9 @@ def have_os_release():
             Log.info("OS Release contents:\n", contents)
 
             for line in contents.split("\n"):
+                if not line:
+                    continue
+
                 s = line.split("=")
                 k = s[0]
                 v = "=".join(s[1:])
