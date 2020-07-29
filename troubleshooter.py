@@ -2,17 +2,19 @@
 
 import getpass
 import io
+import json
 import os
 import re
 import shutil
 import subprocess
 import sys
 import time
+import urllib.request
 import uuid
 from datetime import datetime
 from typing import List
 
-TROUBLESHOOTER_VERSION = 4
+TROUBLESHOOTER_VERSION = 5
 
 TMP = os.path.join(os.path.sep, "tmp")
 assert os.path.exists(TMP), "Fatal error: /tmp does not exist"
@@ -437,7 +439,7 @@ def print_wine_version():
 
 
 def run_wine_test_command(prefix: WinePrefix):
-    out = prefix.run(["cmd", "/c", "echo hi"])
+    out = prefix.run(["cmd", "/c", "echo Hello from Wine"])
     return prefix, out
 
 
@@ -479,6 +481,96 @@ def have_grapejuice_package():
         return False
 
 
+HASTEBIN_DOCUMENTS = "https://hastebin.com/documents"
+HASTEBIN_FILE = "https://hastebin.com/{file_id}"
+
+
+def strict_yes_no(msg: str):
+    querying = True
+    result = False
+
+    while querying:
+        response = input(f"{msg} Type yes in capital letters if you do, if not type 'n' or 'no'.\n> ").strip()
+
+        if response == "YES":
+            querying = False
+            result = True
+
+        elif response.lower() == "n" or response.lower() == "no":
+            querying = False
+            result = False
+
+        else:
+            print("That is an invalid answer, please try again")
+            print("")
+
+    return result
+
+
+def yes_no(msg: str):
+    querying = True
+    result = False
+
+    def print_invalid():
+        print("That is an invalid answer, please try again")
+        print("")
+
+    while querying:
+        response = input(f"{msg} [y/n]\n> ").strip().lower()
+
+        if response == "y" or result == "n":
+            querying = False
+            if response == "y":
+                result = True
+
+            elif response == "n":
+                result = False
+
+            else:
+                print_invalid()
+
+        else:
+            print_invalid()
+
+    return result
+
+
+def display_file(path):
+    cmds = ["less", "more", "cat"]
+
+    if "EDITOR" in os.environ:
+        cmds.insert(0, os.environ["EDITOR"])
+
+    if "PAGER" in os.environ:
+        cmds.insert(0, os.environ["PAGER"])
+
+    for cmd in map(which, cmds):
+        if cmd:
+            subprocess.call([cmd, path])
+            print("")
+            return
+
+
+def str_to_hastebin(s: str):
+    req = urllib.request.Request(
+        HASTEBIN_DOCUMENTS,
+        method="POST",
+        data=s.encode(CHARSET),
+        headers={
+            "User-Agent": f"Grapejuice Troubleshooter (CLI; Linux; {TROUBLESHOOTER_VERSION})",
+            "Content-Type": "application/json",
+            "DNT": 1,
+            "Accept": "application/json, text/plain"
+        }
+    )
+
+    response = urllib.request.urlopen(req)
+    response_text: str = response.read().decode(CHARSET)
+    response_object = json.loads(response_text)
+
+    return HASTEBIN_FILE.format(file_id=response_object["key"])
+
+
 def main():
     n_passed = sum(map(lambda f: f(), CHECKLIST))
     Log.info(f"{n_passed}/{len(CHECKLIST)} passed")
@@ -493,15 +585,22 @@ def main():
     for k, v in VARS.items():
         CSVReport.add_row(k, v, True, [])
 
-    with open("/tmp/grapejuice-report.csv", "w+") as fp:
-        print(CSVReport.to_string(), file=fp)
-        print("", file=fp)
-        print("""
+    report_path = "/tmp/grapejuice-report.csv"
+
+    report_fp = io.TextIOWrapper(io.BytesIO())
+
+    print(CSVReport.to_string(), file=report_fp)
+    print("", file=report_fp)
+    print("""
 ##################
 ### LOG OUTPUT ###
 ##################
-        """, file=fp)
-        print(report, file=fp)
+    """, file=report_fp)
+    print(report, file=report_fp)
+
+    report_fp.seek(0)
+    with open(report_path, "w+") as fp:
+        fp.write(report_fp.read())
 
     for pfx in USED_PREFIXES:
         if os.path.exists(pfx) and os.path.isdir(pfx):
@@ -514,7 +613,37 @@ def main():
         os.chdir(ORIGINAL_CWD)
         shutil.rmtree(CWD)
 
-    sys.exit(0 if n_passed == len(CHECKLIST) else 1)
+    for _ in range(30):
+        print("")
+
+    return_code = 0 if n_passed == len(CHECKLIST) else 1
+    if return_code:
+        print("Some checks did not pass, please review the report to see what's not working correctly")
+        print("")
+
+    else:
+        print("All checks passed!")
+        print("")
+
+    print(f"Saved report to: {report_path}")
+    print("If you intend on sharing the report, please make sure that it generated correctly.")
+    print("")
+
+    if yes_no("Do you want to review the report?"):
+        display_file(report_path)
+
+    if strict_yes_no("Do you want to upload your report to Hastebin, so you can share it with people that are helping "
+                     "you troubleshoot?"):
+        report_fp.seek(0)
+        url = str_to_hastebin(report_fp.read())
+        print("")
+        print("Hastebin url for you to share: " + url)
+
+    if return_code == 0:
+        print("")
+        print("Everything was A-OK, have a nice day!")
+
+    sys.exit(return_code)
 
 
 main()
