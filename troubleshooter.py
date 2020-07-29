@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime
 from typing import List
 
-TROUBLESHOOTER_VERSION = 2
+TROUBLESHOOTER_VERSION = 3
 
 TMP = os.path.join(os.path.sep, "tmp")
 assert os.path.exists(TMP), "Fatal error: /tmp does not exist"
@@ -20,7 +20,8 @@ assert os.path.isdir(TMP), "Fatal error: /tmp is not a directory"
 
 ORIGINAL_CWD = os.getcwd()
 CWD = os.path.join(TMP, str(uuid.uuid4()))
-WINEPREFIX_PATH = os.path.join(os.environ["HOME"], ".cache", "grapejuice-troubleshooter-wineprefix")
+WINEPREFIX_PATH = os.path.join(os.environ["HOME"], ".cache", "grapejuice-troubleshooter-wineprefix-{arch}")
+USED_PREFIXES = set()
 
 os.makedirs(CWD, exist_ok=True)
 os.chdir(CWD)
@@ -77,6 +78,10 @@ class CSVReport:
         cls._rows.append([fun, what, "PASS" if status else "FAIL", " :: ".join(fixes) if fixes else ""])
 
     @classmethod
+    def empty_row(cls):
+        cls.add_row("", "", True, [])
+
+    @classmethod
     def to_string(cls):
         with io.TextIOWrapper(io.BytesIO()) as fp:
             print(cls._delimiter.join(cls._header), file=fp)
@@ -87,6 +92,15 @@ class CSVReport:
             s = fp.read()
 
         return s
+
+
+VARS = dict()
+
+
+def report_var(k, v):
+    VARS[k] = str(v)
+    Log.info(f"Reporting variable:", k, v)
+    return v
 
 
 def which(bin_name: str):
@@ -148,13 +162,18 @@ class WinePrefix:
     _previous_env = dict()
     _wine: str
     _wine64: str
+    _arch: str
 
-    def __init__(self):
+    def __init__(self, arch: str = "win64"):
         self._wine = which("wine")
         self._wine64 = which("wine64")
+        self._arch = arch
 
-        self._set("WINEPREFIX", WINEPREFIX_PATH)
-        self._set("WINEARCH", "win64")
+        pfx = WINEPREFIX_PATH.format(arch=arch)
+        USED_PREFIXES.add(pfx)
+
+        self._set("WINEPREFIX", pfx)
+        self._set("WINEARCH", self._arch)
 
     def _set(self, k, v):
         if k in os.environ:
@@ -169,12 +188,12 @@ class WinePrefix:
 
     def __del__(self):
         for k, v in self._previous_env.items():
-            Log.info("Restoring environment variable", k, v)
-
             if isinstance(v, str):
+                Log.info("Restoring environment variable", k, v)
                 os.environ[k] = v
 
             elif isinstance(v, bool):
+                Log.info("Deleting environment variable", k)
                 os.environ.pop(k)
 
             else:
@@ -229,15 +248,15 @@ def pkg_config(pkg: str, cflags: bool = True, libs: bool = True):
 
 @check("Log troubleshooter version")
 def log_troubleshooter_version():
-    Log.info(TROUBLESHOOTER_VERSION)
+    report_var("Troubleshooter Version", TROUBLESHOOTER_VERSION)
 
     return True
 
 
 @check("Log directory info")
 def log_cwd():
-    Log.info("ORIGINAL_CWD", ORIGINAL_CWD)
-    Log.info("CWD", CWD)
+    report_var("ORIGINAL_CWD", ORIGINAL_CWD)
+    report_var("CWD", CWD)
 
     assert os.path.isdir(ORIGINAL_CWD), "The original CWD is not a directory!"
     assert os.path.isdir(CWD), "The current working directory is not a directory?!!?!!one"
@@ -247,9 +266,9 @@ def log_cwd():
 
 @check("Are we running in Python 3?", fixes=["Run the script with Python3"])
 def is_python3():
-    Log.info("Version info =", sys.version_info)
-    Log.info("Version =", sys.version)
-    Log.info("API Version =", sys.api_version)
+    report_var("Version info", sys.version_info)
+    report_var("Version", sys.version)
+    report_var("API Version", sys.api_version)
 
     return sys.version_info.major == 3
 
@@ -267,12 +286,12 @@ if UNAME is not None:
     @check("Are we on linux?", fixes=["Use the OS Grapejuice was meant for"])
     def on_linux():
         out = subprocess.check_output([UNAME]).decode(CHARSET).strip()
-        Log.info(out)
+        report_var("Kernel", out)
         answer = out.lower().startswith("linux")
 
         if answer:
             out = subprocess.check_output([UNAME, "-r"]).decode(CHARSET).strip()
-            Log.info("Kernel version:", out)
+            report_var("Kernel version", out)
 
         return answer
 
@@ -287,7 +306,15 @@ def have_os_release():
     exists = os.path.exists(OS_RELEASE)
     if exists:
         with open(OS_RELEASE, "r") as fp:
-            Log.info("OS Release contents:\n", fp.read())
+            contents = fp.read()
+            Log.info("OS Release contents:\n", contents)
+
+            for line in contents.split("\n"):
+                s = line.split("=")
+                k = s[0]
+                v = "=".join(s[1:])
+
+                report_var("OS_RELEASE_" + k, v)
 
     return exists
 
@@ -308,7 +335,9 @@ if LSCPU is not None:
         for line in out.split("\n"):
             match = ptn.search(line)
             if match:
-                return match.group(1).strip() == "x86_64"
+                arch = match.group(1).strip()
+                report_var("CPU Architecture", arch)
+                return arch == "x86_64"
 
         return False
 
@@ -318,7 +347,9 @@ else:
 
 @check("Do we have a compiler?", fixes=[CommonFixes.follow_guide, "Install a compatible C compiler"])
 def have_compiler():
-    return len(c_compilers()) > 0
+    compilers = c_compilers()
+    report_var("C Compilers", os.path.pathsep.join(compilers))
+    return len(compilers) > 0
 
 
 @check("Do we have pip or pip3?", fixes=[CommonFixes.follow_guide, "Install pip for Python 3"])
@@ -326,89 +357,99 @@ def have_pip():
     pip = which("pip")
     pip3 = which("pip3")
 
-    Log.info("pip:", pip)
-    Log.info("pip3:", pip3)
+    report_var("pip", pip)
+    report_var("pip3", pip3)
 
     return (pip or pip3) is not None
 
 
 @check("Do we have pkg-config?", fixes=[CommonFixes.follow_guide, CommonFixes.c_tools])
 def have_pkg_config():
-    return which("pkg-config") is not None
+    return report_var("PKG_CONFIG", which("pkg-config")) is not None
 
 
 @check("Are the native libraries for cairo installed?",
        fixes=[CommonFixes.follow_guide, "Install the cairo development packages for your distribution"])
 def have_cairo_natives():
-    return pkg_config("cairo") is not None
+    return report_var("PKG_CONFIG_CAIRO", pkg_config("cairo")) is not None
 
 
 @check("Are the native libraries dbus installed?",
        fixes=[CommonFixes.follow_guide, "Install the dbus development packages for your distribution"])
 def have_dbus_natives():
-    return pkg_config("dbus-1") is not None
+    return report_var("PKG_CONFIG_DBUS", pkg_config("dbus-1")) is not None
 
 
 @check("Can we update the GTK icon cache?",
        fixes=[CommonFixes.follow_guide, "Install the GTK+ icon utilities for your distribution"])
 def can_update_icon_cache():
-    return which("gtk-update-icon-cache") is not None
+    return report_var("GTK icon cache command", which("gtk-update-icon-cache")) is not None
 
 
 @check("Can we update the desktop file database?",
        fixes=[CommonFixes.follow_guide, "Install the freedesktop database utilities for your distribution"])
 def can_update_desktop_database():
-    return which("update-desktop-database") is not None
+    return report_var("Update desktop database command", which("update-desktop-database")) is not None
 
 
 @check("Do we have XDG mime?", fixes=[CommonFixes.follow_guide, "Install the XDG utilities for your distribution"])
 def have_xdg_mime():
-    return which("xdg-mime") is not None
+    return report_var("XDG Mime command", which("xdg-mime")) is not None
 
 
 @check("Do have have GObject?",
        fixes=[CommonFixes.follow_guide, "Install the GObject development packages for your distribution"])
 def have_gobject():
-    return pkg_config("gobject-2.0") is not None
+    return report_var("PKG_CONFIG_GOBJECT", pkg_config("gobject-2.0")) is not None
 
 
 @check("Do we have GObject introspection?",
        fixes=[CommonFixes.follow_guide, "Install the GObject introspection development packages for your distribution"])
 def have_gobject_introspection():
-    return pkg_config("gobject-introspection-1.0") is not None
-
-
-@check("Do we have GTK3?",
-       fixes=[CommonFixes.follow_guide, "Install the GTK+3 development packages for your distribution"])
-def have_gtk_3():
-    return pkg_config("gtk+-3.0") is not None
+    return report_var("PKG_CONFIG_GOBJECT_INTROSPECTION", pkg_config("gobject-introspection-1.0")) is not None
 
 
 @check("Do we have git?", fixes=[CommonFixes.follow_guide, "Install git"])
 def have_git():
-    return which("git") is not None
+    return report_var("git binary path", which("git")) is not None
 
 
 @check("Do we have wine?", fixes=[CommonFixes.follow_guide, "Install Wine"])
 def have_wine():
-    return which("wine") is not None
+    return report_var("Wine binary path", which("wine")) is not None
 
 
 @check("Do we have 64-bit wine?", fixes=[CommonFixes.follow_guide, CommonFixes.wine64])
 def have_wine64():
-    return which("wine64") is not None
+    return report_var("Wine64 binary path", which("wine64")) is not None
 
 
 @check("Log Wine version")
 def print_wine_version():
-    Log.info(subprocess.check_output(["wine", "--version"]).decode(CHARSET).strip())
+    version = subprocess.check_output(["wine", "--version"]).decode(CHARSET).strip()
+    report_var("WINE_VERSION", version)
+    Log.info(version)
+
+    return not not version
+
+
+def run_wine_test_command(prefix: WinePrefix):
+    out = prefix.run(["cmd", "/c", "echo hi"])
+    return prefix, out
+
+
+@check("Can we make a valid 32-bit wineprefix?", fixes=[CommonFixes.wine64])
+def can_make_valid_64_bit_prefix():
+    prefix, out = run_wine_test_command(WinePrefix(arch="win32"))
+    Log.info(out)
+    del prefix
+
     return True
 
 
-@check("Can we make a valid wineprefix?", fixes=[CommonFixes.wine64])
-def can_make_valid_prefix():
-    prefix = WinePrefix()
-    out = prefix.run(["winecfg", "/?"])
+@check("Can we make a valid 64-bit wineprefix?", fixes=[CommonFixes.wine64])
+def can_make_valid_64_bit_prefix():
+    prefix, out = run_wine_test_command(WinePrefix(arch="win64"))
     Log.info(out)
     del prefix
 
@@ -453,6 +494,13 @@ def main():
     TEXT_OUTPUT_BUFFER.seek(0)
     report = TEXT_OUTPUT_BUFFER.read()
 
+    CSVReport.empty_row()
+    CSVReport.empty_row()
+    CSVReport.add_row("KEY", "VALUE", True, [])
+
+    for k, v in VARS.items():
+        CSVReport.add_row(k, v, True, [])
+
     with open("/tmp/grapejuice-report.csv", "w+") as fp:
         print(CSVReport.to_string(), file=fp)
         print("", file=fp)
@@ -463,9 +511,10 @@ def main():
         """, file=fp)
         print(report, file=fp)
 
-    if os.path.exists(WINEPREFIX_PATH) and os.path.isdir(WINEPREFIX_PATH):
-        Log.info("Removing wineprefix", WINEPREFIX_PATH)
-        shutil.rmtree(WINEPREFIX_PATH)
+    for pfx in USED_PREFIXES:
+        if os.path.exists(pfx) and os.path.isdir(pfx):
+            Log.info("Removing wineprefix", pfx)
+            shutil.rmtree(pfx)
 
     if os.path.exists(CWD):
         Log.info("Removing", CWD)
