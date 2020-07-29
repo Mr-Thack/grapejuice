@@ -425,12 +425,8 @@ def can_make_valid_prefix():
 @check("Does Wine support Windows 10?", fixes=[CommonFixes.fresh_wine])
 def wine_supports_windows_10():
     prefix = WinePrefix()
-    try:
-        out = prefix.run(["winecfg", "/v", "win10"])
-        Log.info(out)
-
-    except Exception as e:
-        Log.error(e)
+    out = prefix.run(["winecfg", "/v", "win10"])
+    Log.info(out)
 
     del prefix
 
