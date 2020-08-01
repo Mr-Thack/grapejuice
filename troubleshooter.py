@@ -12,9 +12,9 @@ import time
 import urllib.request
 import uuid
 from datetime import datetime
-from typing import List
+from typing import List, Union, Dict
 
-TROUBLESHOOTER_VERSION = 7
+TROUBLESHOOTER_VERSION = 8
 
 TMP = os.path.join(os.path.sep, "tmp")
 assert os.path.exists(TMP), "Fatal error: /tmp does not exist"
@@ -148,6 +148,9 @@ def check(friendly_text: str, fixes: List[str] = None):
                 Log.error(e.__class__.__name__, e, sep=" ~ ")
                 ok = False
 
+                if os.environ.get("DEBUGGING", "0").strip() == "1":
+                    raise e
+
             Log.info("OK: " if ok else "NOT_OK: ", friendly_text, fn.__name__, sep=" | ")
 
             CSVReport.add_row(fn.__name__, friendly_text, ok, fixes)
@@ -167,13 +170,19 @@ class WinePrefix:
     _wine64: str
     _arch: str
 
-    def __init__(self, arch: str = "win64"):
+    def __init__(self, arch: str = "win64", pfx: str = None, destroy_prefix: Union[bool, None] = False):
         self._wine = which("wine")
         self._wine64 = which("wine64")
         self._arch = arch
 
-        pfx = WINEPREFIX_PATH.format(arch=arch)
-        USED_PREFIXES.add(pfx)
+        if pfx is None:
+            pfx = WINEPREFIX_PATH.format(arch=arch)
+
+        if destroy_prefix is None:
+            destroy_prefix = not os.path.exists(pfx)
+
+        if destroy_prefix:
+            USED_PREFIXES.add(pfx)
 
         self._set("WINEPREFIX", pfx)
         self._set("WINEARCH", self._arch)
@@ -439,6 +448,151 @@ def print_wine_version():
     return not not version
 
 
+HOME = os.environ.get("HOME", None)
+
+
+@check("Do we have the $HOME environment variable?")
+def have_home_variable():
+    return HOME is not None
+
+
+if have_home_variable():
+    GRAPEJUICE_WINEPREFIX = os.path.join(HOME, ".local", "share", "grapejuice", "wineprefix")
+
+
+    @check("Do we have a wineprefix?")
+    def have_wineprefix():
+        return os.path.exists(GRAPEJUICE_WINEPREFIX)
+
+
+    @check("Do we have a valid wineprefix?")
+    def have_valid_wineprefix():
+        if have_wineprefix():
+            return os.path.isdir(GRAPEJUICE_WINEPREFIX)
+
+        return False
+
+
+    if have_wineprefix() and have_valid_wineprefix():
+        class RegistryFile:
+            _path: str
+            _sections: Dict[str, Dict]
+            _current_section: Dict[str, str] = None
+            _section_header_ptn = re.compile(r"\[(.*)?].*")
+            _key_ptn = re.compile(r"\"([\w\d]+)?\"\s*=\s*(.*)")
+
+            def __init__(self, path: str):
+                self._path = path
+                self._sections = dict()
+
+                if self.exists:
+                    self._parse()
+
+            @property
+            def exists(self):
+                return os.path.exists(self._path)
+
+            @property
+            def sections(self) -> List[str]:
+                return list(self._sections.keys())
+
+            def get_keys(self, section_key: str) -> Dict[str, str]:
+                return self._sections[section_key]
+
+            def _parse(self):
+                with open(self._path, "rb") as fp:
+                    content = fp.read()
+                    text = content[2:].decode("iso8859-1").replace("\0", "")
+
+                for line in text.split("\n"):
+                    line = line.strip()
+
+                    if not line:
+                        continue
+
+                    if line.startswith("Windows"):
+                        continue
+
+                    match = self._section_header_ptn.match(line)
+                    if match:
+                        self._current_section = self._sections.setdefault(match.group(1), {})
+                        continue
+
+                    match = self._key_ptn.match(line)
+                    if match and (self._current_section is not None):
+                        self._current_section[match.group(1).strip()] = match.group(2).strip()
+
+            def __str__(self):
+                return self._path
+
+
+        @check("Do we have crypto providers?")
+        def test_have_crypto_providers():
+            wine = which("wine")
+            assert wine, "Could not perform test, because we don't have Wine."
+
+            prefix = WinePrefix(pfx=GRAPEJUICE_WINEPREFIX, destroy_prefix=False)
+            export_root = os.path.join(TMP, "grapejuice-regedit-export")
+            os.makedirs(export_root, exist_ok=True)
+
+            hklm_export_path = os.path.join(export_root, f"hklm_{test_have_crypto_providers.__name__}.reg")
+            hkcu_export_path = os.path.join(export_root, f"hkcu_{test_have_crypto_providers.__name__}.reg")
+
+            def make_cmd(export_file: str, key: str):
+                return ["regedit", "/e", export_file, key]
+
+            prefix.run(make_cmd(
+                hklm_export_path,
+                "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Cryptography\\Defaults\\Provider Types"
+            ))
+
+            prefix.run(make_cmd(
+                hkcu_export_path,
+                "HKEY_CURRENT_USER\\Software\\Microsoft\\Cryptography\\Provider Types"
+            ))
+
+            del prefix
+
+            def clean_up():
+                shutil.rmtree(export_root)
+
+            try:
+                hklm_file = RegistryFile(hklm_export_path)
+                hkcu_file = RegistryFile(hkcu_export_path)
+
+                assert hklm_file.exists or hkcu_file.exists
+
+                def check_typename(f: RegistryFile, name: str):
+                    if not f.exists:
+                        return True
+
+                    found = False
+
+                    for k in f.sections:
+                        section = f.get_keys(k)
+
+                        if "TypeName" not in section:
+                            continue
+
+                        found = found or (name in section["TypeName"])
+                        if found:
+                            break
+
+                    return found
+
+                for type_name in ["RSA Full", "RSA SChannel"]:
+                    assert check_typename(hklm_file, type_name), f"Did not find typename {type_name} in {hklm_file}."
+                    assert check_typename(hkcu_file, type_name), f"Did not find typename {type_name} in {hkcu_file}."
+
+            except Exception as e:
+                clean_up()
+                raise e
+
+            clean_up()
+
+            return True
+
+
 def run_wine_test_command(prefix: WinePrefix):
     out = prefix.run(["cmd", "/c", "echo Hello from Wine"])
     return prefix, out
@@ -446,7 +600,7 @@ def run_wine_test_command(prefix: WinePrefix):
 
 @check("Can we make a valid 32-bit wineprefix?", fixes=[CommonFixes.wine32])
 def can_make_valid_32_bit_prefix():
-    prefix, out = run_wine_test_command(WinePrefix(arch="win32"))
+    prefix, out = run_wine_test_command(WinePrefix(arch="win32", destroy_prefix=True))
     Log.info(out)
     del prefix
 
@@ -455,7 +609,7 @@ def can_make_valid_32_bit_prefix():
 
 @check("Can we make a valid 64-bit wineprefix?", fixes=[CommonFixes.wine64])
 def can_make_valid_64_bit_prefix():
-    prefix, out = run_wine_test_command(WinePrefix(arch="win64"))
+    prefix, out = run_wine_test_command(WinePrefix(arch="win64", destroy_prefix=True))
     Log.info(out)
     del prefix
 
