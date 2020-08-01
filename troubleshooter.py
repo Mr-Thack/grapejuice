@@ -526,7 +526,8 @@ if have_home_variable():
                 return self._path
 
 
-        @check("Do we have crypto providers?")
+        @check("Do we have crypto providers?",
+               fixes=["The Grapejuice wineprefix is most likely corrupt. Delete ~/.local/share/grapejuice/wineprefix"])
         def test_have_crypto_providers():
             wine = which("wine")
             assert wine, "Could not perform test, because we don't have Wine."
