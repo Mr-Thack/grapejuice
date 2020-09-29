@@ -1,10 +1,12 @@
 import os
+import sys
 from typing import Iterable
 
 from grapejuice import background
+from grapejuice.gui.yes_no_dialog import yes_no_dialog
 from grapejuice.tasks import DisableMimeAssociations, ApplyDLLOverrides, InstallRoblox, GraphicsModeOpenGL, SandboxWine, \
     RunRobloxStudio, ExtractFastFlags, OpenLogsDirectory, PerformUpdate
-from grapejuice_common import variables, robloxctrl
+from grapejuice_common import variables, robloxctrl, uninstall
 from grapejuice_common import winectrl
 from grapejuice_common.features.settings import settings
 from grapejuice_common.gtk.gtk_stuff import WindowBase, dialog
@@ -176,6 +178,18 @@ class MainWindowHandlers:
 
         self._updating = True
         background.tasks.add(PerformUpdate(update_provider, reopen=True))
+
+    def uninstall_grapejuice(self, *_):
+        params = uninstall.UninstallationParameters(
+            yes_no_dialog(
+                title="Remove Wineprefix?",
+                message="Remove the Wineprefix that contains your installation of Roblox Studio? This will cause all "
+                        "configuration of Roblox Studio to be permanently deleted! "
+            )
+        )
+
+        uninstall.go(params)
+        sys.exit(0)
 
 
 class MainWindow(WindowBase):
