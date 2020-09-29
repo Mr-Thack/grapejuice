@@ -14,7 +14,7 @@ import uuid
 from datetime import datetime
 from typing import List, Union, Dict
 
-TROUBLESHOOTER_VERSION = 8
+TROUBLESHOOTER_VERSION = 9
 
 TMP = os.path.join(os.path.sep, "tmp")
 assert os.path.exists(TMP), "Fatal error: /tmp does not exist"
@@ -524,74 +524,6 @@ if have_home_variable():
 
             def __str__(self):
                 return self._path
-
-
-        @check("Do we have crypto providers?",
-               fixes=["The Grapejuice wineprefix is most likely corrupt. Delete ~/.local/share/grapejuice/wineprefix"])
-        def test_have_crypto_providers():
-            wine = which("wine")
-            assert wine, "Could not perform test, because we don't have Wine."
-
-            prefix = WinePrefix(pfx=GRAPEJUICE_WINEPREFIX, destroy_prefix=False)
-            export_root = os.path.join(TMP, "grapejuice-regedit-export")
-            os.makedirs(export_root, exist_ok=True)
-
-            hklm_export_path = os.path.join(export_root, f"hklm_{test_have_crypto_providers.__name__}.reg")
-            hkcu_export_path = os.path.join(export_root, f"hkcu_{test_have_crypto_providers.__name__}.reg")
-
-            def make_cmd(export_file: str, key: str):
-                return ["regedit", "/e", export_file, key]
-
-            prefix.run(make_cmd(
-                hklm_export_path,
-                "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Cryptography\\Defaults\\Provider Types"
-            ))
-
-            prefix.run(make_cmd(
-                hkcu_export_path,
-                "HKEY_CURRENT_USER\\Software\\Microsoft\\Cryptography\\Provider Types"
-            ))
-
-            del prefix
-
-            def clean_up():
-                shutil.rmtree(export_root)
-
-            try:
-                hklm_file = RegistryFile(hklm_export_path)
-                hkcu_file = RegistryFile(hkcu_export_path)
-
-                assert hklm_file.exists or hkcu_file.exists
-
-                def check_typename(f: RegistryFile, name: str):
-                    if not f.exists:
-                        return True
-
-                    found = False
-
-                    for k in f.sections:
-                        section = f.get_keys(k)
-
-                        if "TypeName" not in section:
-                            continue
-
-                        found = found or (name in section["TypeName"])
-                        if found:
-                            break
-
-                    return found
-
-                for type_name in ["RSA Full", "RSA SChannel"]:
-                    assert check_typename(hklm_file, type_name), f"Did not find typename {type_name} in {hklm_file}."
-                    assert check_typename(hkcu_file, type_name), f"Did not find typename {type_name} in {hkcu_file}."
-
-            except Exception as e:
-                clean_up()
-                raise e
-
-            clean_up()
-
-            return True
 
 
 def run_wine_test_command(prefix: WinePrefix):
