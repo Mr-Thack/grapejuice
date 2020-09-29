@@ -35,6 +35,10 @@ def user_application_dir():
     return os.path.join(local_share(), "grapejuice")
 
 
+def application_manifest():
+    return os.path.join(user_application_dir(), "package_manifest.json")
+
+
 def assets_dir():
     search_locations = [
         os.path.join(HERE, "assets"),

@@ -1,5 +1,5 @@
+import logging
 import os
-import sys
 from typing import Iterable
 
 from grapejuice import background
@@ -14,6 +14,8 @@ from grapejuice_common.updates.provider_map import get_update_provider
 from grapejuice_common.util.errors import NoWineError
 from grapejuice_common.util.event import Event
 from grapejuice_common.winectrl import wine_ok
+
+LOG = logging.getLogger(__name__)
 
 on_destroy = Event()
 
@@ -180,16 +182,29 @@ class MainWindowHandlers:
         background.tasks.add(PerformUpdate(update_provider, reopen=True))
 
     def uninstall_grapejuice(self, *_):
+        do_it = yes_no_dialog("Uninstall Grapejuice", "Are you sure that you want to uninstall Grapejuice?")
+
+        if not do_it:
+            return
+
         params = uninstall.UninstallationParameters(
             yes_no_dialog(
                 title="Remove Wineprefix?",
                 message="Remove the Wineprefix that contains your installation of Roblox Studio? This will cause all "
                         "configuration of Roblox Studio to be permanently deleted! "
-            )
+            ),
+            for_reals=True
         )
 
-        uninstall.go(params)
-        sys.exit(0)
+        try:
+            dialog("Grapejuice will now uninstall itself, the program will close when the process is finished.")
+            uninstall.go(params)
+
+        except Exception as e:
+            msg = f"{e.__class__.__name__}: {str(e)}"
+            LOG.error(msg)
+
+            dialog(f"Failed to uninstall Grapejuice.\n\n{msg}")
 
 
 class MainWindow(WindowBase):
