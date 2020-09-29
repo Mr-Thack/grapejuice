@@ -33,6 +33,11 @@ def go(parameters: UninstallationParameters):
         manifest = json.load(fp)
 
     for file in manifest["files"]:
+        if not os.path.isabs(file):
+            o_file = file
+            file = os.path.join(variables.home(), file)
+            LOG.info(f"Mended file path: {o_file} -> {file}")
+
         if os.path.exists(file) and os.path.isfile(file):
             LOG.info(f"Removing file from manifest: {file}")
 
