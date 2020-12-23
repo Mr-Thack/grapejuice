@@ -1,135 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.36.0 -->
+<!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkImage" id="icon_drive">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">drive-harddisk</property>
+    <property name="can-focus">False</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">drive-harddisk</property>
   </object>
   <object class="GtkImage" id="icon_file_manager">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="margin_top">5</property>
-    <property name="margin_bottom">5</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">system-file-manager</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">5</property>
+    <property name="margin-bottom">5</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">system-file-manager</property>
   </object>
   <object class="GtkImage" id="icon_graphics_gl">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="margin_top">5</property>
-    <property name="margin_bottom">5</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">image-bmp</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">5</property>
+    <property name="margin-bottom">5</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">image-bmp</property>
   </object>
   <object class="GtkImage" id="icon_install">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="margin_top">5</property>
-    <property name="margin_bottom">5</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">package-x-generic</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">5</property>
+    <property name="margin-bottom">5</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">package-x-generic</property>
   </object>
   <object class="GtkImage" id="icon_library">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="margin_top">5</property>
-    <property name="margin_bottom">5</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">text</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">5</property>
+    <property name="margin-bottom">5</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">text</property>
   </object>
   <object class="GtkImage" id="icon_logs">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">folder</property>
+    <property name="can-focus">False</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">folder</property>
   </object>
   <object class="GtkImage" id="icon_mime2">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">ascii</property>
+    <property name="can-focus">False</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">ascii</property>
   </object>
   <object class="GtkImage" id="icon_registry_editor">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="margin_top">5</property>
-    <property name="margin_bottom">5</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">redhat-tools</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">5</property>
+    <property name="margin-bottom">5</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">redhat-tools</property>
   </object>
   <object class="GtkImage" id="icon_reinstall">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">view-refresh</property>
+    <property name="can-focus">False</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">view-refresh</property>
   </object>
   <object class="GtkImage" id="icon_roblox_studio">
-    <property name="height_request">16</property>
+    <property name="height-request">16</property>
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
+    <property name="can-focus">False</property>
     <property name="pixbuf">../icons/hicolor/24x24/apps/grapejuice-roblox-studio.png</property>
   </object>
   <object class="GtkImage" id="icon_sandbox">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="margin_top">5</property>
-    <property name="margin_bottom">5</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">package</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">5</property>
+    <property name="margin-bottom">5</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">package</property>
   </object>
   <object class="GtkImage" id="icon_uninstall">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="margin_top">5</property>
-    <property name="margin_bottom">5</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">dialog-cancel</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">5</property>
+    <property name="margin-bottom">5</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">dialog-cancel</property>
   </object>
   <object class="GtkImage" id="icon_update">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="margin_end">5</property>
-    <property name="icon_name">view-refresh</property>
+    <property name="can-focus">False</property>
+    <property name="margin-end">5</property>
+    <property name="icon-name">view-refresh</property>
   </object>
   <object class="GtkImage" id="icon_wine_config">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="margin_top">5</property>
-    <property name="margin_bottom">5</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">configuration_section</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">5</property>
+    <property name="margin-bottom">5</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">configuration_section</property>
   </object>
   <object class="GtkImage" id="icon_winetricks">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="margin_top">5</property>
-    <property name="margin_bottom">5</property>
-    <property name="pixel_size">48</property>
-    <property name="icon_name">winetricks</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">5</property>
+    <property name="margin-bottom">5</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">winetricks</property>
   </object>
   <object class="GtkPopoverMenu" id="main_menu">
-    <property name="can_focus">False</property>
+    <property name="can-focus">False</property>
     <property name="position">bottom</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="halign">center</property>
-        <property name="margin_left">10</property>
-        <property name="margin_right">10</property>
-        <property name="margin_top">10</property>
-        <property name="margin_bottom">10</property>
+        <property name="margin-left">10</property>
+        <property name="margin-right">10</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
         <property name="orientation">vertical</property>
         <property name="spacing">10</property>
         <child>
           <object class="GtkButton">
             <property name="label" translatable="yes">About</property>
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
             <signal name="clicked" handler="show_about" swapped="no"/>
           </object>
           <packing>
@@ -142,8 +142,8 @@
           <object class="GtkButton">
             <property name="label" translatable="yes">Wiki</property>
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
             <signal name="clicked" handler="show_wiki" swapped="no"/>
           </object>
           <packing>
@@ -156,8 +156,8 @@
           <object class="GtkButton">
             <property name="label" translatable="yes">Exit</property>
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
             <signal name="clicked" handler="on_destroy" swapped="no"/>
           </object>
           <packing>
@@ -174,26 +174,26 @@
     </child>
   </object>
   <object class="GtkWindow" id="main_window">
-    <property name="can_focus">False</property>
+    <property name="can-focus">False</property>
     <property name="role">Grapejuice</property>
     <property name="resizable">False</property>
-    <property name="default_width">550</property>
-    <property name="default_height">300</property>
-    <property name="icon_name">grapejuice</property>
-    <property name="startup_id">Grapejuice</property>
+    <property name="default-width">550</property>
+    <property name="default-height">300</property>
+    <property name="icon-name">grapejuice</property>
+    <property name="startup-id">Grapejuice</property>
     <signal name="destroy" handler="on_destroy" swapped="no"/>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkStackSwitcher">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="halign">center</property>
-            <property name="margin_top">10</property>
-            <property name="margin_bottom">10</property>
+            <property name="margin-top">10</property>
+            <property name="margin-bottom">10</property>
             <property name="stack">main_stack</property>
           </object>
           <packing>
@@ -205,26 +205,26 @@
         <child>
           <object class="GtkStack" id="main_stack">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_start">10</property>
-            <property name="margin_end">10</property>
-            <property name="margin_top">10</property>
-            <property name="margin_bottom">10</property>
-            <property name="transition_type">slide-left-right</property>
+            <property name="can-focus">False</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <property name="margin-top">10</property>
+            <property name="margin-bottom">10</property>
+            <property name="transition-type">slide-left-right</property>
             <child>
               <object class="GtkBox" id="page_main">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">10</property>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Roblox Studio</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_roblox_studio</property>
-                    <property name="always_show_image">True</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="run_roblox_studio" swapped="no"/>
                   </object>
                   <packing>
@@ -237,8 +237,8 @@
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Roblox Studio sign in</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <signal name="clicked" handler="open_roblox_return_to_studio" swapped="no"/>
                   </object>
                   <packing>
@@ -251,8 +251,8 @@
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Roblox FFlag editor</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <signal name="clicked" handler="open_fast_flag_editor" swapped="no"/>
                   </object>
                   <packing>
@@ -264,7 +264,7 @@
                 <child>
                   <object class="GtkFixed">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="vexpand">True</property>
                   </object>
                   <packing>
@@ -276,12 +276,12 @@
                 <child>
                   <object class="GtkBox" id="update_status">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel" id="update_status_label">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="label" translatable="yes">Fetching update status...</property>
                         <property name="justify">center</property>
@@ -296,13 +296,13 @@
                       <object class="GtkButton" id="update_button">
                         <property name="label" translatable="yes">Update Grapejuice</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
                         <property name="halign">center</property>
-                        <property name="margin_start">5</property>
-                        <property name="margin_end">5</property>
-                        <property name="margin_top">5</property>
-                        <property name="margin_bottom">5</property>
+                        <property name="margin-start">5</property>
+                        <property name="margin-end">5</property>
+                        <property name="margin-top">5</property>
+                        <property name="margin-bottom">5</property>
                         <property name="image">icon_update</property>
                         <signal name="clicked" handler="update_grapejuice" swapped="no"/>
                       </object>
@@ -326,89 +326,99 @@
               </packing>
             </child>
             <child>
+              <!-- n-columns=3 n-rows=3 -->
               <object class="GtkGrid" id="page_maintenance">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="row_spacing">5</property>
-                <property name="column_spacing">5</property>
-                <property name="row_homogeneous">True</property>
-                <property name="column_homogeneous">True</property>
+                <property name="can-focus">False</property>
+                <property name="row-spacing">5</property>
+                <property name="column-spacing">5</property>
+                <property name="row-homogeneous">True</property>
+                <property name="column-homogeneous">True</property>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Install Roblox</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_install</property>
-                    <property name="image_position">top</property>
-                    <property name="always_show_image">True</property>
+                    <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="run_roblox_installer" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">GraphicsMode OpenGL</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_graphics_gl</property>
-                    <property name="image_position">top</property>
+                    <property name="image-position">top</property>
                     <signal name="clicked" handler="graphicsmode_opengl" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">0</property>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Open logs directory</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_logs</property>
-                    <property name="image_position">top</property>
-                    <property name="always_show_image">True</property>
+                    <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="open_logs_directory" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">2</property>
-                    <property name="top_attach">0</property>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="reinstall_grapejuice_button">
                     <property name="label" translatable="yes">Reinstall Grapejuice</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_reinstall</property>
-                    <property name="image_position">top</property>
+                    <property name="image-position">top</property>
                     <signal name="clicked" handler="reinstall_grapejuice" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Uninstall Grapejuice</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_uninstall</property>
-                    <property name="image_position">top</property>
+                    <property name="image-position">top</property>
                     <signal name="clicked" handler="uninstall_grapejuice" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">1</property>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">1</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
                 <child>
                   <placeholder/>
@@ -421,141 +431,142 @@
               </packing>
             </child>
             <child>
+              <!-- n-columns=3 n-rows=3 -->
               <object class="GtkGrid" id="page_wine">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
-                <property name="row_spacing">5</property>
-                <property name="column_spacing">5</property>
-                <property name="row_homogeneous">True</property>
-                <property name="column_homogeneous">True</property>
+                <property name="row-spacing">5</property>
+                <property name="column-spacing">5</property>
+                <property name="row-homogeneous">True</property>
+                <property name="column-homogeneous">True</property>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Wine Explorer</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_file_manager</property>
-                    <property name="image_position">top</property>
-                    <property name="always_show_image">True</property>
+                    <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="wine_explorer" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">0</property>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Sandbox</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_sandbox</property>
-                    <property name="image_position">top</property>
-                    <property name="always_show_image">True</property>
+                    <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="sandbox" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Disable MIME Associations</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_mime2</property>
-                    <property name="image_position">top</property>
-                    <property name="always_show_image">True</property>
+                    <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="disable_mime_assoc" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">1</property>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">1</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Registry Editor</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_registry_editor</property>
-                    <property name="image_position">top</property>
-                    <property name="always_show_image">True</property>
+                    <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="run_regedit" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">2</property>
-                    <property name="top_attach">0</property>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Wine Configuration</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_wine_config</property>
-                    <property name="image_position">top</property>
-                    <property name="always_show_image">True</property>
+                    <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="run_winecfg" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Apply DLL overrides</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_library</property>
-                    <property name="image_position">top</property>
-                    <property name="always_show_image">True</property>
+                    <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="apply_dll_overrides" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">2</property>
-                    <property name="top_attach">1</property>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">1</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Winetricks</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_winetricks</property>
-                    <property name="image_position">top</property>
-                    <property name="always_show_image">True</property>
+                    <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="run_winetricks" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">2</property>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">2</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Open Drive C</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="image">icon_drive</property>
-                    <property name="image_position">top</property>
-                    <property name="always_show_image">True</property>
+                    <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="open_drive_c" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">2</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">2</property>
                   </packing>
                 </child>
                 <child>
@@ -572,7 +583,7 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="pack_type">end</property>
+            <property name="pack-type">end</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -581,28 +592,28 @@
     <child type="titlebar">
       <object class="GtkHeaderBar">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="title" translatable="yes">Grapejuice</property>
-        <property name="show_close_button">True</property>
-        <property name="decoration_layout">menu:minimize,close</property>
+        <property name="show-close-button">True</property>
+        <property name="decoration-layout">menu:minimize,close</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="spacing">5</property>
             <child>
               <object class="GtkMenuButton" id="main_menu_button">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="focus_on_click">False</property>
-                <property name="receives_default">True</property>
+                <property name="can-focus">True</property>
+                <property name="focus-on-click">False</property>
+                <property name="receives-default">True</property>
                 <property name="popover">main_menu</property>
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_top">3</property>
-                    <property name="margin_bottom">3</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
                     <property name="pixbuf">../icons/hicolor/24x24/apps/grapejuice.png</property>
                   </object>
                 </child>
@@ -615,17 +626,17 @@
             </child>
             <child>
               <object class="GtkSpinner" id="background_task_spinner">
-                <property name="width_request">24</property>
-                <property name="height_request">24</property>
+                <property name="width-request">24</property>
+                <property name="height-request">24</property>
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="valign">center</property>
                 <property name="vexpand">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="pack_type">end</property>
+                <property name="pack-type">end</property>
                 <property name="position">1</property>
               </packing>
             </child>
