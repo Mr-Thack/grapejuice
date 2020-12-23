@@ -10,6 +10,7 @@ from grapejuice_common import variables, robloxctrl, uninstall
 from grapejuice_common import winectrl
 from grapejuice_common.features.settings import settings
 from grapejuice_common.gtk.gtk_stuff import WindowBase, dialog
+from grapejuice_common.registry_utils import logged_into_studio
 from grapejuice_common.updates.provider_map import get_update_provider
 from grapejuice_common.util.errors import NoWineError
 from grapejuice_common.util.event import Event
@@ -104,17 +105,15 @@ class MainWindowHandlers:
         if not wine_ok():
             return
 
-        with open(variables.wine_user_reg()) as reg:
-            if ".ROBLOSECURITY" not in reg.read():
-                if yes_no_dialog(
-                    "Log into Roblox",
-                    "You are currently not signed into Roblox Studio. "
-                    "Roblox Studio is known to require an account to use. Would you like to sign in now?"
-                ):
-                    xdg_open(variables.roblox_return_to_studio())
-                    return
+        if not logged_into_studio() and yes_no_dialog(
+            "Log into Roblox",
+            "You are currently not signed into Roblox Studio. "
+            "Roblox Studio is known to require an account to use. Would you like to sign in now?"
+        ):
+            xdg_open(variables.roblox_return_to_studio())
 
-        run_task_once(RunRobloxStudio, generic_already_running)
+        else:
+            run_task_once(RunRobloxStudio, generic_already_running)
 
     def wine_explorer(self, *_):
         winectrl.explorer()
