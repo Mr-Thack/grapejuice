@@ -140,8 +140,10 @@ def wineprefix_dir():
 def wine_drive_c():
     return os.path.join(wineprefix_dir(), "drive_c")
 
+
 def wine_user_reg():
     return os.path.join(wineprefix_dir(), "user.reg")
+
 
 def wine_roblox_prog():
     return os.path.join(wine_drive_c(), "Program Files (x86)", "Roblox")

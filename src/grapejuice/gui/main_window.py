@@ -105,11 +105,14 @@ class MainWindowHandlers:
             return
 
         with open(variables.wine_user_reg()) as reg:
-            if not ".ROBLOSECURITY" in reg.read():
-                    if yes_no_dialog("Log into Roblox", "You are currently not signed into Roblox Studio. "
-                        "Roblox Studio is known to require an account to use. Would you like to sign in now?"):
-                        xdg_open(variables.roblox_return_to_studio())
-                        return
+            if ".ROBLOSECURITY" not in reg.read():
+                if yes_no_dialog(
+                    "Log into Roblox",
+                    "You are currently not signed into Roblox Studio. "
+                    "Roblox Studio is known to require an account to use. Would you like to sign in now?"
+                ):
+                    xdg_open(variables.roblox_return_to_studio())
+                    return
 
         run_task_once(RunRobloxStudio, generic_already_running)
 
@@ -131,7 +134,7 @@ class MainWindowHandlers:
 
     def open_roblox_return_to_studio(self, *_):
         xdg_open(variables.roblox_return_to_studio())
-        
+
     def open_fast_flag_editor(self, *_):
         def open_editor(b):
             if not b:
