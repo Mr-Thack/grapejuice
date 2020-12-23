@@ -235,7 +235,7 @@
                 </child>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Roblox Studio sign in</property>
+                    <property name="label" translatable="yes">Sign into Roblox Studio</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
