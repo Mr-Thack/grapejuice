@@ -1,5 +1,10 @@
 image: registry.gitlab.com/brinkervii/grapejuice-ci-image/master
 
+stages:
+    - test
+    - package
+    - deploy
+
 grapejuice:test:
     stage: test
     script:
@@ -14,9 +19,9 @@ grapejuice:test_local_installation:
         - ./install.py
 
 grapejuice:linux_package:
-    stage: deploy
+    stage: package
     artifacts:
-        expire_in: 30 days
+        expire_in: 1 week
         paths:
             - artifacts/
     script:
@@ -24,21 +29,27 @@ grapejuice:linux_package:
         - python3 -m pip install -r requirements.dev.txt
         - python3 -m pip install -r requirements.txt
         - python3 -m grapejuice_packaging linux_package --dist-dir artifacts/linux_package
+    only:
+        - master
+        - develop
 
 grapejuice:debian_package:
-    stage: deploy
+    stage: package
     artifacts:
-        expire_in: 30 days
+        expire_in: 1 week
         paths:
             - artifacts/
     script:
         - export PYTHONPATH=$(pwd)/src
         - python3 -m grapejuice_packaging debian_package --dist-dir artifacts/debian_package
+    only:
+        - master
+        - develop
 
 grapejuice:appimage:
-    stage: deploy
+    stage: package
     artifacts:
-        expire_in: 30 days
+        expire_in: 1 week
         paths:
             - artifacts/
     script:
@@ -49,3 +60,6 @@ grapejuice:appimage:
         - mkdir -p artifacts
         - cp dist/*.AppImage artifacts
         - chmod a+x artifacts/*.AppImage
+    only:
+        - master
+        - develop
