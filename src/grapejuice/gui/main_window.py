@@ -234,9 +234,11 @@ class MainWindow(WindowBase):
 
         if update_provider.can_update():
             self.reinstall_grapejuice_button.show()
+            self.uninstall_button.show()
 
         else:
             self.reinstall_grapejuice_button.hide()
+            self.uninstall_button.hide()
 
         self.perform_update_check()
 
@@ -259,6 +261,10 @@ class MainWindow(WindowBase):
     @property
     def update_button(self):
         return self.builder.get_object("update_button")
+
+    @property
+    def uninstall_button(self):
+        return self.builder.get_object("uninstall_button")
 
     @property
     def reinstall_grapejuice_button(self):
