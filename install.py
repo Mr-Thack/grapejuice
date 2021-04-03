@@ -9,6 +9,19 @@ if os.getuid() == 0:
         print(msg, file=sys.stderr)
         raise RuntimeError(msg)
 
+try:
+    architecture = subprocess.check_output(["uname", "-m"]).decode("UTF-8").strip()
+    expected_architecture = "x86_64"
+
+    if architecture.lower() != expected_architecture:
+        msg = f"Roblox Studio will only run on the {expected_architecture} CPU architecture. " \
+              f"The CPU architecture of this machine is {architecture}. The installer will now exit."
+        print(msg, file=sys.stderr)
+        sys.exit(-1)
+
+except subprocess.CalledProcessError:
+    pass
+
 REQUIRED_MAJOR = 3
 REQUIRED_MINOR = 7
 
