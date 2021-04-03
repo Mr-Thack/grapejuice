@@ -7,7 +7,7 @@ import grapejuice_common.winectrl as winectrl
 from grapejuice_common.logs.log_util import log_function
 from grapejuice_common.util import download_file
 
-DOWNLOAD_URL = "https://www.roblox.com/install/setup.ashx"
+DOWNLOAD_URL = "https://www.roblox.com/download/client"
 
 
 def set_graphics_mode(mode: int):
