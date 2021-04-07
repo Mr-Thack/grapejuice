@@ -1,3 +1,4 @@
+import getpass
 import logging
 import os
 import subprocess
@@ -147,6 +148,10 @@ def wine_user_reg():
 
 def wine_roblox_prog():
     return os.path.join(wine_drive_c(), "Program Files (x86)", "Roblox")
+
+
+def wine_roblox_local_settings():
+    return os.path.join(wine_drive_c(), "users", getpass.getuser(), "Local Settings", "Application Data", "Roblox")
 
 
 def wine_temp():

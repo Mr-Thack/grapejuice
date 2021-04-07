@@ -51,16 +51,21 @@ def run_installer():
 
 @log_function
 def locate_in_versions(exe_name):
-    versions = os.path.join(variables.wine_roblox_prog(), "Versions")
-    if not os.path.exists(versions):
-        return None
+    search_roots = [
+        variables.wine_roblox_prog(),
+        variables.wine_roblox_local_settings()
+    ]
 
-    for dir in os.listdir(versions):
-        fp = os.path.join(versions, dir)
-        if os.path.isdir(fp):
-            lp = os.path.join(fp, exe_name)
-            if os.path.exists(lp) and os.path.isfile(lp):
-                return lp
+    for root in search_roots:
+        versions = os.path.join(root, "Versions")
+
+        if os.path.exists(root) and os.path.exists(versions) and os.path.isdir(versions):
+            executable_path = os.path.join(exe_name)
+
+            if os.path.exists(executable_path) and os.path.isfile(executable_path):
+                return executable_path
+
+    return None
 
 
 @log_function
