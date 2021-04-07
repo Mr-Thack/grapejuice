@@ -1,6 +1,8 @@
 import os
 import re
 import time
+from pathlib import Path
+from typing import Union
 
 import grapejuice_common.variables as variables
 import grapejuice_common.winectrl as winectrl
@@ -50,20 +52,27 @@ def run_installer():
 
 
 @log_function
-def locate_in_versions(exe_name):
+def locate_in_versions(exe_name) -> Union[str, None]:
     search_roots = [
         variables.wine_roblox_prog(),
         variables.wine_roblox_local_settings()
     ]
 
     for root in search_roots:
-        versions = os.path.join(root, "Versions")
+        versions = Path(root, "Versions")
 
-        if os.path.exists(root) and os.path.exists(versions) and os.path.isdir(versions):
-            executable_path = os.path.join(versions, exe_name)
+        if os.path.exists(root) and versions.exists() and versions.is_dir():
+            executable_path = versions / exe_name
 
-            if os.path.exists(executable_path) and os.path.isfile(executable_path):
-                return executable_path
+            if executable_path.exists() and executable_path.is_file():
+                return str(executable_path)
+
+            for version in Path(versions).glob("*"):
+                if version.is_dir():
+                    executable_path = version / exe_name
+
+                    if executable_path.exists() and executable_path.is_file():
+                        return str(executable_path)
 
     return None
 
