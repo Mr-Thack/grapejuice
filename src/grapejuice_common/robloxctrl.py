@@ -60,7 +60,7 @@ def locate_in_versions(exe_name):
         versions = os.path.join(root, "Versions")
 
         if os.path.exists(root) and os.path.exists(versions) and os.path.isdir(versions):
-            executable_path = os.path.join(versions, executable_path)
+            executable_path = os.path.join(versions, exe_name)
 
             if os.path.exists(executable_path) and os.path.isfile(executable_path):
                 return executable_path
