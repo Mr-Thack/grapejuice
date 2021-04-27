@@ -11,12 +11,15 @@ from typing import List
 
 import grapejuice_common.variables as variables
 from grapejuice_common.logs.log_util import log_on_call, log_function
+from grapejuice_common.prefix_flags import PrefixFlags
 
 LOG = logging.getLogger(__name__)
 
 space_version_ptn = re.compile(r"wine-(.+?)\s+")
 non_space_version_ptn = re.compile(r"wine-(.+)")
 space = " "
+
+prefix_flags = PrefixFlags()
 
 
 class ProcessWrapper:
@@ -53,6 +56,9 @@ def prepare():
     if not os.path.exists(prefix_dir):
         os.makedirs(prefix_dir)
 
+    if not prefix_flags.dll_overrides_applied:
+        load_dll_overrides(prepare_wine=False)
+
 
 @log_on_call("Running Wine configuration")
 def winecfg():
@@ -72,9 +78,11 @@ def explorer():
     os.spawnlp(os.P_NOWAIT, variables.wine_binary(), variables.wine_binary(), "explorer")
 
 
-def load_reg(srcfile):
+def load_reg(srcfile, prepare_wine: bool = True):
     LOG.info(f"Loading registry file {srcfile} into the wineprefix")
-    prepare()
+    if prepare_wine:
+        prepare()
+
     target_filename = str(int(time.time())) + ".reg"
     target_path = os.path.join(variables.wine_temp(), target_filename)
     shutil.copyfile(srcfile, target_path)
@@ -137,8 +145,9 @@ def set_roblox_document_path():
 
 
 @log_on_call("Loading DLL overrides")
-def load_dll_overrides():
-    load_reg(os.path.join(variables.assets_dir(), "dll_overrides.reg"))
+def load_dll_overrides(prepare_wine: bool = True):
+    prefix_flags.dll_overrides_applied = True
+    load_reg(os.path.join(variables.assets_dir(), "dll_overrides.reg"), prepare_wine=prepare_wine)
 
 
 @log_on_call("Sandboxing user directories in the wineprefix")
