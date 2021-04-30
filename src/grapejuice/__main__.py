@@ -31,7 +31,7 @@ def func_player(args):
         from grapejuice_common.features.settings import settings
 
         if settings.n_player_dialogs_remain > 0:
-            settings.n_player_dialogs_remain = settings.n_player_dialogs_remain - 1
+            settings.n_player_dialogs_remain -= 1
             settings.save()
 
             gtk_stuff.dialog("Currently, the Roblox Player is not confirmed to be working properly with Wine and "

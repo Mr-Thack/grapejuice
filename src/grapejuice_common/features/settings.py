@@ -50,7 +50,6 @@ class UserSettings:
     def __init__(self, file_location=variables.grapejuice_user_settings()):
         self._location = file_location
 
-        self.performed_post_install = False
         self.n_player_dialogs_remain = 3
         self.show_fast_flag_warning = True
 
@@ -70,6 +69,13 @@ class UserSettings:
 
             elif not k.startswith("_"):
                 d[k] = v
+
+        # Get rid of deprecated values
+        try:
+            d.pop("performed_post_install")
+
+        except KeyError:
+            pass
 
         return d
 
@@ -114,9 +120,8 @@ class UserSettings:
             self.save()
 
     def save(self):
-        self._update_last_run()
-
         LOG.debug(f"Saving settings file to '{self._location}'")
+
         with open(self._location, "w+") as fp:
             json.dump(self._filtered_dict(), fp)
 
