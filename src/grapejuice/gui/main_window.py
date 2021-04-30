@@ -4,7 +4,7 @@ from typing import Iterable
 
 from grapejuice import background
 from grapejuice.gui.yes_no_dialog import yes_no_dialog
-from grapejuice.tasks import DisableMimeAssociations, ApplyDLLOverrides, InstallRoblox, GraphicsModeOpenGL, SandboxWine, \
+from grapejuice.tasks import DisableMimeAssociations, ApplyDLLOverrides, InstallRoblox, SandboxWine, \
     RunRobloxStudio, ExtractFastFlags, OpenLogsDirectory, PerformUpdate
 from grapejuice_common import variables, robloxctrl, uninstall
 from grapejuice_common import winectrl
@@ -160,9 +160,6 @@ class MainWindowHandlers:
 
     def launch_sparklepop(self, *_):
         os.spawnlp(os.P_NOWAIT, "python", "python", "-m", "sparklepop")
-
-    def graphicsmode_opengl(self, *_):
-        run_task_once(GraphicsModeOpenGL, generic_already_running)
 
     def open_logs_directory(self, *_):
         run_task_once(OpenLogsDirectory, generic_already_running)

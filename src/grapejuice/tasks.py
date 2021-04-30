@@ -6,7 +6,7 @@ import sys
 from dbus import DBusException
 
 from grapejuice import background
-from grapejuice_common import winectrl, robloxctrl, variables
+from grapejuice_common import winectrl, variables
 from grapejuice_common.updates.update_provider import UpdateProvider
 
 
@@ -43,15 +43,6 @@ class InstallRoblox(background.BackgroundTask):
         except DBusException:
             pass  # TODO: find a proper fix
 
-        self.finish()
-
-
-class GraphicsModeOpenGL(background.BackgroundTask):
-    def __init__(self):
-        super().__init__("Changing the Roblox GraphicsMode to OpenGL")
-
-    def run(self) -> None:
-        robloxctrl.set_graphics_mode_opengl()
         self.finish()
 
 

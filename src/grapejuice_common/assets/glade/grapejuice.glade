@@ -16,14 +16,6 @@
     <property name="pixel-size">48</property>
     <property name="icon-name">system-file-manager</property>
   </object>
-  <object class="GtkImage" id="icon_graphics_gl">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">5</property>
-    <property name="margin-bottom">5</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">image-bmp</property>
-  </object>
   <object class="GtkImage" id="icon_install">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -326,7 +318,7 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=3 n-rows=3 -->
+              <!-- n-columns=3 n-rows=2 -->
               <object class="GtkGrid" id="page_maintenance">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -352,21 +344,6 @@
                 </child>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">GraphicsMode OpenGL</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_graphics_gl</property>
-                    <property name="image-position">top</property>
-                    <signal name="clicked" handler="graphicsmode_opengl" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
                     <property name="label" translatable="yes">Open logs directory</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
@@ -377,7 +354,7 @@
                     <signal name="clicked" handler="open_logs_directory" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">2</property>
+                    <property name="left-attach">1</property>
                     <property name="top-attach">0</property>
                   </packing>
                 </child>
@@ -392,8 +369,8 @@
                     <signal name="clicked" handler="reinstall_grapejuice" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -407,15 +384,9 @@
                     <signal name="clicked" handler="uninstall_grapejuice" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">1</property>
+                    <property name="left-attach">0</property>
                     <property name="top-attach">1</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
                 <child>
                   <placeholder/>
