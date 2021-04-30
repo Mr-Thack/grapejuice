@@ -14,7 +14,6 @@ from grapejuice_common.registry_utils import logged_into_studio
 from grapejuice_common.updates.provider_map import get_update_provider
 from grapejuice_common.util.errors import NoWineError
 from grapejuice_common.util.event import Event
-from grapejuice_common.winectrl import wine_ok
 
 LOG = logging.getLogger(__name__)
 
@@ -90,9 +89,6 @@ class MainWindowHandlers:
         except NoWineError:
             return no_wine_dialog()
 
-        if not wine_ok():
-            return
-
         run_task_once(InstallRoblox, generic_already_running)
 
     def run_roblox_studio(self, *_):
@@ -100,9 +96,6 @@ class MainWindowHandlers:
         if not studio_launcher_location:
             dialog("Grapejuice could not locate Roblox Studio. You might have to install it first by going to the "
                    "maintenance tab and clicking 'Install Roblox'")
-            return
-
-        if not wine_ok():
             return
 
         if not logged_into_studio() and yes_no_dialog(
