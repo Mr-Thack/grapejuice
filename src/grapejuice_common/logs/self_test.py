@@ -59,11 +59,6 @@ def check_python_dependencies(log: logging.Logger):
 
         return requests
 
-    def import_wheel():
-        import wheel
-
-        return wheel
-
     def import_setuptools():
         import setuptools
 
@@ -92,15 +87,14 @@ def check_python_dependencies(log: logging.Logger):
 
             raise TaskError(msg, can_continue=False)
 
-    map_23 = [
+    dependency_check_functions = [
         import_psutil,
         import_py_g_object,
         import_packaging,
         import_requests,
-        import_wheel,
         import_setuptools,
         import_dbus
     ]
 
-    for func in map_23:
+    for func in dependency_check_functions:
         try_import(func)
