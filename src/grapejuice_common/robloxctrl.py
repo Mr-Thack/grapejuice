@@ -30,7 +30,8 @@ def run_installer():
 def locate_in_versions(exe_name) -> Union[str, None]:
     search_roots = [
         variables.wine_roblox_prog(),
-        variables.wine_roblox_local_settings()
+        variables.wine_roblox_local_settings(),
+        variables.wine_roblox_appdata_local()
     ]
 
     for root in search_roots:
