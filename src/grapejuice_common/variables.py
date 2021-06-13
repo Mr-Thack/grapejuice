@@ -179,7 +179,7 @@ def wine_roblox_studio_app_settings():
 
 
 def installer_path():
-    return os.path.join(wine_temp(), "RobloxPlayerBeta.exe")
+    return os.path.join(wine_temp(), "Roblox_Installer.exe")
 
 
 def xdg_config_home():
