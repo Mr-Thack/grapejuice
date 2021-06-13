@@ -30,7 +30,12 @@ def perform_install():
     from pathlib import Path
 
     subprocess.check_call([sys.executable, "setup.py", "install_locally"])
-    subprocess.check_call([str(Path(os.environ["HOME"], ".local", "bin", "grapejuice").resolve()), "install-roblox"])
+
+    if "CI_JOB_ID" not in os.environ:
+        subprocess.check_call([
+            str(Path(os.environ["HOME"], ".local", "bin", "grapejuice").resolve()),
+            "install-roblox"
+        ])
 
 
 def have_tkinter():
