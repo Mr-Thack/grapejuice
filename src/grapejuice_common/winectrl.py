@@ -200,6 +200,9 @@ def _poll_processes() -> bool:
         if proc.exited:
             exited.append(proc)
 
+            if proc.proc.returncode != 0:
+                LOG.error(f"Process returned with non-zero exit code {proc.proc.returncode}")
+
     for proc in exited:
         processes.remove(proc)
         del proc
