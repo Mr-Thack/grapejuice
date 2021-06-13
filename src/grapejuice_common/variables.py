@@ -163,7 +163,12 @@ def wine_user():
 
 
 def wine_roblox_appdata():
-    return os.path.join(wine_user(), "Local Settings", "Application Data", "Roblox")
+    p = os.path.join(wine_user(), "Local Settings", "Application Data", "Roblox")
+    if os.path.exists(p):
+        return p
+
+    p = os.path.join(wine_user(), "AppData", "Local", "Roblox")
+    return p
 
 
 def wine_roblox_appdata_local() -> Path:
