@@ -51,6 +51,12 @@ def func_studio(args):
         dbus_connection().launch_studio()
 
 
+def func_install_roblox(*_):
+    from grapejuice_common import robloxctrl
+
+    robloxctrl.run_installer()
+
+
 def run_daemon_instead(argv):
     from grapejuiced.__main__ import main as daemon_main
     daemon_main([sys.argv[0], *argv])
@@ -97,6 +103,9 @@ def main(in_args=None):
     )
 
     parser_studio.set_defaults(func=func_studio)
+
+    parser_install_roblox = subparsers.add_parser("install-roblox")
+    parser_install_roblox.set_defaults(func=func_install_roblox)
 
     args = parser.parse_args(in_args[1:])
 

@@ -1,7 +1,7 @@
 import os
 import time
 from pathlib import Path
-from typing import Union
+from typing import Union, List
 
 import grapejuice_common.variables as variables
 import grapejuice_common.winectrl as winectrl
@@ -14,7 +14,7 @@ DOWNLOAD_URL = "https://www.roblox.com/download/client"
 def get_installer():
     install_path = variables.installer_path()
 
-    if os.path.exists(install_path):
+    if install_path.exists():
         os.remove(install_path)
 
     download_file(DOWNLOAD_URL, install_path)
@@ -27,78 +27,83 @@ def run_installer():
 
 
 @log_function
-def locate_in_versions(exe_name) -> Union[str, None]:
-    search_roots = [
+def locate_in_versions(exe_name) -> Union[Path, None]:
+    search_roots: List[Path] = [
         variables.wine_roblox_prog(),
         variables.wine_roblox_local_settings(),
         variables.wine_roblox_appdata_local()
     ]
 
     for root in search_roots:
-        versions = Path(root, "Versions")
+        versions = root / "Versions"
 
-        if os.path.exists(root) and versions.exists() and versions.is_dir():
+        if root.exists() and versions.exists() and versions.is_dir():
             executable_path = versions / exe_name
 
             if executable_path.exists() and executable_path.is_file():
-                return str(executable_path)
+                return executable_path
 
             for version in Path(versions).glob("*"):
                 if version.is_dir():
                     executable_path = version / exe_name
 
                     if executable_path.exists() and executable_path.is_file():
-                        return str(executable_path)
+                        return executable_path
 
     return None
 
 
 @log_function
-def locate_roblox_exe(exe_name):
+def locate_roblox_exe(exe_name) -> Path:
     versioned = locate_in_versions(exe_name)
 
     if not versioned:
-        location = os.path.join(variables.wine_roblox_prog(), "Versions", exe_name)
-        if os.path.exists(location):
+        location = variables.wine_roblox_prog() / "Versions" / exe_name
+
+        if location.exists():
             return location
 
     return versioned
 
 
 @log_function
-def locate_studio_launcher():
+def locate_studio_launcher() -> Path:
     return locate_roblox_exe("RobloxStudioLauncherBeta.exe")
 
 
 @log_function
-def locate_studio_exe():
+def locate_studio_exe() -> Path:
     return locate_in_versions("RobloxStudioBeta.exe")
 
 
 @log_function
-def locate_player_launcher():
+def locate_player_launcher() -> Path:
     return locate_in_versions("RobloxPlayerLauncher.exe")
 
 
 @log_function
-def locate_client_app_settings():
+def locate_studio_client_app_settings():
     studio_exe = locate_studio_exe()
+
     if studio_exe is None:
         return None
 
-    return os.path.join(os.path.dirname(studio_exe), "ClientSettings", "ClientAppSettings.json")
+    return studio_exe.parent / "ClientSettings" / "ClientAppSettings.json"
 
 
 def run_studio(uri="", ide=False):
     launcher = locate_studio_launcher()
+
     if launcher is None:
         return False
 
     if ide:
         winectrl.run_exe_nowait(launcher, "-ide", uri)
+
     else:
         if uri:
             winectrl.run_exe_nowait(launcher, uri)
+
         else:
             winectrl.run_exe_nowait(launcher, "-ide")
 
@@ -121,14 +126,16 @@ def studio_with_events(**events):
 
 def fast_flag_extract():
     fast_flag_path = variables.wine_roblox_studio_app_settings()
-    if os.path.exists(fast_flag_path):
+
+    if fast_flag_path.exists():
         os.remove(fast_flag_path)
 
     process = studio_with_events(startEvent="FFlagExtract", showEvent="NoSplashScreen")
 
     while True:
-        if os.path.exists(fast_flag_path):
+        if fast_flag_path.exists():
             stat = os.stat(fast_flag_path)
+
             if stat.st_size > 0:
                 break
 
@@ -139,8 +146,10 @@ def fast_flag_extract():
 
 def run_player(uri):
     player = locate_player_launcher()
+
     if player is None:
         return False
 
     winectrl.run_exe_nowait(player, uri)
+
     return True

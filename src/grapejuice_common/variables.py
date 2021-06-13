@@ -146,12 +146,12 @@ def wine_user_reg():
     return os.path.join(wineprefix_dir(), "user.reg")
 
 
-def wine_roblox_prog():
-    return os.path.join(wine_drive_c(), "Program Files (x86)", "Roblox")
+def wine_roblox_prog() -> Path:
+    return Path(wine_drive_c(), "Program Files (x86)", "Roblox")
 
 
-def wine_roblox_local_settings():
-    return os.path.join(wine_drive_c(), "users", getpass.getuser(), "Local Settings", "Application Data", "Roblox")
+def wine_roblox_local_settings() -> Path:
+    return Path(wine_drive_c(), "users", getpass.getuser(), "Local Settings", "Application Data", "Roblox")
 
 
 def wine_temp():
@@ -166,8 +166,8 @@ def wine_roblox_appdata():
     return os.path.join(wine_user(), "Local Settings", "Application Data", "Roblox")
 
 
-def wine_roblox_appdata_local():
-    return os.path.join(wine_user(), "AppData", "Local", "Roblox")
+def wine_roblox_appdata_local() -> Path:
+    return Path(wine_user(), "AppData", "Local", "Roblox")
 
 
 def wine_roblox_global_settings_13():
@@ -175,11 +175,11 @@ def wine_roblox_global_settings_13():
 
 
 def wine_roblox_studio_app_settings():
-    return os.path.join(wine_roblox_appdata(), "ClientSettings", "StudioAppSettings.json")
+    return Path(wine_roblox_appdata(), "ClientSettings", "StudioAppSettings.json")
 
 
 def installer_path():
-    return os.path.join(wine_temp(), "Roblox_Installer.exe")
+    return Path(wine_temp(), "RobloxPlayerBeta.exe")
 
 
 def xdg_config_home():

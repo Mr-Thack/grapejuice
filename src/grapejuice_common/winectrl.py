@@ -6,6 +6,7 @@ import signal
 import subprocess
 import sys
 import time
+from pathlib import Path
 from subprocess import DEVNULL
 from typing import List
 
@@ -183,10 +184,10 @@ def prefix_exists():
 
 
 @log_function
-def run_exe_nowait(exe_path, *args) -> ProcessWrapper:
+def run_exe_nowait(exe_path: Path, *args) -> ProcessWrapper:
     prepare()
 
-    command = [variables.wine_binary(), exe_path, *args]
+    command = [variables.wine_binary(), str(exe_path.resolve()), *args]
     p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr, close_fds=True)
 
     wrapper = ProcessWrapper(p)

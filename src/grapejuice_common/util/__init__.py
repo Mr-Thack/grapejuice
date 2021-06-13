@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 
 def prepare_uri(uri):
@@ -15,11 +16,11 @@ def prepare_uri(uri):
         return None
 
 
-def download_file(url, target_path):
+def download_file(url, target_path: Path):
     import requests
 
     response = requests.get(url)
-    assert 199 < response.status_code < 300, f"Got status {response.status_code} for {url}"
+    response.raise_for_status()
 
     with open(target_path, "wb+") as fp:
         fp.write(response.content)
