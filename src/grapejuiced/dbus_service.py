@@ -1,8 +1,5 @@
-import subprocess
-
 import dbus.service
 
-from grapejuice_common import variables
 from grapejuice_common.ipc.dbus_config import bus_name
 from grapejuiced.__init__ import __version__
 
@@ -74,15 +71,3 @@ class DBusService(dbus.service.Object):
     )
     def Version(self):
         return self.version_string
-
-    @dbus.service.method(
-        dbus_interface=bus_name,
-        in_signature="",
-        out_signature="s"
-    )
-    def WineVersion(self):
-        v = subprocess.check_output([variables.wine_binary(), "--version"])
-        if not v:
-            return "wine-0.0.0"
-
-        return v

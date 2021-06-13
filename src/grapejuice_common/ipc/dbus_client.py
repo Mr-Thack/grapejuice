@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 import time
+from abc import ABC, abstractmethod
 
 from dbus import DBusException
 
@@ -11,7 +12,41 @@ from grapejuice_common.ipc.pid_file import daemon_pid_file
 LOG = logging.getLogger(__name__)
 
 
-class DBusConnection:
+class IDBusConnection(ABC):
+    @property
+    def connected(self):
+        return False
+
+    @abstractmethod
+    def launch_studio(self):
+        pass
+
+    @abstractmethod
+    def play_game(self, uri):
+        pass
+
+    @abstractmethod
+    def edit_local_game(self, place_path):
+        pass
+
+    @abstractmethod
+    def edit_cloud_game(self, uri):
+        pass
+
+    @abstractmethod
+    def install_roblox(self):
+        pass
+
+    @abstractmethod
+    def version(self):
+        pass
+
+    @abstractmethod
+    def extract_fast_flags(self):
+        pass
+
+
+class DBusConnection(IDBusConnection):
     def __init__(self, connection_attempts=5, **kwargs):
         import dbus
 
@@ -100,10 +135,39 @@ class DBusConnection:
     def extract_fast_flags(self):
         self.proxy.ExtractFastFlags()
 
-    def wine_version(self):
-        wine_version = self.proxy.WineVersion()
-        LOG.info(f"Wine version is {wine_version}")
-        return wine_version
+
+class NoDaemonModeConnection(IDBusConnection):
+    @property
+    def connected(self):
+        return True
+
+    def launch_studio(self):
+        from grapejuice_common import robloxctrl
+        robloxctrl.run_studio()
+
+    def play_game(self, uri):
+        from grapejuice_common import robloxctrl
+        robloxctrl.run_player(uri)
+
+    def edit_local_game(self, place_path):
+        from grapejuice_common import robloxctrl
+        robloxctrl.run_studio(place_path, True)
+
+    def edit_cloud_game(self, uri):
+        from grapejuice_common import robloxctrl
+        robloxctrl.run_studio(uri)
+
+    def install_roblox(self):
+        from grapejuice_common import robloxctrl
+        robloxctrl.run_installer()
+
+    def version(self):
+        from grapejuiced import __version__
+        return __version__
+
+    def extract_fast_flags(self):
+        from grapejuice_common import robloxctrl
+        robloxctrl.fast_flag_extract()
 
 
 connection = None
@@ -111,7 +175,14 @@ connection = None
 
 def dbus_connection():
     global connection
+
     if connection is None:
-        connection = DBusConnection()
+        from grapejuice_common.features.settings import settings
+
+        if settings.no_daemon_mode:
+            connection = NoDaemonModeConnection()
+
+        else:
+            connection = DBusConnection()
 
     return connection
