@@ -115,7 +115,7 @@ def grapejuice_config_dir():
 
 
 def grapejuice_user_settings():
-    return os.path.join(grapejuice_config_dir(), "user_settings.json")
+    return Path(grapejuice_config_dir(), "user_settings.json")
 
 
 def sparklepop_snapshots_dir():
@@ -258,7 +258,7 @@ def tmp_path():
 def wine_binary(arch=""):
     from grapejuice_common.features.settings import settings
 
-    path_search = [settings.wine_binary.value]
+    path_search = [settings.wine_binary]
 
     if "PATH" in os.environ:
         for spec in os.environ["PATH"].split(":"):
