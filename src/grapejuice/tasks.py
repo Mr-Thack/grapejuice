@@ -24,15 +24,6 @@ class DisableMimeAssociations(background.BackgroundTask):
         self.finish()
 
 
-class ApplyDLLOverrides(background.BackgroundTask):
-    def __init__(self):
-        super().__init__("Applying DLL overrides")
-
-    def run(self) -> None:
-        winectrl.load_dll_overrides()
-        self.finish()
-
-
 class InstallRoblox(background.BackgroundTask):
     def __init__(self):
         super().__init__("Installing Roblox")

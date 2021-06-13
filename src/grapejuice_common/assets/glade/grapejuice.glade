@@ -24,14 +24,6 @@
     <property name="pixel-size">48</property>
     <property name="icon-name">package-x-generic</property>
   </object>
-  <object class="GtkImage" id="icon_library">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">5</property>
-    <property name="margin-bottom">5</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">text</property>
-  </object>
   <object class="GtkImage" id="icon_logs">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -494,22 +486,6 @@
                 </child>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Apply DLL overrides</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_library</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="apply_dll_overrides" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">2</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
                     <property name="label" translatable="yes">Winetricks</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
@@ -536,9 +512,12 @@
                     <signal name="clicked" handler="open_drive_c" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">2</property>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">1</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
                 <child>
                   <placeholder/>

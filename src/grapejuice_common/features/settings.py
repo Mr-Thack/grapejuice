@@ -11,13 +11,15 @@ LOG = logging.getLogger(__name__)
 k_show_fast_flag_warning = "show_fast_flag_warning"
 k_wine_binary = "wine_binary"
 k_last_run = "last_run"
+k_dll_overrides = "dll_overrides"
 
 
 def default_settings() -> Dict[str, any]:
     return {
         k_show_fast_flag_warning: True,
         k_wine_binary: "",
-        k_last_run: datetime.utcnow().isoformat()
+        k_last_run: datetime.utcnow().isoformat(),
+        k_dll_overrides: "ucrtbase,api-ms-win-crt-private-l1-1-0=n,b;dxdiagn,winemenubuilder.exe="
     }
 
 
@@ -44,11 +46,18 @@ class UserSettings:
             LOG.debug(f"Loading settings from '{self._location}'")
 
             try:
+                save_settings = False
+
                 with self._location.open("r") as fp:
-                    self._settings_object = {
-                        **default_settings(),
-                        **json.load(fp)
-                    }
+                    self._settings_object = json.load(fp)
+
+                    for k, v in default_settings().items():
+                        if k not in self._settings_object:
+                            self._settings_object[k] = v
+                            save_settings = True
+
+                if save_settings:
+                    self.save()
 
             except json.JSONDecodeError as e:
                 LOG.error(e)

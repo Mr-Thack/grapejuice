@@ -4,7 +4,7 @@ from typing import Iterable
 
 from grapejuice import background
 from grapejuice.gui.yes_no_dialog import yes_no_dialog
-from grapejuice.tasks import DisableMimeAssociations, ApplyDLLOverrides, InstallRoblox, SandboxWine, \
+from grapejuice.tasks import DisableMimeAssociations, InstallRoblox, SandboxWine, \
     RunRobloxStudio, ExtractFastFlags, OpenLogsDirectory, PerformUpdate
 from grapejuice_common import variables, robloxctrl, uninstall
 from grapejuice_common import winectrl
@@ -110,9 +110,6 @@ class MainWindowHandlers:
 
     def wine_explorer(self, *_):
         winectrl.explorer()
-
-    def apply_dll_overrides(self, *_):
-        run_task_once(ApplyDLLOverrides, generic_already_running)
 
     def open_drive_c(self, *_):
         xdg_open(variables.wine_drive_c())
