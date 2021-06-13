@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 from pathlib import Path
@@ -8,13 +9,16 @@ import grapejuice_common.winectrl as winectrl
 from grapejuice_common.logs.log_util import log_function
 from grapejuice_common.util import download_file
 
+LOG = logging.getLogger(__name__)
+
 DOWNLOAD_URL = "https://www.roblox.com/download/client"
 
 
 def get_installer():
     install_path = variables.installer_path()
 
-    if os.path.exists(install_path):
+    if install_path.exists():
+        LOG.debug(f"Removing old installer at {install_path}")
         os.remove(install_path)
 
     download_file(DOWNLOAD_URL, install_path)
@@ -25,6 +29,8 @@ def run_installer():
     get_installer()
 
     p = variables.installer_path()
+    LOG.info(f"Running installer at {p}")
+
     winectrl.run_exe_nowait(p)
 
 
