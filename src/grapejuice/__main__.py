@@ -3,7 +3,6 @@ import random
 import sys
 
 import grapejuice_common.util
-from grapejuice_common.gtk import gtk_stuff
 from grapejuice_common.gtk.gtk_stuff import gtk_boot
 from grapejuice_common.ipc.dbus_client import dbus_connection
 from grapejuice_common.logs import log_config
@@ -28,16 +27,6 @@ def func_gui(args):
 
 def func_player(args):
     def player_main():
-        from grapejuice_common.features.settings import settings
-
-        if settings.n_player_dialogs_remain > 0:
-            settings.n_player_dialogs_remain -= 1
-            settings.save()
-
-            gtk_stuff.dialog("Currently, the Roblox Player is not confirmed to be working properly with Wine and "
-                             "therefore is not supported by the Grapejuice project. Grapejuice will still launcher the "
-                             "player, but it will most likely not work.")
-
         dbus_connection().play_game(grapejuice_common.util.prepare_uri(args.uri))
 
     gtk_boot(player_main, gtk_main=False)

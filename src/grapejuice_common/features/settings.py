@@ -8,7 +8,6 @@ from grapejuice_common import variables
 
 LOG = logging.getLogger(__name__)
 
-k_n_player_dialogs_remain = "n_player_dialogs_remain"
 k_show_fast_flag_warning = "show_fast_flag_warning"
 k_wine_binary = "wine_binary"
 k_last_run = "last_run"
@@ -16,7 +15,6 @@ k_last_run = "last_run"
 
 def default_settings() -> Dict[str, any]:
     return {
-        k_n_player_dialogs_remain: 5,
         k_show_fast_flag_warning: True,
         k_wine_binary: "",
         k_last_run: datetime.utcnow().isoformat()
