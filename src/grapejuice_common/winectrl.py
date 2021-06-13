@@ -6,6 +6,7 @@ import signal
 import subprocess
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 from subprocess import DEVNULL
 from typing import List
@@ -191,11 +192,12 @@ def run_exe_nowait(exe_path: Path, *args) -> ProcessWrapper:
     command = [variables.wine_binary(), exe_path_string, *args]
 
     if settings.no_daemon_mode:
-        log_dir = variables.wine_logs_dir() / exe_path.name
+        log_dir = Path(variables.logging_directory())
         os.makedirs(log_dir, exist_ok=True)
 
-        stdout_path = log_dir / f"stdout_{int(time.time())}.log"
-        stderr_path = log_dir / f"stderr_{int(time.time())}.log"
+        ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        stdout_path = log_dir / f"{ts}_{exe_path.name}_stdout.log"
+        stderr_path = log_dir / f"{ts}_{exe_path.name}_stderr.log"
 
         p = subprocess.Popen(
             command,

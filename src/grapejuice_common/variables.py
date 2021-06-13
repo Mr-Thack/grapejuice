@@ -145,10 +145,6 @@ def wine_drive_c():
     return os.path.join(wineprefix_dir(), "drive_c")
 
 
-def wine_logs_dir():
-    return Path(wine_drive_c()) / "grapejuice" / "wine-logs"
-
-
 def wine_user_reg():
     return os.path.join(wineprefix_dir(), "user.reg")
 
