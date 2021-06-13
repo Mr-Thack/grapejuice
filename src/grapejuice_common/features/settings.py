@@ -19,7 +19,7 @@ def default_settings() -> Dict[str, any]:
         k_show_fast_flag_warning: True,
         k_wine_binary: "",
         k_last_run: datetime.utcnow().isoformat(),
-        k_dll_overrides: "ucrtbase,api-ms-win-crt-private-l1-1-0=n,b;dxdiagn,winemenubuilder.exe="
+        k_dll_overrides: "ucrtbase=n,b;api-ms-win-crt-private-l1-1-0=n,b;dxdiagn=,winemenubuilder.exe="
     }
 
 
@@ -73,10 +73,12 @@ class UserSettings:
         LOG.debug(f"Saving settings file to '{self._location}'")
 
         with self._location.open("w+") as fp:
-            json.dump({
+            self._settings_object = {
                 **default_settings(),
                 **(self._settings_object or {})
-            }, fp, indent=2)
+            }
+
+            json.dump(self._settings_object, fp, indent=2)
 
 
 settings = UserSettings()
