@@ -389,12 +389,6 @@ def have_cairo_natives():
     return report_var("PKG_CONFIG_CAIRO", pkg_config("cairo")) is not None
 
 
-@check("Are the native libraries dbus installed?",
-       fixes=[CommonFixes.follow_guide, "Install the dbus development packages for your distribution"])
-def have_dbus_natives():
-    return report_var("PKG_CONFIG_DBUS", pkg_config("dbus-1")) is not None
-
-
 @check("Can we update the GTK icon cache?",
        fixes=[CommonFixes.follow_guide, "Install the GTK+ icon utilities for your distribution"])
 def can_update_icon_cache():

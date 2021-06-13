@@ -5,5 +5,4 @@ PyGObject-stubs
 packaging
 wheel
 setuptools
-dbus-python
 requests

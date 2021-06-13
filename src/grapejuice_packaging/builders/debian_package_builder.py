@@ -48,7 +48,6 @@ CONTROL_FIELDS = [
     FIELD_ARCHITECTURE,
     ("Depends", [
         "python3 (>= 3.7~)",
-        "python3-dbus",
         "python3-packaging",
         "python3-psutil",
         "python3-requests",
@@ -57,7 +56,6 @@ CONTROL_FIELDS = [
         "libgirepository-1.0-1",
         "libgtk-3-0",
         "libgtk-3-bin",
-        "libdbus-1-3",
         "gobject-introspection",
         "gir1.2-gtk-3.0"
     ]),

@@ -64,11 +64,6 @@ def check_python_dependencies(log: logging.Logger):
 
         return setuptools
 
-    def import_dbus():
-        import dbus
-
-        return dbus
-
     def try_import(import_func: callable):
         try:
             import_result = func()
@@ -92,8 +87,7 @@ def check_python_dependencies(log: logging.Logger):
         import_py_g_object,
         import_packaging,
         import_requests,
-        import_setuptools,
-        import_dbus
+        import_setuptools
     ]
 
     for func in dependency_check_functions:
