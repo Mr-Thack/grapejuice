@@ -6,7 +6,7 @@ import grapejuice_common.util
 from grapejuice_common.gtk.gtk_stuff import gtk_boot
 from grapejuice_common.ipc.dbus_client import dbus_connection
 from grapejuice_common.logs import log_config
-from grapejuice_common.logs.log_vacuum import vacuum_logs
+from grapejuice_common.logs.log_vacuum import vacuum_logs, vacuum_wine_logs
 
 
 def main_gui():
@@ -68,6 +68,7 @@ def main(in_args=None):
 
     from grapejuice_common.features.settings import settings
     vacuum_logs()
+    vacuum_wine_logs()
 
     if settings:
         # TODO: Add logging for successful settings loading (Issue #9)

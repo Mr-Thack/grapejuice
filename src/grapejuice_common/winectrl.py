@@ -21,8 +21,9 @@ space = " "
 
 
 class ProcessWrapper:
-    def __init__(self, proc: subprocess.Popen):
+    def __init__(self, proc: subprocess.Popen, close_fds_on_exit: bool):
         self.proc = proc
+        self.close_fds_on_exit = close_fds_on_exit
 
     @property
     def exited(self):
@@ -30,6 +31,13 @@ class ProcessWrapper:
 
         if proc.returncode is None:
             proc.poll()
+
+        if self.close_fds_on_exit:
+            if proc.stderr and not proc.stderr.closed:
+                proc.stderr.close()
+
+            if proc.stdout and not proc.stdout.closed:
+                proc.stdout.close()
 
         return proc.returncode is not None
 
@@ -175,13 +183,34 @@ def prefix_exists():
 
 @log_function
 def run_exe_nowait(exe_path: Path, *args) -> ProcessWrapper:
+    from grapejuice_common.features.settings import settings
+
     prepare()
 
     exe_path_string = str(exe_path.resolve()) if isinstance(exe_path, Path) else str(exe_path)
     command = [variables.wine_binary(), exe_path_string, *args]
-    p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr, close_fds=True)
 
-    wrapper = ProcessWrapper(p)
+    if settings.no_daemon_mode:
+        log_dir = variables.wine_logs_dir() / exe_path.name
+        os.makedirs(log_dir, exist_ok=True)
+
+        stdout_path = log_dir / f"stdout_{int(time.time())}.log"
+        stderr_path = log_dir / f"stderr_{int(time.time())}.log"
+
+        p = subprocess.Popen(
+            command,
+            stdin=DEVNULL,
+            stdout=stdout_path.open("wb+"),
+            stderr=stderr_path.open("wb+"),
+            close_fds=True
+        )
+
+        wrapper = ProcessWrapper(p, True)
+
+    else:
+        p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr, close_fds=True)
+        wrapper = ProcessWrapper(p, False)
+
     processes.append(wrapper)
 
     poll_processes()

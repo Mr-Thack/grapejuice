@@ -1,3 +1,4 @@
+import atexit
 import getpass
 import logging
 import os
@@ -11,6 +12,8 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 INSTANCE_ID = str(uuid.uuid4())
 
 LOG = logging.getLogger(__name__)
+
+at_exit_handlers = dict()
 
 
 def ensure_dir(p):
@@ -142,6 +145,10 @@ def wine_drive_c():
     return os.path.join(wineprefix_dir(), "drive_c")
 
 
+def wine_logs_dir():
+    return Path(wine_drive_c()) / "grapejuice" / "wine-logs"
+
+
 def wine_user_reg():
     return os.path.join(wineprefix_dir(), "user.reg")
 
@@ -258,8 +265,17 @@ def git_source_tarball():
 
 
 def tmp_path():
-    path = Path(os.path.sep, "tmp", f"grapejuice-{INSTANCE_ID}")
-    return ensure_dir(str(path.absolute()))
+    path = Path(os.path.sep, "tmp", f"grapejuice-{INSTANCE_ID}").resolve()
+    path_string = str(path)
+
+    if "clean_tmp_path" not in at_exit_handlers:
+        def on_exit(*_, **__):
+            import shutil
+            shutil.rmtree(path, ignore_errors=True)
+
+        at_exit_handlers["clean_tmp_path"] = on_exit
+
+    return ensure_dir(path_string)
 
 
 def wine_binary(arch=""):
@@ -290,3 +306,11 @@ def wine_binary_64():
 
 def required_wine_version():
     return "wine-4.0"
+
+
+def at_exit_handler(*args, **kwargs):
+    for v in filter(callable, at_exit_handlers.values()):
+        v(*args, **kwargs)
+
+
+atexit.register(at_exit_handler)

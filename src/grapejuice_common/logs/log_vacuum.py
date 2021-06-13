@@ -1,7 +1,7 @@
 import logging
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from glob import glob
 from zipfile import ZipFile, ZIP_LZMA
 
@@ -59,3 +59,16 @@ def vacuum_logs():
     for file in filter(can_delete_archive, archive_files()):
         LOG.info(f"Removing log archive {file}")
         os.remove(file)
+
+
+def vacuum_wine_logs():
+    old_files = list(
+        filter(
+            lambda f: datetime.fromtimestamp(os.stat(f).st_ctime) < datetime.now() - timedelta(seconds=10),
+            variables.wine_logs_dir().rglob("*.log")
+        )
+    )
+
+    for f in old_files:
+        LOG.info(f"Removing log file {f}")
+        os.remove(f)
