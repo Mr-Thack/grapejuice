@@ -19,7 +19,7 @@ def default_settings() -> Dict[str, any]:
         k_show_fast_flag_warning: True,
         k_wine_binary: "",
         k_last_run: datetime.utcnow().isoformat(),
-        k_dll_overrides: "ucrtbase=n,b;api-ms-win-crt-private-l1-1-0=n,b;dxdiagn=,winemenubuilder.exe="
+        k_dll_overrides: "ucrtbase=n,b;api-ms-win-crt-private-l1-1-0=n,b;dxdiagn=;winemenubuilder.exe="
     }
 
 

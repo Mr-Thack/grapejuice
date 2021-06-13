@@ -14,7 +14,7 @@ DOWNLOAD_URL = "https://www.roblox.com/download/client"
 def get_installer():
     install_path = variables.installer_path()
 
-    if install_path.exists():
+    if os.path.exists(install_path):
         os.remove(install_path)
 
     download_file(DOWNLOAD_URL, install_path)
@@ -23,7 +23,9 @@ def get_installer():
 def run_installer():
     winectrl.create_prefix()
     get_installer()
-    winectrl.run_exe_nowait(variables.installer_path())
+
+    p = variables.installer_path()
+    winectrl.run_exe_nowait(p)
 
 
 @log_function

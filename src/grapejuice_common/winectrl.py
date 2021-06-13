@@ -177,7 +177,7 @@ def prefix_exists():
 def run_exe_nowait(exe_path: Path, *args) -> ProcessWrapper:
     prepare()
 
-    command = [variables.wine_binary(), str(exe_path.resolve()), *args]
+    command = [variables.wine_binary(), str(exe_path.resolve()) if isinstance(exe_path, Path) else str(exe_path), *args]
     p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr, close_fds=True)
 
     wrapper = ProcessWrapper(p)
