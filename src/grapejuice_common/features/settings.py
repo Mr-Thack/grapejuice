@@ -13,6 +13,7 @@ k_wine_binary = "wine_binary"
 k_last_run = "last_run"
 k_dll_overrides = "dll_overrides"
 k_no_daemon_mode = "no_daemon_mode"
+k_release_channel = "release_channel"
 
 
 def default_settings() -> Dict[str, any]:
@@ -21,7 +22,8 @@ def default_settings() -> Dict[str, any]:
         k_wine_binary: "",
         k_last_run: datetime.utcnow().isoformat(),
         k_dll_overrides: "ucrtbase=n,b;api-ms-win-crt-private-l1-1-0=n,b;dxdiagn=;winemenubuilder.exe=",
-        k_no_daemon_mode: True
+        k_no_daemon_mode: True,
+        k_release_channel: "master"
     }
 
 

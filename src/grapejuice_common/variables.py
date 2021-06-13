@@ -248,11 +248,13 @@ def git_wiki():
 
 
 def git_grapejuice_init():
-    return f"{git_repository()}/-/raw/master/src/grapejuice/__init__.py"
+    from grapejuice_common.features.settings import settings
+    return f"{git_repository()}/-/raw/{settings.release_channel}/src/grapejuice/__init__.py"
 
 
 def git_source_tarball():
-    return f"{git_repository()}/-/archive/master/grapejuice-master.tar.gz"
+    from grapejuice_common.features.settings import settings
+    return f"{git_repository()}/-/archive/{settings.release_channel}/grapejuice-master.tar.gz"
 
 
 def tmp_path():
