@@ -258,7 +258,7 @@ def tmp_path():
 def wine_binary(arch=""):
     from grapejuice_common.features.settings import settings
 
-    path_search = [settings.wine_binary]
+    path_search = [settings.wine_binary] if settings.wine_binary else []
 
     if "PATH" in os.environ:
         for spec in os.environ["PATH"].split(":"):
