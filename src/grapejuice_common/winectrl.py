@@ -205,7 +205,7 @@ def run_exe(exe_path: Path, *args) -> Union[ProcessWrapper, None]:
         stderr_fd = stderr_path.open("wb+")
 
         LOG.info("Opening process")
-        subprocess.check_call(
+        subprocess.call(
             command,
             stdout=stdout_fd,
             stderr=stderr_fd
