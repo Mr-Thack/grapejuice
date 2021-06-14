@@ -90,7 +90,7 @@ def locate_player_launcher() -> Path:
 
 
 @log_function
-def locate_studio_app_settings():
+def locate_studio_app_settings() -> Union[Path, None]:
     studio_exe = locate_studio_exe()
 
     if studio_exe is None:
@@ -100,7 +100,7 @@ def locate_studio_app_settings():
 
 
 @log_function
-def locate_player_app_settings():
+def locate_player_app_settings() -> Union[Path, None]:
     player_exe = locate_player_launcher()
 
     if player_exe is None:
