@@ -31,7 +31,7 @@ def run_installer():
     p = variables.installer_path()
     LOG.info(f"Running installer at {p}")
 
-    winectrl.run_exe_nowait(p)
+    winectrl.run_exe(p)
 
 
 @log_function
@@ -116,14 +116,14 @@ def run_studio(uri="", ide=False):
         return False
 
     if ide:
-        winectrl.run_exe_nowait(launcher, "-ide", uri)
+        winectrl.run_exe(launcher, "-ide", uri)
 
     else:
         if uri:
-            winectrl.run_exe_nowait(launcher, uri)
+            winectrl.run_exe(launcher, uri)
 
         else:
-            winectrl.run_exe_nowait(launcher, "-ide")
+            winectrl.run_exe(launcher, "-ide")
 
     return True
 
@@ -139,7 +139,7 @@ def studio_with_events(**events):
         args.append("-" + k)
         args.append(v)
 
-    return winectrl.run_exe_nowait(*args)
+    return winectrl.run_exe(*args)
 
 
 def fast_flag_extract():
@@ -172,6 +172,6 @@ def run_player(uri):
 
     LOG.info(f"Located player at {player}")
 
-    winectrl.run_exe_nowait(player, uri)
+    winectrl.run_exe(player, uri)
 
     return True

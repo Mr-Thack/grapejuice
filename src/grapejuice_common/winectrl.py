@@ -7,9 +7,10 @@ import signal
 import subprocess
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 from subprocess import DEVNULL
-from typing import List
+from typing import List, Union
 
 import grapejuice_common.variables as variables
 from grapejuice_common.logs.log_util import log_on_call, log_function
@@ -177,7 +178,7 @@ def prefix_exists():
 
 
 @log_function
-def run_exe_nowait(exe_path: Path, *args) -> ProcessWrapper:
+def run_exe(exe_path: Path, *args) -> Union[ProcessWrapper, None]:
     from grapejuice_common.features.settings import settings
 
     prepare()
@@ -189,21 +190,39 @@ def run_exe_nowait(exe_path: Path, *args) -> ProcessWrapper:
     command = [variables.wine_binary(), exe_path_string, *args]
 
     if settings.no_daemon_mode:
-        LOG.info("Opening process")
-        p = subprocess.Popen(command)
+        LOG.info("Running in no_daemon_mode")
 
-        LOG.info("Creating wrapper")
-        wrapper = ProcessWrapper(p)
+        log_dir = Path(variables.logging_directory())
+        os.makedirs(log_dir, exist_ok=True)
+
+        LOG.info("Opening log fds")
+
+        ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        stdout_path = log_dir / f"{ts}_{exe_path.name}_stdout.log"
+        stderr_path = log_dir / f"{ts}_{exe_path.name}_stderr.log"
+
+        stdout_fd = stdout_path.open("wb+")
+        stderr_fd = stderr_path.open("wb+")
+
+        LOG.info("Opening process")
+        subprocess.check_call(
+            command,
+            stdout=stdout_fd,
+            stderr=stderr_fd
+        )
+
+        open_fds.extend((stdout_fd, stderr_fd))
+
+        return None
 
     else:
         p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr)
         wrapper = ProcessWrapper(p)
 
-    processes.append(wrapper)
+        processes.append(wrapper)
+        poll_processes()
 
-    poll_processes()
-
-    return wrapper
+        return wrapper
 
 
 def _poll_processes() -> bool:
