@@ -163,10 +163,14 @@ def fast_flag_extract():
 
 
 def run_player(uri):
+    LOG.info("Running Roblox Player")
     player = locate_player_launcher()
 
     if player is None:
+        LOG.warning("Could not locate player")
         return False
+
+    LOG.info(f"Located player at {player}")
 
     winectrl.run_exe_nowait(player, uri)
 

@@ -187,11 +187,15 @@ def run_exe_nowait(exe_path: Path, *args) -> ProcessWrapper:
     from grapejuice_common.features.settings import settings
 
     prepare()
+    LOG.info("Prepared Wine.")
 
     exe_path_string = str(exe_path.resolve()) if isinstance(exe_path, Path) else str(exe_path)
+    LOG.info(f"Resolved exe path to {exe_path_string}")
+
     command = [variables.wine_binary(), exe_path_string, *args]
 
     if settings.no_daemon_mode:
+        LOG.info("Running in no_daemon_mode")
         log_dir = Path(variables.logging_directory())
         os.makedirs(log_dir, exist_ok=True)
 
@@ -199,13 +203,16 @@ def run_exe_nowait(exe_path: Path, *args) -> ProcessWrapper:
         stdout_path = log_dir / f"{ts}_{exe_path.name}_stdout.log"
         stderr_path = log_dir / f"{ts}_{exe_path.name}_stderr.log"
 
+        LOG.info("Opening process")
+
         p = subprocess.Popen(
             command,
             stdin=DEVNULL,
             stdout=stdout_path.open("wb+"),
-            stderr=stderr_path.open("wb+"),
-            close_fds=True
+            stderr=stderr_path.open("wb+")
         )
+
+        LOG.info("Creating wrapper")
 
         wrapper = ProcessWrapper(p, True)
 
@@ -242,14 +249,18 @@ def _poll_processes() -> bool:
     processes_left = len(processes) > 0
     if not processes_left:
         is_polling = False
+        LOG.info("No processes left to poll, exiting thread")
 
     return processes_left
 
 
 def poll_processes():
     global is_polling
+
     if is_polling:
         return
+
+    LOG.info("Starting polling thread")
 
     from gi.repository import GObject
     GObject.timeout_add(100, _poll_processes)
