@@ -217,7 +217,7 @@ def run_exe_nowait(exe_path: Path, *args) -> ProcessWrapper:
         wrapper = ProcessWrapper(p, True)
 
     else:
-        p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr, close_fds=True)
+        p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr)
         wrapper = ProcessWrapper(p, False)
 
     processes.append(wrapper)
