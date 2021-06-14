@@ -7,7 +7,7 @@ from grapejuice_common import robloxctrl
 from grapejuice_common import variables
 from grapejuice_common.features.fast_flags import FastFlagList, FastFlag
 from grapejuice_common.gtk.GtkPaginator import GtkPaginator
-from grapejuice_common.gtk.gtk_stuff import WindowBase
+from grapejuice_common.gtk.gtk_stuff import WindowBase, dialog
 from grapejuice_common.util.paginator import Paginator
 
 
@@ -84,9 +84,24 @@ class FastFlagEditor(WindowBase):
 
         self._fast_flags = FastFlagList().import_file(variables.wine_roblox_studio_app_settings())
 
-        client_settings_path = robloxctrl.locate_studio_client_app_settings()
-        if client_settings_path is not None and os.path.exists(client_settings_path):
-            self._fast_flags.overlay_flags(FastFlagList().import_file(client_settings_path))
+        studio_settings_path = robloxctrl.locate_studio_app_settings()
+        player_settings_path = robloxctrl.locate_player_app_settings()
+        studio_settings_exist = studio_settings_path is not None and os.path.exists(studio_settings_path);
+        player_settings_exist = player_settings_path is not None and os.path.exists(player_settings_path);
+        if studio_settings_exist and player_settings_exist:
+            with open(studio_settings_path) as studio_settings:
+                with open(player_settings_path) as player_settings:
+                    if studio_settings.read() != player_settings.read():
+                        dialog(
+                            "The flags for the Roblox Player and Roblox Studio are different. "
+                            "The editor will use the flags from Roblox Studio, which will replace "
+                            "the flags from the Roblox Player when the flags are saved."
+                        )
+
+        if studio_settings_exist:
+            self._fast_flags.overlay_flags(FastFlagList().import_file(studio_settings_path))
+        elif player_settings_exist:
+            self._fast_flags.overlay_flags(FastFlagList().import_file(player_settings_path))
 
         self._paginator = Paginator(self._fast_flags, 50)
         self._gtk_paginator = GtkPaginator(self._paginator)
@@ -232,12 +247,14 @@ class FastFlagEditor(WindowBase):
             if flag.is_a(bool):
                 ref.reset_button.hide()
 
-    def save_flags_to_studio(self, *_):
+    def save_flags(self, *_):
         self._input_values_to_flags()
         changed_flags = self._fast_flags.get_changed_flags()
-        save_path = robloxctrl.locate_studio_client_app_settings()
+        studio_save_path = robloxctrl.locate_studio_app_settings()
+        player_save_path = robloxctrl.locate_player_app_settings()
 
-        changed_flags.export_to_file(save_path)
+        changed_flags.export_to_file(studio_save_path)
+        changed_flags.export_to_file(player_save_path)
 
         self._unsaved_changes = False
 
@@ -261,6 +278,6 @@ class FastFlagEditor(WindowBase):
     def delete_user_flags(self, *_):
         self.reset_all_flags()
 
-        path = robloxctrl.locate_studio_client_app_settings()
+        path = robloxctrl.locate_studio_app_settings()
         if os.path.exists(path):
             os.remove(path)

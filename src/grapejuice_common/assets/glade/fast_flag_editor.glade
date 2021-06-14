@@ -18,12 +18,12 @@
         <property name="show_close_button">True</property>
         <property name="decoration_layout">menu:minimize,maximize,close</property>
         <child>
-          <object class="GtkButton" id="save_flags_to_studio">
+          <object class="GtkButton" id="save_flags">
             <property name="label" translatable="yes">Save</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <signal name="clicked" handler="save_flags_to_studio" swapped="no"/>
+            <signal name="clicked" handler="save_flags" swapped="no"/>
           </object>
         </child>
         <child>
