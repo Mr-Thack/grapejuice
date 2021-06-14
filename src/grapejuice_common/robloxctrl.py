@@ -90,13 +90,23 @@ def locate_player_launcher() -> Path:
 
 
 @log_function
-def locate_studio_client_app_settings():
+def locate_studio_app_settings():
     studio_exe = locate_studio_exe()
 
     if studio_exe is None:
         return None
 
     return studio_exe.parent / "ClientSettings" / "ClientAppSettings.json"
+
+
+@log_function
+def locate_player_app_settings():
+    player_exe = locate_player_launcher()
+
+    if player_exe is None:
+        return None
+
+    return player_exe.parent / "ClientSettings" / "ClientAppSettings.json"
 
 
 def run_studio(uri="", ide=False):
