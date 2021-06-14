@@ -7,7 +7,6 @@ import signal
 import subprocess
 import sys
 import time
-from datetime import datetime
 from pathlib import Path
 from subprocess import DEVNULL
 from typing import List
@@ -190,31 +189,10 @@ def run_exe_nowait(exe_path: Path, *args) -> ProcessWrapper:
     command = [variables.wine_binary(), exe_path_string, *args]
 
     if settings.no_daemon_mode:
-        LOG.info("Running in no_daemon_mode")
-        log_dir = Path(variables.logging_directory())
-        os.makedirs(log_dir, exist_ok=True)
-
-        LOG.info("Opening log fds")
-
-        ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        stdout_path = log_dir / f"{ts}_{exe_path.name}_stdout.log"
-        stderr_path = log_dir / f"{ts}_{exe_path.name}_stderr.log"
-
-        stdout_fd = stdout_path.open("wb+")
-        stderr_fd = stderr_path.open("wb+")
-
         LOG.info("Opening process")
-
-        p = subprocess.Popen(
-            command,
-            stdout=stdout_fd,
-            stderr=stderr_fd
-        )
-
-        open_fds.extend((stdout_fd, stderr_fd))
+        p = subprocess.Popen(command)
 
         LOG.info("Creating wrapper")
-
         wrapper = ProcessWrapper(p)
 
     else:
@@ -222,9 +200,6 @@ def run_exe_nowait(exe_path: Path, *args) -> ProcessWrapper:
         wrapper = ProcessWrapper(p)
 
     processes.append(wrapper)
-
-    wait_proc = subprocess.Popen(["wineserver", "--wait"])
-    processes.append(ProcessWrapper(wait_proc))
 
     poll_processes()
 
