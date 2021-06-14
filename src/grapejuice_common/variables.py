@@ -277,7 +277,11 @@ def tmp_path():
 def wine_binary(arch=""):
     from grapejuice_common.features.settings import settings
 
-    path_search = [settings.wine_binary] if settings.wine_binary else []
+    custom_wine_binary = (settings.wine_binary or "").strip()
+    if custom_wine_binary and not os.path.exists(custom_wine_binary):
+        LOG.error(f"!! Custom wine binary set to {custom_wine_binary}, but it does not exist !!")
+
+    path_search = [custom_wine_binary] if custom_wine_binary else []
 
     if "PATH" in os.environ:
         for spec in os.environ["PATH"].split(":"):
