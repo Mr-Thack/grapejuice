@@ -1,5 +1,5 @@
 import os
-from typing import Union
+from typing import Union, Dict
 
 from gi.repository import Gtk
 
@@ -79,10 +79,14 @@ def flag_to_widget(flag: FastFlag, on_changed: callable = None) -> Union[None, W
 
 
 class FastFlagEditor(WindowBase):
-    def __init__(self):
+    def __init__(self, fast_flags: Union[Dict[str, any], None] = None):
         super().__init__(variables.fast_flag_editor_glade(), self)
 
-        self._fast_flags = FastFlagList().import_file(variables.wine_roblox_studio_app_settings())
+        if fast_flags is not None:
+            self._fast_flags = FastFlagList().import_dict(fast_flags)
+
+        else:
+            self._fast_flags = FastFlagList().import_file(variables.wine_roblox_studio_app_settings())
 
         studio_settings_path = robloxctrl.locate_studio_app_settings()
         player_settings_path = robloxctrl.locate_player_app_settings()

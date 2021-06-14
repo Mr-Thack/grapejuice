@@ -139,7 +139,7 @@ def studio_with_events(**events):
         args.append("-" + k)
         args.append(v)
 
-    return winectrl.run_exe(*args)
+    return winectrl.run_exe(*args, run_async=True)
 
 
 def fast_flag_extract():
@@ -159,7 +159,8 @@ def fast_flag_extract():
 
         time.sleep(0.5)
 
-    process.kill()
+    if process:
+        process.kill()
 
 
 def run_player(uri):

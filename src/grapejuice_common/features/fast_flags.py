@@ -1,6 +1,52 @@
 import json
+import logging
 import os
-from typing import List, Iterable
+from typing import List, Iterable, Dict
+
+import requests
+
+LOG = logging.getLogger(__name__)
+
+
+class RobloxApplications:
+    studio_app = "StudioApp"
+    pc_desktop_client = "PCDesktopClient"
+
+
+def download_fast_flags(app: str):
+    response = requests.get(
+        "https://clientsettingscdn.roblox.com/v1/settings/application",
+        params={
+            "applicationName": app
+        }
+    )
+
+    try:
+        response.raise_for_status()
+        return response.json()["applicationSettings"]
+
+    except requests.HTTPError as e:
+        LOG.error(f"Could not get fast flags for applicaton {app}: {e}")
+        return {}
+
+
+def mangle_flags(flags: Dict[str, str]):
+    new_flags = dict()
+
+    for k, v in flags.items():
+        if isinstance(v, str):
+            v = v.split(";")[0].strip()
+            v_lower = v.lower()
+
+            if v_lower == "true" or v_lower == "false":
+                v = v_lower == "true"
+
+            elif v_lower.isnumeric():
+                v = int(v)
+
+        new_flags[k] = v
+
+    return new_flags
 
 
 class FastFlag:
@@ -50,7 +96,10 @@ class FastFlagList:
     def import_file(self, fast_flags_path):
         with open(fast_flags_path, "r") as fp:
             json_object = json.load(fp)
-            self._list = list(map(lambda t: FastFlag(*t), json_object.items()))
+            return self.import_dict(json_object)
+
+    def import_dict(self, fast_flags):
+        self._list = list(map(lambda t: FastFlag(*t), fast_flags.items()))
 
         self.sort()
 

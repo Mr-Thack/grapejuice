@@ -178,7 +178,7 @@ def prefix_exists():
 
 
 @log_function
-def run_exe(exe_path: Path, *args) -> Union[ProcessWrapper, None]:
+def run_exe(exe_path: Path, *args, run_async=False) -> Union[ProcessWrapper, None]:
     from grapejuice_common.features.settings import settings
 
     prepare()
@@ -204,16 +204,32 @@ def run_exe(exe_path: Path, *args) -> Union[ProcessWrapper, None]:
         stdout_fd = stdout_path.open("wb+")
         stderr_fd = stderr_path.open("wb+")
 
-        LOG.info("Opening process")
-        subprocess.call(
-            command,
-            stdout=stdout_fd,
-            stderr=stderr_fd
-        )
-
         open_fds.extend((stdout_fd, stderr_fd))
 
-        return None
+        LOG.info("Opening process")
+
+        if run_async:
+            wrapper = ProcessWrapper(
+                subprocess.Popen(
+                    command,
+                    stdout=stdout_fd,
+                    stderr=stderr_fd
+                )
+            )
+
+            processes.append(wrapper)
+
+            return wrapper
+
+
+        else:
+            subprocess.call(
+                command,
+                stdout=stdout_fd,
+                stderr=stderr_fd
+            )
+
+            return None
 
     else:
         p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr)
