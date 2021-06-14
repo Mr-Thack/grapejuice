@@ -1,3 +1,4 @@
+import atexit
 import logging
 import os
 import re
@@ -20,11 +21,12 @@ space_version_ptn = re.compile(r"wine-(.+?)\s+")
 non_space_version_ptn = re.compile(r"wine-(.+)")
 space = " "
 
+open_fds = []
+
 
 class ProcessWrapper:
-    def __init__(self, proc: subprocess.Popen, close_fds_on_exit: bool):
+    def __init__(self, proc: subprocess.Popen):
         self.proc = proc
-        self.close_fds_on_exit = close_fds_on_exit
 
     @property
     def exited(self):
@@ -32,13 +34,6 @@ class ProcessWrapper:
 
         if proc.returncode is None:
             proc.poll()
-
-        if self.close_fds_on_exit:
-            if proc.stderr and not proc.stderr.closed:
-                proc.stderr.close()
-
-            if proc.stdout and not proc.stdout.closed:
-                proc.stdout.close()
 
         return proc.returncode is not None
 
@@ -199,28 +194,37 @@ def run_exe_nowait(exe_path: Path, *args) -> ProcessWrapper:
         log_dir = Path(variables.logging_directory())
         os.makedirs(log_dir, exist_ok=True)
 
+        LOG.info("Opening log fds")
+
         ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         stdout_path = log_dir / f"{ts}_{exe_path.name}_stdout.log"
         stderr_path = log_dir / f"{ts}_{exe_path.name}_stderr.log"
+
+        stdout_fd = stdout_path.open("wb+")
+        stderr_fd = stderr_path.open("wb+")
 
         LOG.info("Opening process")
 
         p = subprocess.Popen(
             command,
-            stdin=DEVNULL,
-            stdout=stdout_path.open("wb+"),
-            stderr=stderr_path.open("wb+")
+            stdout=stdout_fd,
+            stderr=stderr_fd
         )
+
+        open_fds.extend((stdout_fd, stderr_fd))
 
         LOG.info("Creating wrapper")
 
-        wrapper = ProcessWrapper(p, True)
+        wrapper = ProcessWrapper(p)
 
     else:
         p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr)
-        wrapper = ProcessWrapper(p, False)
+        wrapper = ProcessWrapper(p)
 
     processes.append(wrapper)
+
+    wait_proc = subprocess.Popen(["wineserver", "--wait"])
+    processes.append(ProcessWrapper(wait_proc))
 
     poll_processes()
 
@@ -264,3 +268,15 @@ def poll_processes():
 
     from gi.repository import GObject
     GObject.timeout_add(100, _poll_processes)
+
+
+def close_fds(*_, **__):
+    LOG.info("Closing fds")
+
+    for fd in open_fds:
+        fd.close()
+
+    open_fds.clear()
+
+
+atexit.register(close_fds)
