@@ -221,7 +221,6 @@ def run_exe(exe_path: Path, *args, run_async=False) -> Union[ProcessWrapper, Non
 
             return wrapper
 
-
         else:
             subprocess.call(
                 command,
