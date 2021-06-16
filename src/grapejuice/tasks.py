@@ -3,8 +3,6 @@ import os
 import subprocess
 import sys
 
-from dbus import DBusException
-
 from grapejuice import background
 from grapejuice_common import winectrl, variables
 from grapejuice_common.updates.update_provider import UpdateProvider
@@ -31,7 +29,11 @@ class InstallRoblox(background.BackgroundTask):
     def run(self) -> None:
         try:
             install_roblox()
-        except DBusException:
+        except Exception as e:
+            import logging
+
+            logging.getLogger(self.__class__.__name__).error(e)
+
             pass  # TODO: find a proper fix
 
         self.finish()
@@ -65,8 +67,10 @@ class ExtractFastFlags(background.BackgroundTask):
             from grapejuice_common.ipc.dbus_client import dbus_connection
             dbus_connection().extract_fast_flags()
 
-        except DBusException:
-            pass
+        except Exception as e:
+            import logging
+
+            logging.getLogger(self.__class__.__name__).error(e)
 
         self.finish()
 
