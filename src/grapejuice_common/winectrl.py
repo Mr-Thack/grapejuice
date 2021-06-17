@@ -9,6 +9,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
+from string import Template
 from subprocess import DEVNULL
 from typing import List, Union
 
@@ -65,23 +66,24 @@ def prepare():
 @log_on_call("Running Wine configuration")
 def winecfg():
     prepare()
-    os.spawnlp(os.P_NOWAIT, variables.wine_binary(), variables.wine_binary(), "winecfg")
+    run_exe("winecfg", run_async=True)
 
 
 @log_on_call("Running registry editor")
 def regedit():
     prepare()
-    os.spawnlp(os.P_NOWAIT, variables.wine_binary(), variables.wine_binary(), "regedit")
+    run_exe("regedit", run_async=True)
 
 
 @log_on_call("Running Windows Explorer")
 def explorer():
     prepare()
-    os.spawnlp(os.P_NOWAIT, variables.wine_binary(), variables.wine_binary(), "explorer")
+    run_exe("explorer", run_async=True)
 
 
-def load_reg(srcfile, prepare_wine: bool = True):
+def load_registry_file(srcfile, prepare_wine: bool = True):
     LOG.info(f"Loading registry file {srcfile} into the wineprefix")
+
     if prepare_wine:
         prepare()
 
@@ -90,35 +92,27 @@ def load_reg(srcfile, prepare_wine: bool = True):
     shutil.copyfile(srcfile, target_path)
 
     winreg = "C:\\windows\\temp\\{}".format(target_filename)
-    os.spawnlp(os.P_WAIT, variables.wine_binary(), variables.wine_binary(), "regedit", "/S", winreg)
-    os.spawnlp(os.P_WAIT, variables.wine_binary_64(), variables.wine_binary_64(), "regedit", "/S", winreg)
+    run_exe("regedit", "/S", winreg, run_async=False, use_wine64=False)
+    run_exe("regedit", "/S", winreg, run_async=False, use_wine64=True)
 
     os.remove(target_path)
 
 
-def load_regs(s: [str], patches: dict = None):
+def load_patched_registry_files(source: Path, patches: dict = None):
     prepare()
+
     target_filename = str(int(time.time())) + ".reg"
-    target_path = os.path.join(variables.wine_temp(), target_filename)
+    target_path = Path(variables.wine_temp()) / target_filename
 
-    with open(target_path, "w+") as fp:
-        if patches is None:
-            fp.write("\r\n".join(s))
-        else:
-            out_lines = []
-            for line in s:
-                for k, v in patches.items():
-                    varkey = "$" + k
-                    if varkey in line:
-                        line = line.replace(varkey, v)
+    with source.open("r") as fp:
+        template = Template(fp.read())
 
-                out_lines.append(line)
+    with target_path.open("w+") as fp:
+        fp.write(template.safe_substitute(patches))
 
-            fp.writelines(out_lines)
-
-    winreg = "C:\\windows\\temp\\{}".format(target_filename)
-    os.spawnlp(os.P_WAIT, variables.wine_binary(), variables.wine_binary(), "regedit", "/S", winreg)
-    os.spawnlp(os.P_WAIT, variables.wine_binary_64(), variables.wine_binary_64(), "regedit", "/S", winreg)
+    winreg = "C:\\windows\\temp\\{}".format(str(target_filename))
+    run_exe("regedit", "/S", winreg, run_async=False, use_wine64=False)
+    run_exe("regedit", "/S", winreg, run_async=False, use_wine64=True)
 
     os.remove(target_path)
 
@@ -126,24 +120,28 @@ def load_regs(s: [str], patches: dict = None):
 @log_on_call("Running Winetricks")
 def wine_tricks():
     prepare()
-    os.spawnlp(os.P_NOWAIT, "winetricks", "winetricks")
+
+    processes.append(ProcessWrapper(
+        subprocess.Popen(["winetricks"])
+    ))
+
+    poll_processes()
 
 
 @log_on_call("Disabling MIME associations in wineprefix")
 def disable_mime_assoc():
-    load_reg(os.path.join(variables.assets_dir(), "disable_mime_assoc.reg"))
+    load_registry_file(os.path.join(variables.assets_dir(), "disable_mime_assoc.reg"))
 
 
 def set_roblox_document_path():
-    src_path = os.path.join(variables.assets_dir(), "roblox_documents_folder.reg")
+    src_path = Path(variables.assets_dir()) / "roblox_documents_folder.reg"
     patches = dict()
 
     documents_dir = "Z:" + variables.xdg_documents().replace("/", "\\\\")
     patches["DOCUMENTS_DIR"] = documents_dir
     LOG.info(f"Setting the roblox documents directory to '{documents_dir}'")
 
-    with open(src_path, "r") as fp:
-        load_regs(fp.readlines(), patches)
+    load_patched_registry_files(src_path, patches)
 
 
 @log_on_call("Sandboxing user directories in the wineprefix")
@@ -178,66 +176,92 @@ def prefix_exists():
 
 
 @log_function
-def run_exe(exe_path: Path, *args, run_async=False) -> Union[ProcessWrapper, None]:
-    from grapejuice_common.features.settings import settings
+def run_exe_no_daemon(command: List[str], exe_name: str, run_async: bool) -> Union[ProcessWrapper, None]:
+    LOG.info("Running in no_daemon_mode")
 
-    prepare()
-    LOG.info("Prepared Wine.")
+    log_dir = Path(variables.logging_directory())
+    os.makedirs(log_dir, exist_ok=True)
 
-    exe_path_string = str(exe_path.resolve()) if isinstance(exe_path, Path) else str(exe_path)
-    LOG.info(f"Resolved exe path to {exe_path_string}")
+    LOG.info("Opening log fds")
 
-    command = [variables.wine_binary(), exe_path_string, *args]
+    ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    stdout_path = log_dir / f"{ts}_{exe_name}_stdout.log"
+    stderr_path = log_dir / f"{ts}_{exe_name}_stderr.log"
 
-    if settings.no_daemon_mode:
-        LOG.info("Running in no_daemon_mode")
+    stdout_fd = stdout_path.open("wb+")
+    stderr_fd = stderr_path.open("wb+")
 
-        log_dir = Path(variables.logging_directory())
-        os.makedirs(log_dir, exist_ok=True)
+    open_fds.extend((stdout_fd, stderr_fd))
 
-        LOG.info("Opening log fds")
+    if run_async:
+        LOG.info("Running process asynchronously")
 
-        ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        stdout_path = log_dir / f"{ts}_{exe_path.name}_stdout.log"
-        stderr_path = log_dir / f"{ts}_{exe_path.name}_stderr.log"
-
-        stdout_fd = stdout_path.open("wb+")
-        stderr_fd = stderr_path.open("wb+")
-
-        open_fds.extend((stdout_fd, stderr_fd))
-
-        LOG.info("Opening process")
-
-        if run_async:
-            wrapper = ProcessWrapper(
-                subprocess.Popen(
-                    command,
-                    stdout=stdout_fd,
-                    stderr=stderr_fd
-                )
-            )
-
-            processes.append(wrapper)
-
-            return wrapper
-
-        else:
-            subprocess.call(
+        wrapper = ProcessWrapper(
+            subprocess.Popen(
                 command,
                 stdout=stdout_fd,
                 stderr=stderr_fd
             )
-
-            return None
-
-    else:
-        p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr)
-        wrapper = ProcessWrapper(p)
+        )
 
         processes.append(wrapper)
         poll_processes()
 
         return wrapper
+
+    else:
+        LOG.info("Running process synchronously")
+
+        subprocess.call(
+            command,
+            stdout=stdout_fd,
+            stderr=stderr_fd
+        )
+
+        return None
+
+
+@log_function
+def run_exe_in_daemon(command: List[str]) -> ProcessWrapper:
+    LOG.info("Running process for daemon mode")
+
+    p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr)
+    wrapper = ProcessWrapper(p)
+
+    processes.append(wrapper)
+    poll_processes()
+
+    return wrapper
+
+
+@log_function
+def run_exe(exe_path: Union[Path, str], *args, run_async=False, use_wine64=False) -> Union[ProcessWrapper, None]:
+    from grapejuice_common.features.settings import settings
+
+    prepare()
+    LOG.info("Prepared Wine.")
+
+    if isinstance(exe_path, Path):
+        exe_path_string = str(exe_path.resolve())
+        exe_name = exe_path.name
+
+    elif isinstance(exe_path, str):
+        exe_path_string = exe_path
+        exe_name = exe_path.split(os.path.sep)[-1]
+
+    else:
+        raise ValueError(f"Invalid value type for exe_path: {type(exe_path)}")
+
+    LOG.info(f"Resolved exe path to {exe_path_string}")
+
+    wine_binary = variables.wine_binary_64() if use_wine64 else variables.wine_binary()
+    command = [wine_binary, exe_path_string, *args]
+
+    if settings.no_daemon_mode:
+        return run_exe_no_daemon(command, exe_name, run_async)
+
+    else:
+        return run_exe_in_daemon(command)
 
 
 def _poll_processes() -> bool:
