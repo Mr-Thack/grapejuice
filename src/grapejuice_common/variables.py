@@ -274,17 +274,8 @@ def tmp_path():
     return ensure_dir(path_string)
 
 
-def should_launch_wine_with_shell() -> bool:
-    from grapejuice_common.features.settings import settings
-    return settings.launch_wine_with_shell or False
-
-
 def wine_binary(arch=""):
     from grapejuice_common.features.settings import settings
-
-    if should_launch_wine_with_shell() and settings.wine_binary:
-        LOG.info(f"Using wine launch shell command: {settings.wine_binary}")
-        return settings.wine_binary
 
     custom_wine_binary = (settings.wine_binary or "").strip()
     if custom_wine_binary and not os.path.exists(custom_wine_binary):
@@ -303,7 +294,7 @@ def wine_binary(arch=""):
 
     for p in (path_search + static_search):
         if p and os.path.exists(p):
-            LOG.info(f"Using wine binary at: {p}")
+            LOG.debug(f"Using wine binary at: {p}")
             return p
 
     raise NoWineError()

@@ -176,7 +176,7 @@ def prefix_exists():
 
 
 @log_function
-def run_exe_no_daemon(command: List[str], exe_name: str, run_async: bool, using_shell: bool) -> Union[ProcessWrapper, None]:
+def run_exe_no_daemon(command: List[str], exe_name: str, run_async: bool) -> Union[ProcessWrapper, None]:
     LOG.info("Running in no_daemon_mode")
 
     log_dir = Path(variables.logging_directory())
@@ -197,11 +197,10 @@ def run_exe_no_daemon(command: List[str], exe_name: str, run_async: bool, using_
         LOG.info("Running process asynchronously")
 
         wrapper = ProcessWrapper(
-            subprocess.run(
+            subprocess.Popen(
                 command,
                 stdout=stdout_fd,
-                stderr=stderr_fd,
-                shell=using_shell
+                stderr=stderr_fd
             )
         )
 
@@ -213,28 +212,20 @@ def run_exe_no_daemon(command: List[str], exe_name: str, run_async: bool, using_
     else:
         LOG.info("Running process synchronously")
 
-        subprocess.run(
+        subprocess.call(
             command,
             stdout=stdout_fd,
-            stderr=stderr_fd,
-            shell=using_shell
+            stderr=stderr_fd
         )
 
         return None
 
 
 @log_function
-def run_exe_in_daemon(command: List[str], using_shell: bool) -> ProcessWrapper:
+def run_exe_in_daemon(command: List[str]) -> ProcessWrapper:
     LOG.info("Running process for daemon mode")
 
-    p = subprocess.run(
-        command,
-        stdin=DEVNULL,
-        stdout=sys.stdout,
-        stderr=sys.stderr,
-        shell=using_shell
-    )
-
+    p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr)
     wrapper = ProcessWrapper(p)
 
     processes.append(wrapper)
@@ -264,21 +255,13 @@ def run_exe(exe_path: Union[Path, str], *args, run_async=False, use_wine64=False
     LOG.info(f"Resolved exe path to {exe_path_string}")
 
     wine_binary = variables.wine_binary_64() if use_wine64 else variables.wine_binary()
-    command = wine_binary.replace("%exepath%", exe_path_string)
+    command = [wine_binary, exe_path_string, *args]
 
     if settings.no_daemon_mode:
-        return run_exe_no_daemon(
-            command,
-            exe_name,
-            run_async,
-            variables.should_launch_wine_with_shell()
-        )
+        return run_exe_no_daemon(command, exe_name, run_async)
 
     else:
-        return run_exe_in_daemon(
-            command,
-            variables.should_launch_wine_with_shell()
-        )
+        return run_exe_in_daemon(command)
 
 
 def _poll_processes() -> bool:
