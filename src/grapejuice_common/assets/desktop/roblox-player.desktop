@@ -3,7 +3,6 @@ Version=1.0
 Type=Application
 Name=Roblox Player
 NoDisplay=true
-OnlyShowIn=X-None;
 Comment=Play roblox games!
 Icon=$PLAYER_ICON
 Exec=$GRAPEJUICE_EXECUTABLE player "%u"
