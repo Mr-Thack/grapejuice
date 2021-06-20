@@ -54,7 +54,7 @@
     <property name="height-request">16</property>
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="pixbuf">../icons/hicolor/24x24/apps/grapejuice-roblox-studio.png</property>
+    <property name="icon-name">grapejuice-roblox-studio</property>
   </object>
   <object class="GtkImage" id="icon_sandbox">
     <property name="visible">True</property>
