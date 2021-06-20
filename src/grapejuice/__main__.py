@@ -34,6 +34,16 @@ def func_player(args):
     return 0
 
 
+def func_app(*_):
+    def player_main():
+        import grapejuice_common.variables as v
+        dbus_connection().play_game(grapejuice_common.util.prepare_uri(v.roblox_app_experience_url()))
+
+    gtk_boot(player_main, gtk_main=False)
+
+    return 0
+
+
 def func_studio(args):
     uri = grapejuice_common.util.prepare_uri(args.uri)
     if uri:
@@ -106,6 +116,9 @@ def main(in_args=None):
 
     parser_install_roblox = subparsers.add_parser("install-roblox")
     parser_install_roblox.set_defaults(func=func_install_roblox)
+
+    parser_app = subparsers.add_parser("app")
+    parser_app.set_defaults(func=func_app)
 
     args = parser.parse_args(in_args[1:])
 

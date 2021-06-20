@@ -238,6 +238,10 @@ def xdg_documents():
     return ensure_dir(documents_path)
 
 
+def roblox_app_experience_url():
+    return "roblox-player:+launchmode:app+robloxLocale:en_us+gameLocale:en_us+LaunchExp:InApp"
+
+
 def roblox_return_to_studio():
     return "https://www.roblox.com/login/return-to-studio"
 
