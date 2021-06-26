@@ -252,7 +252,10 @@ def git_grapejuice_init():
 
 def git_source_tarball():
     from grapejuice_common.features.settings import current_settings
-    return f"{git_repository()}/-/archive/{current_settings.release_channel}/grapejuice-{current_settings.release_channel}.tar.gz"
+    from grapejuice_common.features import settings
+
+    release_channel = current_settings.get(settings.k_release_channel)
+    return f"{git_repository()}/-/archive/{release_channel}/grapejuice-{release_channel}.tar.gz"
 
 
 def tmp_path():
