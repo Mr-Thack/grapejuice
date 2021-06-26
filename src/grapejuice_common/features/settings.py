@@ -35,15 +35,19 @@ class UserSettings:
         self._location = file_location
         self.load()
 
-    def __setattr__(self, key, value):
-        if key.startswith("_"):
-            super().__setattr__(key, value)
+    def get(self, key: str, default_value: any = None):
+        if self._settings_object:
+            return self._settings_object.get(key, default_value)
 
-        else:
-            self._settings_object[key] = value
+        return default_value
 
-    def __getattr__(self, item):
-        return self._settings_object.get(item, None)
+    def set(self, key: str, value: any, save: bool = False) -> any:
+        self._settings_object[key] = value
+
+        if save:
+            self.save()
+
+        return value
 
     def load(self):
         if self._location.exists():
@@ -85,4 +89,4 @@ class UserSettings:
             json.dump(self._settings_object, fp, indent=2)
 
 
-settings = UserSettings()
+current_settings = UserSettings()

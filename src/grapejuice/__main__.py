@@ -78,10 +78,10 @@ def run_daemon_instead(argv):
 def main(in_args=None):
     log_config.configure_logging("grapejuice")
 
-    from grapejuice_common.features.settings import settings
+    from grapejuice_common.features.settings import current_settings
     vacuum_logs()
 
-    if settings:
+    if current_settings:
         # TODO: Add logging for successful settings loading (Issue #9)
         pass
 

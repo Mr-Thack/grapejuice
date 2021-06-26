@@ -52,11 +52,12 @@ is_polling = False
 
 @log_on_call("Preparing for Wine")
 def prepare():
-    from grapejuice_common.features.settings import settings
+    from grapejuice_common.features.settings import current_settings
+    from grapejuice_common.features import settings
 
     prefix_dir = variables.wineprefix_dir()
     os.environ["WINEPREFIX"] = prefix_dir
-    os.environ["WINEDLLOVERRIDES"] = os.environ.get("WINEDLLOVERRIDES", settings.dll_overrides)
+    os.environ["WINEDLLOVERRIDES"] = os.environ.get("WINEDLLOVERRIDES", current_settings.get(settings.k_dll_overrides))
     os.environ["WINEARCH"] = "win64"
 
     if not os.path.exists(prefix_dir):
@@ -237,7 +238,8 @@ def run_exe_in_daemon(command: List[str]) -> ProcessWrapper:
 
 @log_function
 def run_exe(exe_path: Union[Path, str], *args, run_async=False, use_wine64=False) -> Union[ProcessWrapper, None]:
-    from grapejuice_common.features.settings import settings
+    from grapejuice_common.features.settings import current_settings
+    from grapejuice_common.features import settings
 
     prepare()
     LOG.info("Prepared Wine.")
@@ -258,7 +260,7 @@ def run_exe(exe_path: Union[Path, str], *args, run_async=False, use_wine64=False
     wine_binary = variables.wine_binary_64() if use_wine64 else variables.wine_binary()
     command = [wine_binary, exe_path_string, *args]
 
-    if settings.no_daemon_mode:
+    if current_settings.get(settings.k_no_daemon_mode):
         return run_exe_no_daemon(command, exe_name, run_async)
 
     else:

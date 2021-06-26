@@ -1,6 +1,7 @@
 from grapejuice_common import variables
+from grapejuice_common.features import settings
+from grapejuice_common.features.settings import current_settings
 from grapejuice_common.gtk.gtk_stuff import WindowBase
-from grapejuice_common.features.settings import settings
 
 
 class FastFlagWarning(WindowBase):
@@ -11,7 +12,7 @@ class FastFlagWarning(WindowBase):
         self._callback = callback
 
         self.devforum_link.set_label("Read more on the Roblox Developer forum")
-        self.warn_check.set_active(settings.show_fast_flag_warning)
+        self.warn_check.set_active(current_settings.get(settings.k_show_fast_flag_warning))
 
     @property
     def window(self):
@@ -30,8 +31,10 @@ class FastFlagWarning(WindowBase):
 
     def on_close(self, *_):
         if self._do_continue:
-            settings.show_fast_flag_warning = self.warn_check.get_active()
-            settings.save()
+            current_settings.set(
+                settings.k_show_fast_flag_warning,
+                self.warn_check.get_active(), save=True
+            )
 
         self._callback(self._do_continue)
 

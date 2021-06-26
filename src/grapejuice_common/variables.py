@@ -243,13 +243,16 @@ def git_wiki():
 
 
 def git_grapejuice_init():
-    from grapejuice_common.features.settings import settings
-    return f"{git_repository()}/-/raw/{settings.release_channel}/src/grapejuice/__init__.py"
+    from grapejuice_common.features.settings import current_settings
+    from grapejuice_common.features import settings
+
+    release_channel = current_settings.get(settings.k_release_channel)
+    return f"{git_repository()}/-/raw/{release_channel}/src/grapejuice/__init__.py"
 
 
 def git_source_tarball():
-    from grapejuice_common.features.settings import settings
-    return f"{git_repository()}/-/archive/{settings.release_channel}/grapejuice-{settings.release_channel}.tar.gz"
+    from grapejuice_common.features.settings import current_settings
+    return f"{git_repository()}/-/archive/{current_settings.release_channel}/grapejuice-{current_settings.release_channel}.tar.gz"
 
 
 def tmp_path():
@@ -267,9 +270,10 @@ def tmp_path():
 
 
 def wine_binary(arch=""):
-    from grapejuice_common.features.settings import settings
+    from grapejuice_common.features.settings import current_settings
+    from grapejuice_common.features import settings
 
-    custom_wine_binary = (settings.wine_binary or "").strip()
+    custom_wine_binary = (current_settings.get(settings.k_wine_binary) or "").strip()
     if custom_wine_binary and not os.path.exists(custom_wine_binary):
         LOG.error(f"!! Custom wine binary set to {custom_wine_binary}, but it does not exist !!")
 

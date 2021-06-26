@@ -8,7 +8,8 @@ from grapejuice.tasks import DisableMimeAssociations, InstallRoblox, SandboxWine
     RunRobloxStudio, ExtractFastFlags, OpenLogsDirectory, PerformUpdate
 from grapejuice_common import variables, robloxctrl, uninstall
 from grapejuice_common import winectrl
-from grapejuice_common.features.settings import settings
+from grapejuice_common.features import settings
+from grapejuice_common.features.settings import current_settings
 from grapejuice_common.gtk.gtk_stuff import WindowBase, dialog
 from grapejuice_common.registry_utils import logged_into_studio
 from grapejuice_common.updates.provider_map import get_update_provider
@@ -144,7 +145,7 @@ class MainWindowHandlers:
 
             background.tasks.add(task)
 
-        if settings.show_fast_flag_warning:
+        if current_settings.get(settings.k_show_fast_flag_warning):
             from grapejuice.gui.fast_flag_warning import FastFlagWarning
             wnd = FastFlagWarning(open_editor)
             wnd.show()

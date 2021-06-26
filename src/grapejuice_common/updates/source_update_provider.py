@@ -10,6 +10,7 @@ import requests
 from packaging import version
 
 import grapejuice_common.variables as v
+from grapejuice_common.features import settings
 from grapejuice_common.updates.update_provider import UpdateProvider, UpdateError
 
 LOG = logging.getLogger(__name__)
@@ -30,7 +31,7 @@ class SourceUpdateProvider(UpdateProvider):
         return True
 
     def do_update(self):
-        from grapejuice_common.features.settings import settings
+        from grapejuice_common.features.settings import current_settings
 
         tmp_path = v.tmp_path()
         LOG.info(f"Temporary files path at: {tmp_path}")
@@ -53,7 +54,9 @@ class SourceUpdateProvider(UpdateProvider):
             tar.extractall(update_package_path)
 
         cwd = os.getcwd()
-        os.chdir(os.path.join(update_package_path, f"grapejuice-{settings.release_channel}"))
+
+        release_channel = current_settings.get(settings.k_release_channel)
+        os.chdir(os.path.join(update_package_path, f"grapejuice-{release_channel}"))
 
         LOG.debug("Installing update")
         subprocess.check_call([sys.executable, "./install.py"])
