@@ -74,7 +74,7 @@ def _do_install(*_):
             path = list(filter(lambda s: not s.startswith(virtual_env), path))
             os.environ["PATH"] = os.pathsep.join(path)
 
-            log.info(f"Set PATH to: " + os.environ["PATH"])
+            log.info("Set PATH to: " + os.environ["PATH"])
             os.environ.pop("VIRTUAL_ENV", None)
 
         subprocess.check_call([

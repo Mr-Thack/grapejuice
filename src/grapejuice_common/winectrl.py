@@ -225,6 +225,7 @@ def run_exe_no_daemon(command: List[str], exe_name: str, run_async: bool) -> Uni
 def run_exe_in_daemon(command: List[str]) -> ProcessWrapper:
     LOG.info("Running process for daemon mode")
 
+    # pylint: disable=consider-using-with
     p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr)
     wrapper = ProcessWrapper(p)
 

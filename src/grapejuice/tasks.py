@@ -29,12 +29,10 @@ class InstallRoblox(background.BackgroundTask):
     def run(self) -> None:
         try:
             install_roblox()
+
         except Exception as e:
-            import logging
-
+            # TODO: find a proper fix when install_roblox errors out like this
             logging.getLogger(self.__class__.__name__).error(e)
-
-            pass  # TODO: find a proper fix
 
         self.finish()
 
@@ -68,8 +66,6 @@ class ExtractFastFlags(background.BackgroundTask):
             dbus_connection().extract_fast_flags()
 
         except Exception as e:
-            import logging
-
             logging.getLogger(self.__class__.__name__).error(e)
 
         self.finish()

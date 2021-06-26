@@ -1,7 +1,7 @@
 import sys
 
 
-def gtk_boot(main_function, gtk_main=True, *args, **kwargs):
+def gtk_boot(main_function, *args, gtk_main=True, **kwargs):
     assert callable(main_function)
     sys.argv[0] = "Grapejuice"
 

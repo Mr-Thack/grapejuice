@@ -1,16 +1,18 @@
 image: registry.gitlab.com/brinkervii/grapejuice-ci-image/master
 
 stages:
+    - prepare
     - test
     - package
     - deploy
 
-grapejuice:test:
-    stage: test
+grapejuice:quality_control:
+    stage: prepare
     script:
         - export PYTHONPATH=$(pwd)/src
         - python3 -m pip install -r requirements.dev.txt
         - python3 -m pip install -r requirements.txt
+        - python3 -m pylint src
         - python3 -m pytest tests
 
 grapejuice:test_local_installation:

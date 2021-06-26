@@ -38,7 +38,7 @@ def mangle_flags(flags: Dict[str, str]):
             v = v.split(";")[0].strip()
             v_lower = v.lower()
 
-            if v_lower == "true" or v_lower == "false":
+            if v_lower in ("true", "false"):
                 v = v_lower == "true"
 
             elif v_lower.isnumeric():

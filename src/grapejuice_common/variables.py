@@ -125,18 +125,6 @@ def sparklepop_snapshots_dir():
     return ensure_dir(os.path.join(sparklepop_config_dir(), "snapshots"))
 
 
-def src_init_py():
-    search_locations = [
-        os.path.join(src_dir(), "grapejuice", "__init__.py"),
-        os.path.join(src_dir(), "__init__.py"),
-        os.path.join(src_dir(), "src", "grapejuice", "__init__.py")
-    ]
-
-    for p in search_locations:
-        if os.path.exists(p):
-            return p
-
-
 def wineprefix_dir():
     return os.path.join(user_application_dir(), "wineprefix")
 
@@ -228,7 +216,7 @@ def logging_directory():
 
 
 def xdg_documents():
-    run = subprocess.run(["xdg-user-dir", "DOCUMENTS"], stdout=subprocess.PIPE)
+    run = subprocess.run(["xdg-user-dir", "DOCUMENTS"], stdout=subprocess.PIPE, check=False)
     documents_path = run.stdout.decode("utf-8").rstrip()
 
     if os.path.exists(documents_path):
@@ -296,7 +284,7 @@ def wine_binary(arch=""):
         "/opt/wine-staging/bin/wine" + arch
     ]
 
-    for p in (path_search + static_search):
+    for p in path_search + static_search:
         if p and os.path.exists(p):
             LOG.debug(f"Using wine binary at: {p}")
             return p

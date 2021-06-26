@@ -80,7 +80,7 @@ def check_python_dependencies(log: logging.Logger):
                   f"This installation of grapejuice is incorrect and should be rectified by doing a proper " \
                   f"installation. The underlying error is:\n {str(e)}"
 
-            raise TaskError(msg, can_continue=False)
+            raise TaskError(msg, can_continue=False) from e
 
     dependency_check_functions = [
         import_psutil,

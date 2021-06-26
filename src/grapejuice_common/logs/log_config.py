@@ -27,8 +27,8 @@ class GrapejuiceLogFormatter(logging.Formatter):
     def formatTime(self, record: LogRecord, datefmt: Optional[str] = ...) -> str:
         return _strip_pii(super().formatTime(record, datefmt))
 
-    def formatException(self, exc_info) -> str:
-        return _strip_pii(super().formatException(exc_info))
+    def formatException(self, ei) -> str:
+        return _strip_pii(super().formatException(ei))
 
     def formatMessage(self, record: LogRecord) -> str:
         return _strip_pii(super().formatMessage(record))

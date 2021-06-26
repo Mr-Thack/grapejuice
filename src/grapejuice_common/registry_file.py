@@ -1,6 +1,9 @@
+import logging
 import re
 from pathlib import Path
 from typing import Union, IO, List, Callable, Dict
+
+LOG = logging.getLogger(__name__)
 
 KEY_PTN = re.compile(r"\[(.*)?].*")
 
@@ -67,7 +70,7 @@ class RegistryFile:
 
     def load(self):
         class LoadState:
-            operator: Callable[[str], None] = None
+            operator: Callable[[str], None]
 
         def normal(ln: str):
             if ln.startswith(";;"):
@@ -113,5 +116,9 @@ class RegistryFile:
         LoadState.operator = version
 
         with self._path.open("r") as fp:
-            for line in line_iterator(fp):
-                LoadState.operator(line)
+            if callable(LoadState.operator):
+                for line in line_iterator(fp):
+                    LoadState.operator(line)
+
+            else:
+                LOG.warning("LoadState.operator is not callable")

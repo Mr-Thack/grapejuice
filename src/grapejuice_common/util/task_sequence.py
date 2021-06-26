@@ -67,7 +67,7 @@ class TaskSequence:
                     self._log.error(f"Aborting due to failed task '{task_name}'")
                     raise e
 
-            self._log.info(f"-- End of task --")
+            self._log.info("-- End of task --")
 
             task_counter += 1
             self._log_results()

@@ -70,6 +70,7 @@ def func_install_roblox(*_):
 def run_daemon_instead(argv):
     from grapejuiced.__main__ import main as daemon_main
     daemon_main([sys.argv[0], *argv])
+
     return 0
 
 
@@ -124,7 +125,7 @@ def main(in_args=None):
 
     if hasattr(args, "func"):
         f: callable = getattr(args, "func")
-        return f(args) or 0
+        f(args)
 
     else:
         parser.print_help()

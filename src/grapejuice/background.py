@@ -56,9 +56,6 @@ class BackgroundTask(threading.Thread, Task):
 
 
 class MockBackgroundTask(Task):
-    def __init__(self, name):
-        super().__init__(name)
-
     def start(self):
         pass
 

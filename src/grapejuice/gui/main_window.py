@@ -79,15 +79,15 @@ class MainWindowHandlers:
             dialog("Grapejuice could not find a working Wine binary, please install Wine using your operating "
                    "system's package manager in order to install and use Roblox.")
 
-            return None
-
         try:
             wine_bin = variables.wine_binary()
             if not os.path.exists(wine_bin):
-                return no_wine_dialog()
+                no_wine_dialog()
+                return
 
         except NoWineError:
-            return no_wine_dialog()
+            no_wine_dialog()
+            return
 
         run_task_once(InstallRoblox, generic_already_running)
 

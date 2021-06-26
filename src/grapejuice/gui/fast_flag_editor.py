@@ -90,8 +90,9 @@ class FastFlagEditor(WindowBase):
 
         studio_settings_path = robloxctrl.locate_studio_app_settings()
         player_settings_path = robloxctrl.locate_player_app_settings()
-        studio_settings_exist = studio_settings_path is not None and os.path.exists(studio_settings_path);
-        player_settings_exist = player_settings_path is not None and os.path.exists(player_settings_path);
+        studio_settings_exist = studio_settings_path is not None and os.path.exists(studio_settings_path)
+        player_settings_exist = player_settings_path is not None and os.path.exists(player_settings_path)
+
         if studio_settings_exist and player_settings_exist:
             with open(studio_settings_path) as studio_settings:
                 with open(player_settings_path) as player_settings:
@@ -104,6 +105,7 @@ class FastFlagEditor(WindowBase):
 
         if studio_settings_exist:
             self._fast_flags.overlay_flags(FastFlagList().import_file(studio_settings_path))
+
         elif player_settings_exist:
             self._fast_flags.overlay_flags(FastFlagList().import_file(player_settings_path))
 

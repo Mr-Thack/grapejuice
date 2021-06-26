@@ -89,7 +89,7 @@ class AppImageBuilder(PackageBuilder):
             shutil.copy(src, dst)
 
         @app_image.task("Copy application icon")
-        def copy_desktop_entry(log):
+        def copy_application_info(log):
             src = v.grapejuice_icon()
             dst = os.path.join(app_dir, "grapejuice.svg")
             log.info(f"Copying icon: {src} -> {dst}")

@@ -89,7 +89,7 @@ def _fields_to_string(fields):
         if field is None:
             return ""
 
-        assert isinstance(field, tuple) or isinstance(field, list)
+        assert isinstance(field, (list, tuple))
         assert len(field) == 2
 
         key, value = field
@@ -140,7 +140,7 @@ class DebianPackageBuilder(LinuxPackageBuilder):
                 fp.write(str(int(DEBHELPER_COMPAT)))
 
         @build.task("Write install file")
-        def write_compat(log):
+        def write_install_file(log):
             path = Path(self._build_dir, "debian", "install")
 
             with path.open("w+") as fp:
