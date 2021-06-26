@@ -56,9 +56,22 @@ def prepare():
     from grapejuice_common.features import settings
 
     prefix_dir = variables.wineprefix_dir()
-    os.environ["WINEPREFIX"] = prefix_dir
-    os.environ["WINEDLLOVERRIDES"] = os.environ.get("WINEDLLOVERRIDES", current_settings.get(settings.k_dll_overrides))
-    os.environ["WINEARCH"] = "win64"
+
+    user_env = current_settings.get(settings.k_environment_variables, {})
+    apply_env = {
+        "WINEDLLOVERRIDES": current_settings.get(settings.k_dll_overrides),
+        **user_env,
+        "WINEPREFIX": prefix_dir,
+        "WINEARCH": "win64"
+    }
+
+    # Variables in os.environ take priority
+    for k, v in user_env.items():
+        apply_env[k] = os.environ.get(k, v)
+
+    # Apply env
+    for k, v in apply_env.items():
+        os.environ[k] = v
 
     if not os.path.exists(prefix_dir):
         os.makedirs(prefix_dir)
