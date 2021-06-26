@@ -1,6 +1,7 @@
 import argparse
 import random
 import sys
+from typing import Callable
 
 import grapejuice_common.util
 from grapejuice_common.gtk.gtk_stuff import gtk_boot
@@ -124,13 +125,12 @@ def main(in_args=None):
     args = parser.parse_args(in_args[1:])
 
     if hasattr(args, "func"):
-        f: callable = getattr(args, "func")
-        f(args)
+        f: Callable[[any], int] = getattr(args, "func")
+        return f(args) or 0
 
     else:
         parser.print_help()
-
-    return 1
+        return 1
 
 
 if __name__ == "__main__":
