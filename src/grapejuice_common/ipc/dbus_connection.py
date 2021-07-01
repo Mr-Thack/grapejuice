@@ -5,7 +5,7 @@ import time
 
 from dbus import DBusException
 
-import grapejuice_common.ipc.dbus_config as dbus_config
+from grapejuice_common.ipc import dbus_config
 from grapejuice_common.ipc.i_dbus_connection import IDBusConnection
 from grapejuice_common.ipc.pid_file import daemon_pid_file
 

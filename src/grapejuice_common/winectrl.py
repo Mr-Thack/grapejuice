@@ -13,7 +13,7 @@ from string import Template
 from subprocess import DEVNULL
 from typing import List, Union
 
-import grapejuice_common.variables as variables
+from grapejuice_common import variables
 from grapejuice_common.logs.log_util import log_on_call, log_function
 
 LOG = logging.getLogger(__name__)

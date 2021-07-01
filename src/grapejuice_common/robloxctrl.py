@@ -4,8 +4,8 @@ import time
 from pathlib import Path
 from typing import Union, List
 
-import grapejuice_common.variables as variables
-import grapejuice_common.winectrl as winectrl
+from grapejuice_common import variables
+from grapejuice_common import winectrl
 from grapejuice_common.logs.log_util import log_function
 from grapejuice_common.util import download_file
 
