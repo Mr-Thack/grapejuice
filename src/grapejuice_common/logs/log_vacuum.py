@@ -32,7 +32,9 @@ def archive_logs(old_log_files):
 
     with ZipFile(archive_path, "w", ZIP_LZMA) as zf:
         for file in old_log_files:
-            if os.stat(file).st_size > 0:
+            log_stat = os.stat(file)
+
+            if 0 < log_stat.st_size < 2048:
                 with open(file, "rb") as fp:
                     zf.writestr(os.path.basename(file), fp.read(), ZIP_LZMA)
 
