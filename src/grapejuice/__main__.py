@@ -82,14 +82,6 @@ def main(in_args=None):
 
     from grapejuice_common.features.settings import current_settings
 
-    try:
-        vacuum_logs()
-
-    except Exception as e:
-        # Vacuuming logs appears to break on some systems
-        # So let's just catch any exception
-        log.error(str(e))
-
     if current_settings:
         # TODO: Add logging for successful settings loading (Issue #9)
         pass
@@ -133,13 +125,25 @@ def main(in_args=None):
 
     args = parser.parse_args(in_args[1:])
 
+    exit_code = 1
+
     if hasattr(args, "func"):
         f: Callable[[any], int] = getattr(args, "func")
-        return f(args) or 0
+        exit_code = f(args) or 0
 
     else:
         parser.print_help()
-        return 1
+
+    try:
+        log.info("Vacuuming logs")
+        vacuum_logs()
+
+    except Exception as e:
+        # Vacuuming logs appears to break on some systems
+        # So let's just catch any exception
+        log.error(str(e))
+
+    return exit_code
 
 
 if __name__ == "__main__":
