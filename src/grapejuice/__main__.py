@@ -1,4 +1,5 @@
 import argparse
+import logging
 import random
 import sys
 from typing import Callable
@@ -77,9 +78,17 @@ def run_daemon_instead(argv):
 
 def main(in_args=None):
     log_config.configure_logging("grapejuice")
+    log = logging.getLogger(f"{__name__}/main")
 
     from grapejuice_common.features.settings import current_settings
-    vacuum_logs()
+
+    try:
+        vacuum_logs()
+
+    except Exception as e:
+        # Vacuuming logs appears to break on some systems
+        # So let's just catch any exception
+        log.error(str(e))
 
     if current_settings:
         # TODO: Add logging for successful settings loading (Issue #9)
