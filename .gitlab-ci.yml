@@ -47,7 +47,20 @@ grapejuice:debian_package:
         - master
         - develop
 
-#grapejuice:appimage:
+grapejuice:update_repositories:
+    stage: deploy
+    artifacts:
+        expire_in: 1 day
+        paths:
+            - artifacts/
+            - public
+
+    script:
+        - bash ./ci_scripts/update_repositories.sh
+        - echo 'Hello world' > public/index.html
+        - ls -hal public
+
+
 #    stage: package
 #    artifacts:
 #        expire_in: 1 week
