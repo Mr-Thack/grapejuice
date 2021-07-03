@@ -19,7 +19,7 @@ mkdir -p "$DEBIAN_REPOSITORY/conf" || exit
 touch "$DEBIAN_REPOSITORY/conf/"{option,distributions}
 echo "Codename: $DEBIAN_DISTRIBUTION" >>"$DEBIAN_REPOSITORY/conf/distributions"
 echo 'Components: main' >>"$DEBIAN_REPOSITORY/conf/distributions"
-echo 'Architectures: amd64' >>"$DEBIAN_REPOSITORY/conf/distributions"
+echo 'Architectures: amd64 i386' >>"$DEBIAN_REPOSITORY/conf/distributions"
 echo 'SignWith: 8C215E86647988DA' >>"$DEBIAN_REPOSITORY/conf/distributions"
 
 reprepro -V -b "$DEBIAN_REPOSITORY" includedeb $DEBIAN_DISTRIBUTION artifacts/debian_package/*.deb
