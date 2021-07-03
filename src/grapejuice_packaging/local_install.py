@@ -3,6 +3,7 @@ import subprocess
 import sys
 import tarfile
 from pathlib import Path
+
 from setuptools import Command
 
 import grapejuice_common.variables as v
@@ -37,14 +38,6 @@ def _do_install(*_):
         os.environ["PYTHONPATH"] = src_path
 
     install = TaskSequence("Install Grapejuice locally")
-
-    @install.task("Kill Grapejuice daemon, if running")
-    def kill_daemon(log):
-        try:
-            subprocess.call([PYTHON_INTERPRETER, "-m", "grapejuiced", "kill"])
-
-        except subprocess.CalledProcessError:
-            pass
 
     @install.task("Build package of supplemental files")
     def build_supplemental(log):
