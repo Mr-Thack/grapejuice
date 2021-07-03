@@ -24,7 +24,7 @@ def ensure_dir(p):
 
 
 def home():
-    return os.environ["HOME"]
+    return str(Path(os.environ["HOME"]).resolve())
 
 
 def system_application_dir():

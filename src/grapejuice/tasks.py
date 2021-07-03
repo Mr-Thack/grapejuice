@@ -5,7 +5,7 @@ import sys
 
 from grapejuice import background
 from grapejuice_common import winectrl, variables
-from grapejuice_common.updates.update_provider import UpdateInformationProvider
+from grapejuice_common.update_info_providers import UpdateInformationProvider
 
 
 def install_roblox():
