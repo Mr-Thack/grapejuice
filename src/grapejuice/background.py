@@ -45,7 +45,15 @@ class Task:
 
     def on_error(self, e: Exception):
         self._log.error(str(e))
-        self._log.error(traceback.format_exc())
+
+        try:
+            self._log.error(traceback.format_exc())
+
+        except Exception as format_error:
+            # There was an error while you were formatting your error
+            # So let's error while erroring
+            # ...dawg
+            self._log.error(str(format_error))
 
         if callable(self._on_error_callback):
             self._on_error_callback(self, e)
