@@ -20,7 +20,7 @@ touch "$DEBIAN_REPOSITORY/conf/"{option,distributions}
 echo "Codename: $DEBIAN_DISTRIBUTION" >>"$DEBIAN_REPOSITORY/conf/distributions"
 echo 'Components: main' >>"$DEBIAN_REPOSITORY/conf/distributions"
 echo 'Architectures: amd64' >>"$DEBIAN_REPOSITORY/conf/distributions"
-echo 'SignWith: 54F9A23FAD1F5ACACE3D313E8C215E86647988DA' >>"$DEBIAN_REPOSITORY/conf/distributions"
+echo 'SignWith: 8C215E86647988DA' >>"$DEBIAN_REPOSITORY/conf/distributions"
 
 reprepro -V -b "$DEBIAN_REPOSITORY" includedeb $DEBIAN_DISTRIBUTION artifacts/debian_package/*.deb
 
