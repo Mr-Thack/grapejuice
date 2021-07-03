@@ -47,7 +47,7 @@ grapejuice:debian_package:
         - master
         - develop
 
-grapejuice:update_repositories:
+pages:
     stage: deploy
     artifacts:
         paths:
