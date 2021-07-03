@@ -21,6 +21,9 @@ LOG = logging.getLogger(__name__)
 on_destroy = Event()
 
 once_task_tracker = dict()
+on_background_task_error = Event()
+on_background_errors_shown = Event()
+background_task_errors = []
 
 update_provider: UpdateInformationProvider = update_info_providers.guess_relevant_provider()
 
@@ -37,6 +40,11 @@ def run_task_once(task_class, on_already_running: callable, *args, **kwargs):
     if task_class in once_task_tracker.values():
         on_already_running()
         return
+
+    def on_error(*args2):
+        on_background_task_error(*args2)
+
+    kwargs["on_error_callback"] = on_error
 
     task = task_class(*args, **kwargs)
     once_task_tracker[task] = task_class
@@ -206,6 +214,18 @@ class MainWindowHandlers:
 
             dialog(f"Failed to uninstall Grapejuice.\n\n{msg}")
 
+    def show_background_task_errors(self, *_):
+        errors = [*background_task_errors]
+        background_task_errors.clear()
+
+        dialog("Some errors occurred while running. The following dialogs will show them in order. Check the logs for "
+               "the full details of the errors.")
+
+        for i, err in enumerate(errors):
+            dialog("Error " + str(i + 1) + ": " + str(err))
+
+        on_background_errors_shown()
+
 
 class MainWindow(WindowBase):
     def __init__(self):
@@ -214,10 +234,13 @@ class MainWindow(WindowBase):
             MainWindowHandlers()
         )
 
+        self._background_task_errors = []
+
         background.tasks.tasks_changed.add_listener(self.on_tasks_changed)
         on_destroy.add_listener(self.before_destroy)
 
         self.on_tasks_changed()
+        self.background_task_errors_button.hide()
         self.set_update_status_visibility(False)
 
         if update_provider.can_update():
@@ -228,6 +251,9 @@ class MainWindow(WindowBase):
             self.reinstall_grapejuice_button.hide()
             self.uninstall_button.hide()
 
+        on_background_task_error.add_listener(self.on_background_task_error)
+        on_background_errors_shown.add_listener(self.on_background_task_errors_shown)
+
         self.perform_update_check()
 
     @property
@@ -237,6 +263,10 @@ class MainWindow(WindowBase):
     @property
     def background_task_spinner(self):
         return self.builder.get_object("background_task_spinner")
+
+    @property
+    def background_task_errors_button(self):
+        return self.builder.get_object("background_task_errors_button")
 
     @property
     def update_status(self):
@@ -279,6 +309,13 @@ class MainWindow(WindowBase):
         self.update_status_label.set_text(status)
         self.set_update_status_visibility(True, ignore_elements)
 
+    def on_background_task_error(self, _task, e):
+        self.background_task_errors_button.show()
+        background_task_errors.append(e)
+
+    def on_background_task_errors_shown(self):
+        self.background_task_errors_button.hide()
+
     def on_tasks_changed(self):
         if background.tasks.count > 0:
             self.background_task_spinner.start()
@@ -299,10 +336,10 @@ class MainWindow(WindowBase):
         w = self
 
         class CheckForUpdates(background.BackgroundTask):
-            def __init__(self):
-                super().__init__("Checking for a newer version of Grapejuice")
+            def __init__(self, **kwargs):
+                super().__init__("Checking for a newer version of Grapejuice", **kwargs)
 
-            def run(self) -> None:
+            def work(self) -> None:
                 show_button = False
 
                 if update_provider.update_available():
@@ -321,6 +358,8 @@ class MainWindow(WindowBase):
                     w.update_status_label.set_text(s)
                     w.show_update_status(s, show_button)
 
-                self.finish()
-
         background.tasks.add(CheckForUpdates())
+
+    def __del__(self):
+        on_background_task_error.remove_listener(self.on_background_task_error)
+        on_background_errors_shown.remove_listener(self.on_background_task_errors_shown)

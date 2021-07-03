@@ -1,4 +1,3 @@
-import logging
 import os
 import subprocess
 import sys
@@ -14,89 +13,66 @@ def install_roblox():
 
 
 class DisableMimeAssociations(background.BackgroundTask):
-    def __init__(self):
-        super().__init__("Disabling Wine associations")
+    def __init__(self, **kwargs):
+        super().__init__("Disabling Wine associations", **kwargs)
 
-    def run(self) -> None:
+    def work(self) -> None:
         winectrl.disable_mime_assoc()
-        self.finish()
 
 
 class InstallRoblox(background.BackgroundTask):
-    def __init__(self):
-        super().__init__("Installing Roblox")
+    def __init__(self, **kwargs):
+        super().__init__("Installing Roblox", **kwargs)
 
-    def run(self) -> None:
-        try:
-            install_roblox()
-
-        except Exception as e:
-            # TODO: find a proper fix when install_roblox errors out like this
-            logging.getLogger(self.__class__.__name__).error(e)
-
-        self.finish()
+    def work(self) -> None:
+        install_roblox()
 
 
 class SandboxWine(background.BackgroundTask):
-    def __init__(self):
-        super().__init__("Sandboxing the Wine prefix")
+    def __init__(self, **kwargs):
+        super().__init__("Sandboxing the Wine prefix", **kwargs)
 
-    def run(self) -> None:
+    def work(self) -> None:
         winectrl.sandbox()
-        self.finish()
 
 
 class RunRobloxStudio(background.BackgroundTask):
-    def __init__(self):
-        super().__init__("Launching Roblox Studio")
+    def __init__(self, **kwargs):
+        super().__init__("Launching Roblox Studio", **kwargs)
 
-    def run(self) -> None:
+    def work(self) -> None:
         from grapejuice_common.ipc.dbus_client import dbus_connection
         dbus_connection().launch_studio()
-        self.finish()
 
 
 class ExtractFastFlags(background.BackgroundTask):
-    def __init__(self):
-        super().__init__("Extracting Fast Flags")
+    def __init__(self, **kwargs):
+        super().__init__("Extracting Fast Flags", **kwargs)
 
-    def run(self) -> None:
-        try:
-            from grapejuice_common.ipc.dbus_client import dbus_connection
-            dbus_connection().extract_fast_flags()
-
-        except Exception as e:
-            logging.getLogger(self.__class__.__name__).error(e)
-
-        self.finish()
+    def work(self) -> None:
+        from grapejuice_common.ipc.dbus_client import dbus_connection
+        dbus_connection().extract_fast_flags()
 
 
 class OpenLogsDirectory(background.BackgroundTask):
-    def __init__(self):
-        super().__init__("Opening logs directory")
+    def __init__(self, **kwargs):
+        super().__init__("Opening logs directory", **kwargs)
 
-    def run(self) -> None:
+    def work(self) -> None:
         path = variables.logging_directory()
         os.makedirs(path, exist_ok=True)
 
         subprocess.check_call(["xdg-open", path])
-        self.finish()
 
 
 class PerformUpdate(background.BackgroundTask):
-    def __init__(self, update_provider: UpdateInformationProvider, reopen: bool = False):
-        super().__init__()
+    def __init__(self, update_provider: UpdateInformationProvider, reopen: bool = False, **kwargs):
+        super().__init__(**kwargs)
         self._update_provider = update_provider
         self._reopen = reopen
 
-    def run(self) -> None:
-        log = logging.getLogger(self.__class__.__name__)
-
-        try:
-            self._update_provider.do_update()
-
-        except Exception as e:
-            log.error(e)
+    def work(self) -> None:
+        self._update_provider.do_update()
 
         if self._reopen:
             subprocess.Popen(["bash", "-c", f"{sys.executable} -m grapejuice gui & disown"], preexec_fn=os.setpgrp)
@@ -105,5 +81,3 @@ class PerformUpdate(background.BackgroundTask):
             Gtk.main_quit()
 
             sys.exit(0)
-
-        self.finish()

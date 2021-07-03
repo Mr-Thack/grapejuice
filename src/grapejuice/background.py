@@ -1,16 +1,27 @@
 import logging
 import threading
-from typing import Union
+import traceback
+from typing import Union, Callable
 
 from grapejuice_common.util.event import Event
+
+OptionalCallback = Union[Callable, None]
 
 
 class Task:
     _log: logging.Logger
+    _on_finish_callback: OptionalCallback = None
+    _on_error_callback: OptionalCallback = None
 
-    def __init__(self, name):
+    def __init__(
+        self, name,
+        on_finish_callback: OptionalCallback = None,
+        on_error_callback: OptionalCallback = None
+    ):
         self._log = logging.getLogger(f"{Task.__name__}/{name}")
 
+        self._on_finish_callback = on_finish_callback
+        self._on_error_callback = on_error_callback
         self._name = name
         self._finished = False
         self._collection: Union[None, TaskCollection] = None
@@ -29,7 +40,15 @@ class Task:
         self._collection = value
 
     def on_finished(self):
-        pass
+        if callable(self._on_finish_callback):
+            self._on_finish_callback(self)
+
+    def on_error(self, e: Exception):
+        self._log.error(str(e))
+        self._log.error(traceback.format_exc())
+
+        if callable(self._on_error_callback):
+            self._on_error_callback(self, e)
 
     def finish(self):
         self.on_finished()
@@ -38,18 +57,27 @@ class Task:
         if self.collection is not None:
             self.collection.remove(self)
 
+    def work(self):
+        pass
+
     @property
     def name(self):
         return self._name
 
 
 class BackgroundTask(threading.Thread, Task):
-    def __init__(self, name="Untitled task"):
+    def __init__(self, name="Untitled task", **kwargs):
         threading.Thread.__init__(self)
-        Task.__init__(self, name)
+        Task.__init__(self, name, **kwargs)
 
     def run(self) -> None:
-        raise NotImplementedError()
+        try:
+            self.work()
+
+        except Exception as e:
+            self.on_error(e)
+
+        self.finish()
 
     def __repr__(self):
         return "BackgroundTask: {}".format(self._name)
@@ -77,7 +105,9 @@ class TaskCollection:
         self.tasks_changed()
 
     def remove(self, task):
-        self._tasks.remove(task)
+        if task in self._tasks:
+            self._tasks.remove(task)
+
         self.task_removed(task)
         self.tasks_changed()
 
