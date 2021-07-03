@@ -49,6 +49,7 @@ CONTROL_FIELDS = [
     ("Depends", [
         "python3 (>= 3.7~)",
         "python3-packaging",
+        "python3-setuptools",
         "python3-psutil",
         "python3-requests",
         "python3-gi",
