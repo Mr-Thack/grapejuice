@@ -69,6 +69,11 @@ def prepare():
     for k, v in user_env.items():
         apply_env[k] = os.environ.get(k, v)
 
+    # Wine generates giant logs for some people
+    # Setting WINEDEBUG to -all *should* fix it
+    if "WINEDEBUG" not in apply_env:
+        apply_env["WINEDEBUG"] = "-all"
+
     # Apply env
     for k, v in apply_env.items():
         os.environ[k] = v
