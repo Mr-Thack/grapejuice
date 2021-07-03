@@ -12,7 +12,6 @@ from pathlib import Path
 import requests
 from packaging import version
 
-import grapejuice_common.variables as v
 from grapejuice_common import variables
 from grapejuice_common.features import settings
 from grapejuice_common.logs.log_util import log_function
@@ -39,7 +38,7 @@ class UpdateInformationProvider(ABC):
         if return_cached and UpdateInformationProvider._cached_gitlab_version is not None:
             return UpdateInformationProvider._cached_gitlab_version
 
-        url = v.git_grapejuice_init()
+        url = variables.git_grapejuice_init()
         response = requests.get(url)
 
         if response.status_code < 200 or response.status_code > 299:
@@ -104,11 +103,11 @@ class SourceUpdateInformationProvider(UpdateInformationProvider):
     def do_update(self):
         from grapejuice_common.features.settings import current_settings
 
-        tmp_path = v.tmp_path()
+        tmp_path = variables.tmp_path()
         LOG.info(f"Temporary files path at: {tmp_path}")
         update_package_path = os.path.join(tmp_path, "update")
 
-        response = requests.get(v.git_source_tarball())
+        response = requests.get(variables.git_source_tarball())
         if response.status_code < 200 or response.status_code > 299:
             raise UpdateError(f"Received HTTP error {response.status_code} from GitLab")
 
