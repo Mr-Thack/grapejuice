@@ -101,16 +101,8 @@ def fast_flag_warning_glade():
     return os.path.join(glade_dir(), "fast_flag_warning.glade")
 
 
-def sparklepop_glade():
-    return os.path.join(glade_dir(), "sparklepop.glade")
-
-
 def config_base_dir():
     return ensure_dir(os.path.join(xdg_config_home(), "brinkervii"))
-
-
-def sparklepop_config_dir():
-    return ensure_dir(os.path.join(config_base_dir(), "sparklepop"))
 
 
 def grapejuice_config_dir():
@@ -119,10 +111,6 @@ def grapejuice_config_dir():
 
 def grapejuice_user_settings():
     return Path(grapejuice_config_dir(), "user_settings.json")
-
-
-def sparklepop_snapshots_dir():
-    return ensure_dir(os.path.join(sparklepop_config_dir(), "snapshots"))
 
 
 def wineprefix_dir():

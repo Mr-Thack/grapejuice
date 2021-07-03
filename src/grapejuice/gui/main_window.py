@@ -164,9 +164,6 @@ class MainWindowHandlers:
     def show_wiki(self, *_):
         xdg_open(variables.git_wiki())
 
-    def launch_sparklepop(self, *_):
-        os.spawnlp(os.P_NOWAIT, "python", "python", "-m", "sparklepop")
-
     def open_logs_directory(self, *_):
         run_task_once(OpenLogsDirectory, generic_already_running)
 
