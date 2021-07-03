@@ -51,7 +51,6 @@ grapejuice:update_repositories:
     stage: deploy
     artifacts:
         paths:
-            - artifacts/
             - public
     script:
         - bash ./ci_scripts/update_repositories.sh
