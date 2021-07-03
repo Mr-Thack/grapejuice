@@ -5,7 +5,7 @@ import sys
 
 from grapejuice import background
 from grapejuice_common import winectrl, variables
-from grapejuice_common.updates.update_provider import UpdateProvider
+from grapejuice_common.updates.update_provider import UpdateInformationProvider
 
 
 def install_roblox():
@@ -84,7 +84,7 @@ class OpenLogsDirectory(background.BackgroundTask):
 
 
 class PerformUpdate(background.BackgroundTask):
-    def __init__(self, update_provider: UpdateProvider, reopen: bool = False):
+    def __init__(self, update_provider: UpdateInformationProvider, reopen: bool = False):
         super().__init__()
         self._update_provider = update_provider
         self._reopen = reopen

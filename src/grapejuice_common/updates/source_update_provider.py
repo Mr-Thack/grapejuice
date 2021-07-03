@@ -11,20 +11,20 @@ from packaging import version
 
 import grapejuice_common.variables as v
 from grapejuice_common.features import settings
-from grapejuice_common.updates.update_provider import UpdateProvider, UpdateError
+from grapejuice_common.updates.update_provider import UpdateInformationProvider, UpdateError
 
 LOG = logging.getLogger(__name__)
 
 
-class SourceUpdateProvider(UpdateProvider):
+class SourceUpdateInformationProvider(UpdateInformationProvider):
     def target_version(self) -> version.Version:
-        return UpdateProvider.gitlab_version(return_cached=True)
+        return UpdateInformationProvider.gitlab_version(return_cached=True)
 
     def update_available(self) -> bool:
-        return UpdateProvider.gitlab_version() > UpdateProvider.local_version()
+        return UpdateInformationProvider.gitlab_version() > UpdateInformationProvider.local_version()
 
     def local_is_newer(self) -> bool:
-        return UpdateProvider.local_version() > UpdateProvider.gitlab_version(return_cached=True)
+        return UpdateInformationProvider.local_version() > UpdateInformationProvider.gitlab_version(return_cached=True)
 
     @staticmethod
     def can_update() -> bool:

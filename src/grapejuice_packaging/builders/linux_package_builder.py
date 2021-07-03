@@ -10,10 +10,8 @@ from pathlib import Path
 from string import Template
 
 import grapejuice.__about__ as about
-import grapejuice_common
 import grapejuice_common.variables as v
 import grapejuice_packaging.packaging_resources as res
-from grapejuice_common.dist_info import DistributionType, DistributionInfo
 from grapejuice_common.util.task_sequence import TaskSequence
 from grapejuice_packaging.builders.package_builder import PackageBuilder
 
@@ -28,7 +26,6 @@ class LinuxPackageConfiguration:
     python_site_version: str = "python3"
     package_name: str = f"{about.package_name}-{about.package_version}.tar.gz"
     target_system_root: str = os.path.sep
-    distribution_type = DistributionType.system_package
 
     def __init__(self, root: str):
         self.root = root
@@ -61,15 +58,6 @@ def _build_package(configuration: LinuxPackageConfiguration):
                 "--no-dependencies",
                 "--target", str(python_site)
             ])
-
-        @build.task("Update distribution tpye")
-        def update_distribution_type(log):
-            path = python_site.joinpath(grapejuice_common.__name__, "assets", "dist_info.json")
-            log.info(f"Using dist info at: {path}")
-
-            info = DistributionInfo(str(path.absolute()))
-            info.distribution_type = configuration.distribution_type
-            info.write()
 
     @build.task("Copy MIME files")
     def mime_files(log):

@@ -17,7 +17,7 @@ class UpdateError(RuntimeError):
     pass
 
 
-class UpdateProvider(ABC):
+class UpdateInformationProvider(ABC):
     _cached_gitlab_version: version.Version = None
 
     @staticmethod
@@ -26,8 +26,8 @@ class UpdateProvider(ABC):
 
     @staticmethod
     def gitlab_version(return_cached: bool = False) -> version.Version:
-        if return_cached and UpdateProvider._cached_gitlab_version is not None:
-            return UpdateProvider._cached_gitlab_version
+        if return_cached and UpdateInformationProvider._cached_gitlab_version is not None:
+            return UpdateInformationProvider._cached_gitlab_version
 
         url = v.git_grapejuice_init()
         response = requests.get(url)
@@ -47,7 +47,7 @@ class UpdateProvider(ABC):
                 continue
 
             ver = version.parse(match.group(1).strip())
-            UpdateProvider._cached_gitlab_version = ver
+            UpdateInformationProvider._cached_gitlab_version = ver
 
             return ver
 

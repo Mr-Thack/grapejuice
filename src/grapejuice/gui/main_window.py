@@ -12,7 +12,7 @@ from grapejuice_common.features import settings
 from grapejuice_common.features.settings import current_settings
 from grapejuice_common.gtk.gtk_stuff import WindowBase, dialog
 from grapejuice_common.registry_utils import logged_into_studio
-from grapejuice_common.updates.provider_map import get_update_provider
+from grapejuice_common.updates.update_provider import UpdateInformationProvider
 from grapejuice_common.util.errors import NoWineError
 from grapejuice_common.util.event import Event
 
@@ -22,7 +22,8 @@ on_destroy = Event()
 
 once_task_tracker = dict()
 
-update_provider = get_update_provider()
+# TODO: Get proper update provider
+update_provider: UpdateInformationProvider = None
 
 
 def on_task_removed(task: background.BackgroundTask):

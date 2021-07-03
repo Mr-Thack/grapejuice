@@ -1,9 +1,9 @@
 from packaging import version
 
-from grapejuice_common.updates.update_provider import UpdateProvider, UpdateError
+from grapejuice_common.updates.update_provider import UpdateInformationProvider, UpdateError
 
 
-class SystemUpdateProvider(UpdateProvider):
+class SystemUpdateInformationProvider(UpdateInformationProvider):
     def target_version(self) -> version.Version:
         return version.parse("0.0.0")
 
