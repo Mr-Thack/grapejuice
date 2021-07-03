@@ -83,8 +83,7 @@ def main(in_args=None):
     from grapejuice_common.features.settings import current_settings
 
     if current_settings:
-        # TODO: Add logging for successful settings loading (Issue #9)
-        pass
+        log.info("Loaded settings")
 
     if in_args is None:
         in_args = sys.argv
