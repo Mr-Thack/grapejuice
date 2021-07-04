@@ -24,14 +24,14 @@ def get_installer():
     download_file(DOWNLOAD_URL, install_path)
 
 
-def run_installer():
+def run_installer(post_install_function: callable = None):
     winectrl.create_prefix()
     get_installer()
 
     p = variables.installer_path()
     LOG.info(f"Running installer at {p}")
 
-    winectrl.run_exe(p)
+    winectrl.run_exe(p, post_run_function=post_install_function)
 
 
 @log_function

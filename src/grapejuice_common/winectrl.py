@@ -26,8 +26,11 @@ open_fds = []
 
 
 class ProcessWrapper:
-    def __init__(self, proc: subprocess.Popen):
+    on_exit: callable = None
+
+    def __init__(self, proc: subprocess.Popen, on_exit: callable = None):
         self.proc = proc
+        self.on_exit = on_exit
 
     @property
     def exited(self):
@@ -195,7 +198,12 @@ def prefix_exists():
 
 
 @log_function
-def run_exe_no_daemon(command: List[str], exe_name: str, run_async: bool) -> Union[ProcessWrapper, None]:
+def run_exe_no_daemon(
+    command: List[str],
+    exe_name: str,
+    run_async: bool,
+    post_run_function: callable = None
+) -> Union[ProcessWrapper, None]:
     LOG.info("Running in no_daemon_mode")
 
     log_dir = Path(variables.logging_directory())
@@ -220,7 +228,8 @@ def run_exe_no_daemon(command: List[str], exe_name: str, run_async: bool) -> Uni
                 command,
                 stdout=stdout_fd,
                 stderr=stderr_fd
-            )
+            ),
+            on_exit=post_run_function
         )
 
         processes.append(wrapper)
@@ -237,16 +246,18 @@ def run_exe_no_daemon(command: List[str], exe_name: str, run_async: bool) -> Uni
             stderr=stderr_fd
         )
 
+        if callable(post_run_function):
+            post_run_function()
+
         return None
 
 
 @log_function
-def run_exe_in_daemon(command: List[str]) -> ProcessWrapper:
+def run_exe_in_daemon(command: List[str], post_run_function: callable = None) -> ProcessWrapper:
     LOG.info("Running process for daemon mode")
 
-    # pylint: disable=consider-using-with
     p = subprocess.Popen(command, stdin=DEVNULL, stdout=sys.stdout, stderr=sys.stderr)
-    wrapper = ProcessWrapper(p)
+    wrapper = ProcessWrapper(p, on_exit=post_run_function)
 
     processes.append(wrapper)
     poll_processes()
@@ -255,7 +266,13 @@ def run_exe_in_daemon(command: List[str]) -> ProcessWrapper:
 
 
 @log_function
-def run_exe(exe_path: Union[Path, str], *args, run_async=False, use_wine64=False) -> Union[ProcessWrapper, None]:
+def run_exe(
+    exe_path: Union[Path, str],
+    *args,
+    run_async=False,
+    use_wine64=False,
+    post_run_function: callable = None
+) -> Union[ProcessWrapper, None]:
     from grapejuice_common.features.settings import current_settings
     from grapejuice_common.features import settings
 
@@ -279,10 +296,10 @@ def run_exe(exe_path: Union[Path, str], *args, run_async=False, use_wine64=False
     command = [wine_binary, exe_path_string, *args]
 
     if current_settings.get(settings.k_no_daemon_mode):
-        return run_exe_no_daemon(command, exe_name, run_async)
+        return run_exe_no_daemon(command, exe_name, run_async, post_run_function=post_run_function)
 
     else:
-        return run_exe_in_daemon(command)
+        return run_exe_in_daemon(command, post_run_function=post_run_function)
 
 
 def _poll_processes() -> bool:
@@ -302,6 +319,10 @@ def _poll_processes() -> bool:
 
     for proc in exited:
         processes.remove(proc)
+
+        if callable(proc.on_exit):
+            proc.on_exit()
+
         del proc
 
     processes_left = len(processes) > 0

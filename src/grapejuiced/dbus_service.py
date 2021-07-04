@@ -44,7 +44,15 @@ class DBusService(dbus.service.Object):
     )
     def PlayGame(self, uri):
         from grapejuice_common import robloxctrl
-        robloxctrl.run_player(uri)
+
+        def do_run():
+            robloxctrl.run_player(uri)
+
+        if robloxctrl.locate_player_launcher():
+            do_run()
+
+        else:
+            robloxctrl.run_installer(post_install_function=do_run)
 
     @dbus.service.method(
         dbus_interface=bus_name,
