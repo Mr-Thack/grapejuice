@@ -63,10 +63,13 @@ def func_studio(args):
         dbus_connection().launch_studio()
 
 
-def func_install_roblox(*_):
+def func_install_roblox(args):
     from grapejuice_common import robloxctrl
 
-    robloxctrl.run_installer()
+    do_install = not (args.only_once and robloxctrl.locate_player_launcher())
+
+    if do_install:
+        robloxctrl.run_installer()
 
 
 def func_uninstall_grapejuice(*_):
@@ -146,6 +149,7 @@ def main(in_args=None):
     parser_studio.set_defaults(func=func_studio)
 
     parser_install_roblox = subparsers.add_parser("install-roblox")
+    parser_install_roblox.add_argument("--only-once", action="store_true")
     parser_install_roblox.set_defaults(func=func_install_roblox)
 
     if update_info_provider.can_update():

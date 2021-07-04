@@ -34,7 +34,7 @@ def perform_install():
     if "CI_JOB_ID" not in os.environ:
         subprocess.check_call([
             str(Path(os.environ["HOME"], ".local", "bin", "grapejuice").resolve()),
-            "install-roblox"
+            "install-roblox", "--only-once"
         ])
 
 
