@@ -69,6 +69,32 @@ def func_install_roblox(*_):
     robloxctrl.run_installer()
 
 
+def func_uninstall_grapejuice(*_):
+    from grapejuice_common import uninstall
+
+    uninstall_grapejuice_response = input(
+        "Are you sure you want to uninstall grapejuice? [y/N] "
+    ).strip().lower()
+
+    uninstall_grapejuice = (uninstall_grapejuice_response[0] == "y") if uninstall_grapejuice_response else False
+
+    if uninstall_grapejuice:
+        delete_prefix_response = input(
+            "Remove the Wineprefix that contains your installation of Roblox Studio? This will cause all "
+            "configuration of Roblox Studio to be permanently deleted! [n/Y] "
+        ).strip().lower()
+
+        delete_prefix = (delete_prefix_response[0] == "y") if delete_prefix_response else False
+
+        params = uninstall.UninstallationParameters(delete_prefix, for_reals=True)
+        uninstall.go(params)
+
+        print("Grapejuice has been uninstalled, have a nice day!")
+
+    else:
+        print("Uninstallation aborted")
+
+
 def run_daemon_instead(argv):
     from grapejuiced.__main__ import main as daemon_main
     daemon_main([sys.argv[0], *argv])
@@ -81,6 +107,9 @@ def main(in_args=None):
     log = logging.getLogger(f"{__name__}/main")
 
     from grapejuice_common.features.settings import current_settings
+    from grapejuice_common.update_info_providers import guess_relevant_provider
+
+    update_info_provider = guess_relevant_provider()
 
     if current_settings:
         log.info("Loaded settings")
@@ -118,6 +147,10 @@ def main(in_args=None):
 
     parser_install_roblox = subparsers.add_parser("install-roblox")
     parser_install_roblox.set_defaults(func=func_install_roblox)
+
+    if update_info_provider.can_update():
+        parser_uninstall_grapejuice = subparsers.add_parser("uninstall")
+        parser_uninstall_grapejuice.set_defaults(func=func_uninstall_grapejuice)
 
     parser_app = subparsers.add_parser("app")
     parser_app.set_defaults(func=func_app)
