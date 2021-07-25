@@ -2,11 +2,16 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkImage" id="fflag_editor">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">application-x-addon-symbolic</property>
+  </object>
   <object class="GtkImage" id="icon_drive">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="pixel-size">48</property>
-    <property name="icon-name">drive-harddisk</property>
+    <property name="icon-name">drive-harddisk-ieee1394-symbolic</property>
   </object>
   <object class="GtkImage" id="icon_file_manager">
     <property name="visible">True</property>
@@ -14,7 +19,7 @@
     <property name="margin-top">5</property>
     <property name="margin-bottom">5</property>
     <property name="pixel-size">48</property>
-    <property name="icon-name">system-file-manager</property>
+    <property name="icon-name">folder-documents-symbolic</property>
   </object>
   <object class="GtkImage" id="icon_install">
     <property name="visible">True</property>
@@ -22,19 +27,19 @@
     <property name="margin-top">5</property>
     <property name="margin-bottom">5</property>
     <property name="pixel-size">48</property>
-    <property name="icon-name">package-x-generic</property>
+    <property name="icon-name">package-x-generic-symbolic</property>
   </object>
   <object class="GtkImage" id="icon_logs">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="pixel-size">48</property>
-    <property name="icon-name">folder</property>
+    <property name="icon-name">folder-documents-symbolic</property>
   </object>
   <object class="GtkImage" id="icon_mime2">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="pixel-size">48</property>
-    <property name="icon-name">ascii</property>
+    <property name="icon-name">edit-clear-symbolic</property>
   </object>
   <object class="GtkImage" id="icon_registry_editor">
     <property name="visible">True</property>
@@ -42,13 +47,13 @@
     <property name="margin-top">5</property>
     <property name="margin-bottom">5</property>
     <property name="pixel-size">48</property>
-    <property name="icon-name">redhat-tools</property>
+    <property name="icon-name">document-properties-symbolic</property>
   </object>
   <object class="GtkImage" id="icon_reinstall">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="pixel-size">48</property>
-    <property name="icon-name">view-refresh</property>
+    <property name="icon-name">view-refresh-symbolic</property>
   </object>
   <object class="GtkImage" id="icon_roblox_studio">
     <property name="height-request">16</property>
@@ -62,7 +67,7 @@
     <property name="margin-top">5</property>
     <property name="margin-bottom">5</property>
     <property name="pixel-size">48</property>
-    <property name="icon-name">package</property>
+    <property name="icon-name">document-revert-symbolic-rtl</property>
   </object>
   <object class="GtkImage" id="icon_uninstall">
     <property name="visible">True</property>
@@ -70,13 +75,13 @@
     <property name="margin-top">5</property>
     <property name="margin-bottom">5</property>
     <property name="pixel-size">48</property>
-    <property name="icon-name">dialog-cancel</property>
+    <property name="icon-name">edit-delete-symbolic</property>
   </object>
   <object class="GtkImage" id="icon_update">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="margin-end">5</property>
-    <property name="icon-name">view-refresh</property>
+    <property name="icon-name">software-update-available-symbolic</property>
   </object>
   <object class="GtkImage" id="icon_wine_config">
     <property name="visible">True</property>
@@ -84,7 +89,7 @@
     <property name="margin-top">5</property>
     <property name="margin-bottom">5</property>
     <property name="pixel-size">48</property>
-    <property name="icon-name">configuration_section</property>
+    <property name="icon-name">document-properties-symbolic</property>
   </object>
   <object class="GtkImage" id="icon_winetricks">
     <property name="visible">True</property>
@@ -92,7 +97,13 @@
     <property name="margin-top">5</property>
     <property name="margin-bottom">5</property>
     <property name="pixel-size">48</property>
-    <property name="icon-name">winetricks</property>
+    <property name="icon-name">application-x-addon-symbolic</property>
+  </object>
+  <object class="GtkImage" id="install_fps_unlocker">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">system-software-install-symbolic</property>
   </object>
   <object class="GtkPopoverMenu" id="main_menu">
     <property name="can-focus">False</property>
@@ -157,6 +168,11 @@
       </packing>
     </child>
   </object>
+  <object class="GtkImage" id="sign_into_roblox">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">avatar-default-symbolic</property>
+  </object>
   <object class="GtkWindow" id="main_window">
     <property name="can-focus">False</property>
     <property name="role">Grapejuice</property>
@@ -172,19 +188,7 @@
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkStackSwitcher">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="halign">center</property>
-            <property name="margin-top">10</property>
-            <property name="margin-bottom">10</property>
-            <property name="stack">main_stack</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
+          <placeholder/>
         </child>
         <child>
           <object class="GtkStack" id="main_stack">
@@ -194,6 +198,7 @@
             <property name="margin-end">10</property>
             <property name="margin-top">10</property>
             <property name="margin-bottom">10</property>
+            <property name="transition-duration">150</property>
             <property name="transition-type">slide-left-right</property>
             <child>
               <object class="GtkBox" id="page_main">
@@ -223,6 +228,8 @@
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
+                    <property name="image">sign_into_roblox</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="open_roblox_return_to_studio" swapped="no"/>
                   </object>
                   <packing>
@@ -237,6 +244,8 @@
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
+                    <property name="image">fflag_editor</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="open_fast_flag_editor" swapped="no"/>
                   </object>
                   <packing>
@@ -288,6 +297,7 @@
                         <property name="margin-top">5</property>
                         <property name="margin-bottom">5</property>
                         <property name="image">icon_update</property>
+                        <property name="always-show-image">True</property>
                         <signal name="clicked" handler="update_grapejuice" swapped="no"/>
                       </object>
                       <packing>
@@ -358,6 +368,7 @@
                     <property name="receives-default">True</property>
                     <property name="image">icon_reinstall</property>
                     <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="reinstall_grapejuice" swapped="no"/>
                   </object>
                   <packing>
@@ -373,6 +384,7 @@
                     <property name="receives-default">True</property>
                     <property name="image">icon_uninstall</property>
                     <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="uninstall_grapejuice" swapped="no"/>
                   </object>
                   <packing>
@@ -381,7 +393,20 @@
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkButton" id="install_fps_unlocker_button">
+                    <property name="label" translatable="yes">Install FPS Unlocker</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="image">install_fps_unlocker</property>
+                    <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
+                    <signal name="clicked" handler="install_fps_unlocker" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">1</property>
+                  </packing>
                 </child>
                 <child>
                   <placeholder/>
@@ -543,9 +568,17 @@
       <object class="GtkHeaderBar">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="title" translatable="yes">Grapejuice</property>
         <property name="show-close-button">True</property>
-        <property name="decoration-layout">menu:minimize,close</property>
+        <child type="title">
+          <object class="GtkStackSwitcher">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="halign">center</property>
+            <property name="homogeneous">True</property>
+            <property name="icon-size">8</property>
+            <property name="stack">main_stack</property>
+          </object>
+        </child>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>

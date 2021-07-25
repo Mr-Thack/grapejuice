@@ -1,6 +1,8 @@
 import os
 import subprocess
 import sys
+import io
+import requests
 
 from grapejuice import background
 from grapejuice_common import winectrl, variables
@@ -81,3 +83,33 @@ class PerformUpdate(background.BackgroundTask):
             Gtk.main_quit()
 
             sys.exit(0)
+
+
+class InstallFPSUnlocker(background.BackgroundTask):
+    def __init__(self, **kwargs):
+        super().__init__("Installing Roblox FPS Unlocker", **kwargs)
+
+    def work(self) -> None:
+        import zipfile
+        from grapejuice_common.features import settings
+        from grapejuice_common.features.settings import current_settings
+
+        package_path = variables.rbxfpsunlocker_dir()
+
+        if not os.path.exists(package_path):
+            os.makedirs(package_path)
+
+            response = requests.get(variables.rbxfpsunlocker_vendor_download_url())
+            response.raise_for_status()
+
+            fp = io.BytesIO(response.content)
+            with zipfile.ZipFile(fp) as zip_ref:
+                zip_ref.extractall(package_path)
+
+            current_enabled_tweaks = current_settings.get(settings.k_enabled_tweaks)
+            if variables.rbxfpsunlocker_tweak_name() not in current_enabled_tweaks:
+                current_enabled_tweaks.append(variables.rbxfpsunlocker_tweak_name())
+                current_settings.set(settings.k_enabled_tweaks, current_enabled_tweaks, save=True)
+
+        else:
+            raise RuntimeError("RBXFpsUnlocker is already installed.")

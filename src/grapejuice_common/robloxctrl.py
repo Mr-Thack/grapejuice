@@ -173,6 +173,10 @@ def run_player(uri):
 
     LOG.info(f"Located player at {player}")
 
+    if variables.is_fps_unlocker_enabled():
+        LOG.info("RBXFpsUnlocker is enabled, starting...")
+        winectrl.run_exe(variables.rbxfpsunlocker_exe_path(), run_async=True)
+
     winectrl.run_exe(player, uri)
 
     return True
