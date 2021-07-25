@@ -15,8 +15,6 @@ k_release_channel = "release_channel"
 k_environment_variables = "env"
 k_disable_updates = "disable_updates"
 k_enabled_tweaks = "enabled_tweaks"
-k_player_renderer = "player_renderer"
-k_studio_renderer = "studio_renderer"
 
 
 def default_settings() -> Dict[str, any]:
@@ -28,9 +26,7 @@ def default_settings() -> Dict[str, any]:
         k_release_channel: "master",
         k_environment_variables: dict(),
         k_enabled_tweaks: list(),
-        k_disable_updates: False,
-        k_player_renderer: "any",
-        k_studio_renderer: "any"
+        k_disable_updates: False
     }
 
 
