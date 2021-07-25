@@ -13,6 +13,10 @@ k_dll_overrides = "dll_overrides"
 k_no_daemon_mode = "no_daemon_mode"
 k_release_channel = "release_channel"
 k_environment_variables = "env"
+k_disable_updates = "disable_updates"
+k_enabled_tweaks = "enabled_tweaks"
+k_player_renderer = "player_renderer"
+k_studio_renderer = "studio_renderer"
 
 
 def default_settings() -> Dict[str, any]:
@@ -22,7 +26,11 @@ def default_settings() -> Dict[str, any]:
         k_dll_overrides: "ucrtbase=n,b;api-ms-win-crt-private-l1-1-0=n,b;dxdiagn=;winemenubuilder.exe=",
         k_no_daemon_mode: True,
         k_release_channel: "master",
-        k_environment_variables: dict()
+        k_environment_variables: dict(),
+        k_enabled_tweaks: list(),
+        k_disable_updates: False,
+        k_player_renderer: "any",
+        k_studio_renderer: "any"
     }
 
 

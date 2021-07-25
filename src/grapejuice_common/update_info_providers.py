@@ -98,7 +98,9 @@ class SourceUpdateInformationProvider(UpdateInformationProvider):
 
     @staticmethod
     def can_update() -> bool:
-        return True
+        from grapejuice_common.features.settings import current_settings
+
+        return not current_settings.get(settings.k_disable_updates)
 
     def do_update(self):
         from grapejuice_common.features.settings import current_settings

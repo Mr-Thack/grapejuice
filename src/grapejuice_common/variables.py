@@ -166,6 +166,14 @@ def installer_path():
     return Path(wine_temp(), "Roblox_Installer.exe")
 
 
+def rbxfpsunlocker_dir():
+    return Path(vendor_dir(), "rbxfpsunlocker")
+
+
+def rbxfpsunlocker_exe_path():
+    return Path(rbxfpsunlocker_dir(), "rbxfpsunlocker.exe")
+
+
 def xdg_config_home():
     if "XDG_CONFIG_HOME" in os.environ:
         config_home = os.environ["XDG_CONFIG_HOME"]
@@ -177,6 +185,12 @@ def xdg_config_home():
         os.makedirs(config_home)
 
     return config_home
+
+
+def vendor_dir():
+    p = Path(user_application_dir(), "vendor")
+    p.mkdir(parents=True, exist_ok=True)
+    return p
 
 
 def dot_local():
@@ -298,6 +312,20 @@ def required_wine_version():
 def at_exit_handler(*args, **kwargs):
     for v in filter(callable, at_exit_handlers.values()):
         v(*args, **kwargs)
+
+def rbxfpsunlocker_vendor_download_url():
+    return "https://github.com/axstin/rbxfpsunlocker/files/5203791/rbxfpsunlocker-x86.zip"
+
+
+def rbxfpsunlocker_tweak_name():
+    return "rbxfpsunlocker"
+
+
+def is_fps_unlocker_enabled() -> bool:
+    from grapejuice_common.features.settings import current_settings
+    from grapejuice_common.features import settings
+
+    return rbxfpsunlocker_tweak_name() in current_settings.get(settings.k_enabled_tweaks)
 
 
 atexit.register(at_exit_handler)
