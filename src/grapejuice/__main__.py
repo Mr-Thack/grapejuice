@@ -23,7 +23,7 @@ def main_gui():
     gtk_boot(make_main_window)
 
 
-def func_gui(args):
+def func_gui(_args):
     main_gui()
 
 

@@ -21,7 +21,7 @@ class AppImageBuilder(PackageBuilder):
         pyinstaller_output_path = os.path.join(self._dist_dir, self._script_name)
 
         @app_image.task("Clean workspace")
-        def clean(log):
+        def clean(_log):
             self.clean_build()
             self.clean_dist()
 
@@ -104,7 +104,7 @@ class AppImageBuilder(PackageBuilder):
         app_dir_parent = os.path.dirname(app_dir)
 
         @app_image.task("Clean distribution folder again")
-        def clean_dist(log):
+        def clean_dist(_log):
             self.clean_dist()
             os.makedirs(self._dist_dir, exist_ok=True)
 
@@ -120,7 +120,7 @@ class AppImageBuilder(PackageBuilder):
             subprocess.check_call([path, app_dir])
 
         @app_image.task("Move AppImage to dist folder")
-        def move_app_image(log):
+        def move_app_image(_log):
             for file in Path(app_dir_parent).rglob("*.AppImage"):
                 shutil.move(str(file.absolute()), os.path.join(self._dist_dir, file.name))
 

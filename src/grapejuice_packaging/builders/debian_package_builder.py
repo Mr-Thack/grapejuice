@@ -123,6 +123,9 @@ class DebianPackageBuilder(LinuxPackageBuilder):
             self._build_dir = os.path.join(build_root, "ROOT")
             self._configuration.root = self._build_dir
 
+            log.info(f"Build dir: {self._build_dir}")
+            log.info(f"Configuration root: {self._configuration.root}")
+
             super_build()
 
             self._build_dir = build_root
@@ -131,7 +134,9 @@ class DebianPackageBuilder(LinuxPackageBuilder):
         @build.task("Create debian directory")
         def create_debian_directory(log):
             path = Path(self._build_dir, "debian")
-            os.makedirs(path, exist_ok=True)
+            path.mkdir(parents=True, exist_ok=True)
+
+            log.info(f"Created debian directory at {path}")
 
         @build.task("Write compat file")
         def write_compat(log):
@@ -139,6 +144,8 @@ class DebianPackageBuilder(LinuxPackageBuilder):
 
             with path.open("w+") as fp:
                 fp.write(str(int(DEBHELPER_COMPAT)))
+
+            log.info(f"Wrote compat file to {path}")
 
         @build.task("Write install file")
         def write_install_file(log):
@@ -148,12 +155,16 @@ class DebianPackageBuilder(LinuxPackageBuilder):
                 content = "ROOT/* /\n"
                 fp.write(content)
 
+            log.info(f"Wrote install file to {path}")
+
         @build.task("Write control file")
         def write_control(log):
             path = Path(self._build_dir, "debian", "control")
 
             with path.open("w+") as fp:
                 fp.write(_fields_to_string(CONTROL_FIELDS))
+
+            log.info(f"Wrote control file to {path}")
 
         @build.task("Write copyright file")
         def write_copyright(log):
@@ -162,6 +173,8 @@ class DebianPackageBuilder(LinuxPackageBuilder):
             with path.open("w+") as fp:
                 fp.write(_fields_to_string(COPYRIGHT_FIELDS))
 
+            log.info(f"Wrote copyright file to {path}")
+
         @build.task("Write files file")
         def write_files(log):
             path = Path(self._build_dir, "debian", "files")
@@ -169,12 +182,16 @@ class DebianPackageBuilder(LinuxPackageBuilder):
             with path.open("w+") as fp:
                 fp.write(" ".join([PACKAGE_FILENAME, DEBIAN_SECTION, DEBIAN_PRIORITY]))
 
+            log.info(f"Wrote 'files' file to {path}")
+
         @build.task("Write rules file")
         def write_rules(log):
             path = Path(self._build_dir, "debian", "rules")
 
             with path.open("w+") as fp:
                 fp.write(RULES)
+
+            log.info(f"Wrote rules file to {path}")
 
         @build.task("Write changelog file")
         def write_changelog(log):
@@ -196,8 +213,11 @@ class DebianPackageBuilder(LinuxPackageBuilder):
             date_str = datetime.now().strftime("%a, %d %b %Y %H:%M:%S") + " +0000"
             lines.append(f" -- {MAINTAINER}  {date_str}\n")
 
-            with open(os.path.join(self._build_dir, "debian", "changelog"), "w+") as fp:
+            changelog_path = Path(self._build_dir, "debian", "changelog")
+            with changelog_path.open("w+") as fp:
                 fp.writelines(lines)
+
+            log.info(f"Wrote changelog to {changelog_path}")
 
         build.run()
 
@@ -218,7 +238,7 @@ class DebianPackageBuilder(LinuxPackageBuilder):
             wd = os.getcwd()
 
             @dist.task("Create package file")
-            def create_package(log):
+            def create_package(_log):
                 os.chdir(self._build_dir)
                 subprocess.check_call(["debuild", "-uc", "-us"])
                 os.chdir(wd)

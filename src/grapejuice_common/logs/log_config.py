@@ -20,7 +20,6 @@ def _strip_pii(s: str):
 
 
 class GrapejuiceLogFormatter(logging.Formatter):
-
     def format(self, record: LogRecord) -> str:
         return _strip_pii(super().format(record))
 

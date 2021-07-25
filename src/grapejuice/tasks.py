@@ -1,7 +1,8 @@
+import io
 import os
 import subprocess
 import sys
-import io
+
 import requests
 
 from grapejuice import background

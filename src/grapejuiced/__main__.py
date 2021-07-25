@@ -11,7 +11,7 @@ def spawn(pid_file: PIDFile):
     from grapejuiced.state import State
     state = State()
 
-    def on_sigint(signum, frame) -> None:
+    def on_sigint(*_) -> None:
         print("> Responding to SIGINT, stopping...")
         state.stop()
 

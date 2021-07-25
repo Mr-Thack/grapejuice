@@ -40,7 +40,7 @@ def _do_install(*_):
     install = TaskSequence("Install Grapejuice locally")
 
     @install.task("Build package of supplemental files")
-    def build_supplemental(log):
+    def build_supplemental(_log):
         subprocess.check_call([
             PYTHON_INTERPRETER, "-m", "grapejuice_packaging",
             "supplemental_package"
@@ -83,7 +83,7 @@ def _do_install(*_):
                 os.environ[env_key] = env_value
 
     @install.task("Updating GTK icon cache")
-    def update_icon_cache(log):
+    def update_icon_cache(_log):
         subprocess.check_call(["gtk-update-icon-cache"])
 
     @install.task("Updating desktop database")

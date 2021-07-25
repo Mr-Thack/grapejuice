@@ -42,13 +42,13 @@ def func_supplemental_package(args):
     builder.dist()
 
 
-def func_pypi_package(args):
+def func_pypi_package(_args):
     builder = PyPiPackageBuilder("build", "dist")
     builder.build()
     builder.dist()
 
 
-def func_app_image(args):
+def func_app_image(_args):
     cwd = os.path.abspath(os.getcwd())
     build_dir = os.path.join(cwd, "build")
     dist_dir = os.path.join(cwd, "dist")
