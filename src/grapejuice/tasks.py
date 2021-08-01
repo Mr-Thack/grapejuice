@@ -96,21 +96,16 @@ class InstallFPSUnlocker(background.BackgroundTask):
         from grapejuice_common.features.settings import current_settings
 
         package_path = variables.rbxfpsunlocker_dir()
+        package_path.mkdir(parents=True, exist_ok=True)
 
-        if not os.path.exists(package_path):
-            os.makedirs(package_path)
+        response = requests.get(variables.rbxfpsunlocker_vendor_download_url())
+        response.raise_for_status()
 
-            response = requests.get(variables.rbxfpsunlocker_vendor_download_url())
-            response.raise_for_status()
+        fp = io.BytesIO(response.content)
+        with zipfile.ZipFile(fp) as zip_ref:
+            zip_ref.extractall(package_path)
 
-            fp = io.BytesIO(response.content)
-            with zipfile.ZipFile(fp) as zip_ref:
-                zip_ref.extractall(package_path)
-
-            current_enabled_tweaks = current_settings.get(settings.k_enabled_tweaks)
-            if variables.rbxfpsunlocker_tweak_name() not in current_enabled_tweaks:
-                current_enabled_tweaks.append(variables.rbxfpsunlocker_tweak_name())
-                current_settings.set(settings.k_enabled_tweaks, current_enabled_tweaks, save=True)
-
-        else:
-            raise RuntimeError("RBXFpsUnlocker is already installed.")
+        current_enabled_tweaks = current_settings.get(settings.k_enabled_tweaks)
+        if variables.rbxfpsunlocker_tweak_name() not in current_enabled_tweaks:
+            current_enabled_tweaks.append(variables.rbxfpsunlocker_tweak_name())
+            current_settings.set(settings.k_enabled_tweaks, current_enabled_tweaks, save=True)
