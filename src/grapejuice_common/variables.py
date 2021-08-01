@@ -1,7 +1,9 @@
 import atexit
 import getpass
+import json
 import logging
 import os
+import re
 import subprocess
 import uuid
 from pathlib import Path
@@ -315,7 +317,44 @@ def at_exit_handler(*args, **kwargs):
 
 
 def rbxfpsunlocker_vendor_download_url():
-    return "https://github.com/axstin/rbxfpsunlocker/files/5203791/rbxfpsunlocker-x86.zip"
+    try:
+        import requests
+
+        github_latest_release = requests.get("https://api.github.com/repos/axstin/rbxfpsunlocker/releases/latest")
+        github_latest_release.raise_for_status()
+
+        github_latest_release = github_latest_release.json()
+
+        url_ptn = re.compile(r"(https://github.com/axstin.rbxfpsunlocker/files/\d+/[\w-]+?\.zip)")
+        found_urls = url_ptn.findall(github_latest_release["body"])
+
+        LOG.info("Found FPS unlocker urls: " + json.dumps(found_urls))
+
+        if len(found_urls) <= 0:
+            raise RuntimeError("Did not find any valid fps unlocker urls")
+
+        def prioritize_url(url):
+            if "x64" in url:
+                priority = 0
+
+            elif "x86" in url:
+                priority = 1
+
+            else:
+                priority = 99
+
+            return {
+                "priority": priority,
+                "url": url
+            }
+
+        prioritized = list(sorted(map(prioritize_url, found_urls), key=lambda x: x["priority"]))
+
+        return prioritized[0]["url"]
+
+    except Exception as e:
+        LOG.error(str(e))
+        return "https://github.com/axstin/rbxfpsunlocker/files/5203791/rbxfpsunlocker-x86.zip"
 
 
 def rbxfpsunlocker_tweak_name():
