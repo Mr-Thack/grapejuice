@@ -5,6 +5,8 @@ from typing import List, Iterable, Dict
 
 import requests
 
+from grapejuice_common import variables
+
 LOG = logging.getLogger(__name__)
 
 
@@ -94,7 +96,7 @@ class FastFlagList:
         self._list = list()
 
     def import_file(self, fast_flags_path):
-        with open(fast_flags_path, "r") as fp:
+        with open(fast_flags_path, "r", encoding=variables.text_encoding()) as fp:
             json_object = json.load(fp)
             return self.import_dict(json_object)
 
@@ -108,7 +110,7 @@ class FastFlagList:
     def export_to_file(self, fast_flags_path):
         os.makedirs(os.path.dirname(fast_flags_path), exist_ok=True)
 
-        with open(fast_flags_path, "w+") as fp:
+        with open(fast_flags_path, "w+", encoding=variables.text_encoding()) as fp:
             json.dump(self.to_dict(), fp)
 
     def overlay_flags(self, other_flags):

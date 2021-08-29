@@ -9,7 +9,7 @@ def os_release():
 
     for path in search_paths:
         if os.path.exists(path):
-            with open(path, "r") as fp:
+            with open(path, "r", encoding="UTF-8") as fp:
                 return fp.read()
 
     raise RuntimeError("Could not open os-release")

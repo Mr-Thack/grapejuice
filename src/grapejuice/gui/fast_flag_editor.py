@@ -94,8 +94,8 @@ class FastFlagEditor(WindowBase):
         player_settings_exist = player_settings_path is not None and os.path.exists(player_settings_path)
 
         if studio_settings_exist and player_settings_exist:
-            with open(studio_settings_path) as studio_settings:
-                with open(player_settings_path) as player_settings:
+            with open(studio_settings_path, encoding=variables.text_encoding()) as studio_settings:
+                with open(player_settings_path, encoding=variables.text_encoding()) as player_settings:
                     if studio_settings.read() != player_settings.read():
                         dialog(
                             "The flags for the Roblox Player and Roblox Studio are different. "

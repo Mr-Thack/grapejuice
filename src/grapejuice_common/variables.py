@@ -368,4 +368,8 @@ def is_fps_unlocker_enabled() -> bool:
     return rbxfpsunlocker_tweak_name() in current_settings.get(settings.k_enabled_tweaks)
 
 
+def text_encoding() -> str:
+    return "UTF-8"
+
+
 atexit.register(at_exit_handler)

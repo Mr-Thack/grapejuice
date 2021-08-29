@@ -18,7 +18,7 @@ def read_os_release(log: logging.Logger):
         raise TaskError(f"OS release information does not exist at '{os_release_path}'", can_continue=True)
 
     log.info(f"-- Path is {os_release_path}")
-    with open(os_release_path, "r") as fp:
+    with open(os_release_path, "r", encoding="UTF-8") as fp:
         for line in fp.readlines():
             log.info(line.strip())
 

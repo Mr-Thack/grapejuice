@@ -6,6 +6,8 @@ import signal
 
 import psutil
 
+from grapejuice_common import variables
+
 LOG = logging.getLogger(__name__)
 
 
@@ -44,7 +46,7 @@ class PIDFile:
 
     @property
     def pid(self):
-        with open(self._path, "r") as fp:
+        with open(self._path, "r", encoding=variables.text_encoding()) as fp:
             s = fp.read().strip()
             if not s:
                 raise EmptyPIDError(self._path)
@@ -85,7 +87,7 @@ class PIDFile:
         except EmptyPIDError:
             pass
 
-        with open(self._path, "w+") as fp:
+        with open(self._path, "w+", encoding=variables.text_encoding()) as fp:
             fp.write(str(os.getpid()))
 
         self._wrote_pid = True

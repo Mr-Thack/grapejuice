@@ -29,7 +29,7 @@ def go(parameters: UninstallationParameters):
         ]).decode("UTF-8")
     )
 
-    with open(variables.application_manifest(), "r") as fp:
+    with open(variables.application_manifest(), "r", encoding=variables.text_encoding()) as fp:
         manifest = json.load(fp)
 
     for file in manifest["files"]:
