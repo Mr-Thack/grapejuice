@@ -53,8 +53,12 @@ pages:
         paths:
             - public
     script:
+        - pushd ./documentation
+        - npm install
+        - npm run build
+        - popd
+        - cp -frax ./documentation/public/* ./public
         - bash ./ci_scripts/update_repositories.sh
-        - echo 'Hello world' > public/index.html
         - ls -hal public
     only:
         - master
