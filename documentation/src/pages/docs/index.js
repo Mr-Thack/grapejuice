@@ -1,9 +1,10 @@
 import { Link } from "gatsby";
 import * as React from "react";
+import MainLayout from "../../layout/MainLayout";
 
 const DocumentationIndex = () => {
     return (
-        <div class="page">
+        <MainLayout>
             <section>
                 <header>
                     <h1>Install Grapejuice locally from Source</h1>
@@ -23,11 +24,11 @@ const DocumentationIndex = () => {
                         <Link to="/docs/source-install/solus">Solus</Link>
                     </li>
                     <li>
-                        <Link to="/docs/source-install/Ubuntu 18.04">Ubuntu 18.04</Link>
+                        <Link to="/docs/source-install/ubuntu-1804">Ubuntu 18.04</Link>
                     </li>
                 </ul>
             </section>
-        </div>
+        </MainLayout>
     );
 }
 

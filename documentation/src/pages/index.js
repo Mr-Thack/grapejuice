@@ -1,42 +1,31 @@
 import { Link } from "gatsby"
 import * as React from "react"
+import Button from "../components/Button"
+import Grapejuice from "../images/grapejuice.svg"
+import MainLayout from "../layout/MainLayout"
 import "../styles/index.scss"
 
 const IndexPage = () => {
     return (
-        <div class="page">
-            <header>
-                <section class="branding">
-                    Grapejuice
-                </section>
+        <MainLayout>
+            <section class="hero">
+                <h1 class="align-center">
+                    <img src={Grapejuice} />
+                    <span>Grapejuice</span>
+                    <small>
+                        Running Roblox on Linux, made easy
+                    </small>
+                </h1>
+            </section>
 
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="index">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="docs">Documentation</Link>
-                        </li>
-                    </ul>
-                </nav>
-            </header>
-
-            <main>
-                <section class="hero">
-                    <h1>
-                        <span>Grapejuice</span>
-                        <small>
-                            Running Roblox on Linux, made easy
-                        </small>
-                    </h1>
-                </section>
-
-                <span class="button">
-                    Get started
-                </span>
-            </main>
-        </div>
+            <div class="align-center">
+                <Link to="/docs">
+                    <Button>
+                        Get started
+                    </Button>
+                </Link>
+            </div>
+        </MainLayout>
     )
 }
 

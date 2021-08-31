@@ -1,0 +1,40 @@
+.main-layout {
+    .page-header {
+        position: relative;
+        width: 100%;
+        display: block;
+        background-color: #3c003c;
+
+        .branding {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            color: #fafafa;
+            font-size: 1.2rem;
+
+            a {
+                color: #fafafa;
+                text-decoration: none;
+            }
+
+            * {
+                display: inline-block;
+                vertical-align: middle;
+                user-select: none;
+            }
+
+            img {
+                margin-left: 2rem;
+                position: relative;
+            }
+
+            span {
+                margin-left: 1rem;
+            }
+
+            .aligner {
+                height: 100%;
+            }
+        }
+    }
+}

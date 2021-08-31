@@ -1,0 +1,21 @@
+nav {
+    display: inline-block;
+
+    ul,
+    li {
+        list-style: none;
+        list-style-type: none;
+    }
+
+    ul {
+        li {
+            display: inline-block;
+            margin: 1em;
+
+            a {
+                color: #fafafa;
+                text-decoration: none;
+            }
+        }
+    }
+}
