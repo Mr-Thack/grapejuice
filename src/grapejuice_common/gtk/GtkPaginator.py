@@ -28,7 +28,7 @@ class GtkPaginator(GrapejuiceComponent):
 
     @property
     def _label_text(self):
-        return "{}/{}".format(self._paginator.current_page_index + 1, self._paginator.n_pages)
+        return f"{self._paginator.current_page_index + 1}/{self._paginator.n_pages}"
 
     @property
     def _button_previous(self):

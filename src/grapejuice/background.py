@@ -88,7 +88,7 @@ class BackgroundTask(threading.Thread, Task):
         self.finish()
 
     def __repr__(self):
-        return "BackgroundTask: {}".format(self._name)
+        return f"BackgroundTask: {self._name}"
 
 
 class MockBackgroundTask(Task):

@@ -10,13 +10,14 @@ class State:
     def __init__(self, **kwargs):
         DBusGMainLoop(set_as_default=True)
 
-        if "bus" in kwargs.keys():
+        if "bus" in kwargs:
             self.session_bus = kwargs["bus"]
         else:
             self.session_bus = dbus.SessionBus()
 
-        if "start_service" in kwargs.keys() and kwargs["start_service"]:
+        if "start_service" in kwargs and kwargs["start_service"]:
             self.start_service()
+
         else:
             self.service = None
 

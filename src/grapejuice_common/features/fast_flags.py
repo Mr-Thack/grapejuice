@@ -81,7 +81,7 @@ class FastFlag:
         return -1
 
     def __repr__(self):
-        return "FFlag '{}': {}".format(self._name, self.value)
+        return f"FFlag '{self._name}': {self.value}"
 
 
 class FastFlagList:

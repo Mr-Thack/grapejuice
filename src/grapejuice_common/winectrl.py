@@ -113,7 +113,7 @@ def load_registry_file(srcfile, prepare_wine: bool = True):
     target_path = os.path.join(variables.wine_temp(), target_filename)
     shutil.copyfile(srcfile, target_path)
 
-    winreg = "C:\\windows\\temp\\{}".format(target_filename)
+    winreg = f"C:\\windows\\temp\\{target_filename}"
     run_exe("regedit", "/S", winreg, run_async=False, use_wine64=False)
     run_exe("regedit", "/S", winreg, run_async=False, use_wine64=True)
 
@@ -132,7 +132,7 @@ def load_patched_registry_files(source: Path, patches: dict = None):
     with target_path.open("w+") as fp:
         fp.write(template.safe_substitute(patches))
 
-    winreg = "C:\\windows\\temp\\{}".format(str(target_filename))
+    winreg = f"C:\\windows\\temp\\{target_filename}"
     run_exe("regedit", "/S", winreg, run_async=False, use_wine64=False)
     run_exe("regedit", "/S", winreg, run_async=False, use_wine64=True)
 
@@ -334,8 +334,6 @@ def _poll_processes() -> bool:
 
 
 def poll_processes():
-    global is_polling
-
     if is_polling:
         return
 

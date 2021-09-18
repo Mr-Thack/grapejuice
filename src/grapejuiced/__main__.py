@@ -28,7 +28,7 @@ def func_kill(*_):
 
     pid_file = daemon_pid_file()
     if pid_file.is_running():
-        print("> Killed daemon with pid {} in one sweeping blow.".format(pid_file.pid))
+        print(f"> Killed daemon with pid {pid_file.pid} in one sweeping blow.")
         pid_file.kill()
 
     else:

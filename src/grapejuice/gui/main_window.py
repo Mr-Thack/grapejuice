@@ -29,7 +29,7 @@ update_provider: UpdateInformationProvider = update_info_providers.guess_relevan
 
 
 def on_task_removed(task: background.BackgroundTask):
-    if task in once_task_tracker.keys():
+    if task in once_task_tracker:
         once_task_tracker[task] = None
 
 

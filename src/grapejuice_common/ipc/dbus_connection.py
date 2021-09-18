@@ -16,7 +16,7 @@ class DBusConnection(IDBusConnection):
     def __init__(self, connection_attempts=5, **kwargs):
         import dbus
 
-        if "bus" in kwargs.keys():
+        if "bus" in kwargs:
             self.bus = kwargs["bus"]
 
         else:
