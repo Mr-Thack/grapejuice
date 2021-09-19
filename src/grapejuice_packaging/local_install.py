@@ -88,7 +88,7 @@ def _do_install(*_):
 
     @install.task("Updating desktop database")
     def update_desktop_database(log):
-        path = Path(v.home(), ".local", "share", "applications").absolute()
+        path = (v.home() / ".local" / "share" / "applications").resolve()
         log.info(f"Updating desktop database: {path}")
 
         subprocess.check_call(["update-desktop-database", str(path)])
@@ -101,7 +101,7 @@ def _do_install(*_):
 
     @install.task("Updating MIME database")
     def update_mime_database(log):
-        path = Path(v.home(), ".local", "share", "mime").absolute()
+        path = (v.home() / ".local" / "share" / "mime").resolve()
         log.info(f"Updating MIME database: {path}")
 
         subprocess.check_call(["update-mime-database", str(path)])

@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import sys
 from dataclasses import dataclass, asdict
+from pathlib import Path
 
 from grapejuice_common import variables
 
@@ -29,26 +30,28 @@ def go(parameters: UninstallationParameters):
         ]).decode("UTF-8")
     )
 
-    with open(variables.application_manifest(), "r", encoding=variables.text_encoding()) as fp:
+    with variables.application_manifest().open("r", encoding=variables.text_encoding()) as fp:
         manifest = json.load(fp)
 
     for file in manifest["files"]:
-        if not os.path.isabs(file):
-            o_file = file
-            file = os.path.join(variables.home(), file)
-            LOG.info(f"Mended file path: {o_file} -> {file}")
+        file_path = Path(file)
 
-        if os.path.exists(file) and os.path.isfile(file):
-            LOG.info(f"Removing file from manifest: {file}")
+        if file_path.is_absolute():
+            o_file = file
+            file_path = variables.home() / file
+            LOG.info(f"Mended file path: {o_file} -> {file_path}")
+
+        if file_path.exists() and file_path.is_file():
+            LOG.info(f"Removing file from manifest: {file_path}")
 
             if parameters.for_reals:
-                os.remove(file)
+                os.remove(file_path)
 
     if parameters.remove_prefix:
-        LOG.info(f"Removing full user application directory: {variables.user_application_dir()}")
+        LOG.info(f"Removing full user application directory: {variables.local_share_grapejuice()}")
 
         if parameters.for_reals:
-            shutil.rmtree(variables.user_application_dir(), ignore_errors=True)
+            shutil.rmtree(variables.local_share_grapejuice(), ignore_errors=True)
 
     else:
         LOG.info(f"Removing manifest: {variables.application_manifest()}")

@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Union, List
 
 from grapejuice_common import variables
-from grapejuice_common import winectrl
+from grapejuice_common.wine_stuff import winectrl
 from grapejuice_common.logs.log_util import log_function
 from grapejuice_common.util import download_file
 from grapejuice_common.util.errors import RobloxDownloadError

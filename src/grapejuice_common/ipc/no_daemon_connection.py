@@ -11,12 +11,12 @@ class NoDaemonModeConnection(IDBusConnection):
         return True
 
     def launch_studio(self):
-        from grapejuice_common import robloxctrl
+        from grapejuice_common.wine_stuff import robloxctrl
 
         robloxctrl.run_studio()
 
     def play_game(self, uri):
-        from grapejuice_common import robloxctrl
+        from grapejuice_common.wine_stuff import robloxctrl
 
         def do_run():
             robloxctrl.run_player(uri)
@@ -28,17 +28,17 @@ class NoDaemonModeConnection(IDBusConnection):
             robloxctrl.run_installer(post_install_function=do_run)
 
     def edit_local_game(self, place_path):
-        from grapejuice_common import robloxctrl
+        from grapejuice_common.wine_stuff import robloxctrl
 
         robloxctrl.run_studio(place_path)
 
     def edit_cloud_game(self, uri):
-        from grapejuice_common import robloxctrl
+        from grapejuice_common.wine_stuff import robloxctrl
 
         robloxctrl.run_studio(uri)
 
     def install_roblox(self):
-        from grapejuice_common import robloxctrl
+        from grapejuice_common.wine_stuff import robloxctrl
 
         robloxctrl.run_installer()
 
@@ -48,6 +48,6 @@ class NoDaemonModeConnection(IDBusConnection):
         return __version__
 
     def extract_fast_flags(self):
-        from grapejuice_common import robloxctrl
+        from grapejuice_common.wine_stuff import robloxctrl
 
         robloxctrl.fast_flag_extract()

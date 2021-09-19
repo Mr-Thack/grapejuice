@@ -107,12 +107,6 @@
     <property name="pixel-size">48</property>
     <property name="icon-name">application-x-addon-symbolic</property>
   </object>
-  <object class="GtkImage" id="install_fps_unlocker">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">system-software-install-symbolic</property>
-  </object>
   <object class="GtkPopoverMenu" id="main_menu">
     <property name="can-focus">False</property>
     <property name="position">bottom</property>
@@ -401,20 +395,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="install_fps_unlocker_button">
-                    <property name="label" translatable="yes">Install FPS Unlocker</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">install_fps_unlocker</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="install_fps_unlocker" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
                   <object class="GtkButton" id="reinstall_grapejuice_button">

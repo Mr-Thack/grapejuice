@@ -1,13 +1,14 @@
 import json
 import logging
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 from grapejuice_common import variables
+from grapejuice_common.wine_stuff.wineprefix_flags import WineprefixFlags
 
 LOG = logging.getLogger(__name__)
 
-CURRENT_SETTINGS_VERSION = 1
+CURRENT_SETTINGS_VERSION = 2
 
 k_version = "__version__"  # Magic variable gets underscores
 k_show_fast_flag_warning = "show_fast_flag_warning"
@@ -17,6 +18,7 @@ k_no_daemon_mode = "no_daemon_mode"
 k_release_channel = "release_channel"
 k_environment_variables = "env"
 k_disable_updates = "disable_updates"
+k_wineprefixes = "wineprefixes"
 k_enabled_tweaks = "enabled_tweaks"
 k_ignore_wine_version = "ignore_wine_version"
 
@@ -30,9 +32,16 @@ def default_settings() -> Dict[str, any]:
         k_no_daemon_mode: True,
         k_release_channel: "master",
         k_environment_variables: dict(),
-        k_enabled_tweaks: list(),
         k_disable_updates: False,
-        k_ignore_wine_version: False
+        k_ignore_wine_version: False,
+        k_wineprefixes: [{
+            "priority": 0,
+            "name_on_disk": "default",
+            "flags": [
+                WineprefixFlags.studio.value,
+                WineprefixFlags.player.value
+            ]
+        }]
     }
 
 
@@ -76,6 +85,13 @@ class UserSettings:
     @property
     def version(self) -> int:
         return self.get(k_version, 0)
+
+    @property
+    def wineprefixes_sorted(self) -> List[Dict]:
+        return list(sorted(
+            self._settings_object.get(k_wineprefixes),
+            key=lambda wp: wp.get("priority", 999)
+        ))
 
     def get(self, key: str, default_value: any = None):
         if self._settings_object:
@@ -124,6 +140,8 @@ class UserSettings:
             self.save()
 
         self.perform_migrations()
+
+        self._settings_object[k_wineprefixes] = self.wineprefixes_sorted
 
     def save(self):
         LOG.debug(f"Saving settings file to '{self._location}'")

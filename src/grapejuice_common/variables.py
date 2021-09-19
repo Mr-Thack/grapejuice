@@ -1,5 +1,4 @@
 import atexit
-import getpass
 import json
 import logging
 import os
@@ -10,7 +9,7 @@ from pathlib import Path
 
 from grapejuice_common.util.errors import NoWineError
 
-HERE = os.path.abspath(os.path.dirname(__file__))
+HERE = Path(__file__).resolve().parent
 INSTANCE_ID = str(uuid.uuid4())
 
 LOG = logging.getLogger(__name__)
@@ -25,35 +24,35 @@ def ensure_dir(p):
     return p
 
 
-def home():
-    return str(Path(os.environ["HOME"]).resolve())
-
-
-def system_application_dir():
-    p = os.path.dirname(src_dir())
-
-    assert os.path.exists(p)
-
+def ensure_dir_p(p: Path):
+    p.mkdir(parents=True, exist_ok=True)
     return p
 
 
-def user_application_dir():
-    return os.path.join(local_share(), "grapejuice")
+def home() -> Path:
+    return Path(os.environ["HOME"]).resolve()
 
 
-def application_manifest():
-    return os.path.join(user_application_dir(), "package_manifest.json")
+def local_share_grapejuice() -> Path:
+    return local_share() / "grapejuice"
 
 
-def assets_dir():
+def wineprefixes_directory() -> Path:
+    return local_share_grapejuice() / "prefixes"
+
+
+def application_manifest() -> Path:
+    return local_share_grapejuice() / "package_manifest.json"
+
+
+def assets_dir() -> Path:
     search_locations = [
-        os.path.join(HERE, "assets"),
-        os.path.join(os.getcwd(), "assets"),
-        os.path.join(system_application_dir(), "assets")
+        HERE / "assets",
+        Path(".").resolve() / "assets"
     ]
 
     for p in search_locations:
-        if os.path.exists(p):
+        if p.exists():
             return p
 
     raise RuntimeError("Could not find assets directory")
@@ -73,10 +72,6 @@ def icons_assets_dir():
 
 def grapejuice_icon():
     return os.path.join(icons_assets_dir(), "hicolor", "scalable", "apps", "grapejuice.svg")
-
-
-def src_dir():
-    return os.path.abspath(os.path.dirname(HERE))
 
 
 def glade_dir():
@@ -103,8 +98,8 @@ def fast_flag_warning_glade():
     return os.path.join(glade_dir(), "fast_flag_warning.glade")
 
 
-def config_base_dir():
-    return ensure_dir(os.path.join(xdg_config_home(), "brinkervii"))
+def config_base_dir() -> Path:
+    return ensure_dir_p(xdg_config_home() / "brinkervii")
 
 
 def grapejuice_config_dir():
@@ -115,96 +110,26 @@ def grapejuice_user_settings():
     return Path(grapejuice_config_dir(), "user_settings.json")
 
 
-def wineprefix_dir():
-    return os.path.join(user_application_dir(), "wineprefix")
-
-
-def wine_drive_c():
-    return os.path.join(wineprefix_dir(), "drive_c")
-
-
-def wine_user_reg():
-    return os.path.join(wineprefix_dir(), "user.reg")
-
-
-def wine_roblox_prog() -> Path:
-    return Path(wine_drive_c(), "Program Files (x86)", "Roblox")
-
-
-def wine_roblox_local_settings() -> Path:
-    return Path(wine_drive_c(), "users", getpass.getuser(), "Local Settings", "Application Data", "Roblox")
-
-
-def wine_temp():
-    return ensure_dir(os.path.join(wine_drive_c(), "windows", "temp"))
-
-
-def wine_user():
-    return os.path.join(wine_drive_c(), "users", os.environ["USER"])
-
-
-def wine_roblox_appdata():
-    p = os.path.join(wine_user(), "Local Settings", "Application Data", "Roblox")
-    if os.path.exists(p):
-        return p
-
-    p = os.path.join(wine_user(), "AppData", "Local", "Roblox")
-    return p
-
-
-def wine_roblox_appdata_local() -> Path:
-    return Path(wine_user(), "AppData", "Local", "Roblox")
-
-
-def wine_roblox_global_settings_13():
-    return os.path.join(wine_roblox_appdata(), "GlobalSettings_13.xml")
-
-
-def wine_roblox_studio_app_settings():
-    return Path(wine_roblox_appdata(), "ClientSettings", "StudioAppSettings.json")
-
-
-def installer_path():
-    return Path(wine_temp(), "Roblox_Installer.exe")
-
-
-def rbxfpsunlocker_dir():
-    return Path(vendor_dir(), "rbxfpsunlocker")
-
-
-def rbxfpsunlocker_exe_path():
-    return Path(rbxfpsunlocker_dir(), "rbxfpsunlocker.exe")
-
-
-def xdg_config_home():
+def xdg_config_home() -> Path:
     if "XDG_CONFIG_HOME" in os.environ:
-        config_home = os.environ["XDG_CONFIG_HOME"]
-        if config_home and os.path.exists(config_home) and os.path.isdir(config_home):
+        config_home = Path(os.environ["XDG_CONFIG_HOME"]).resolve()
+
+        if config_home.exists() and config_home.is_dir():
             return config_home
 
-    config_home = os.path.join(home(), ".config")
-    if not os.path.exists(config_home):
-        os.makedirs(config_home)
-
-    return config_home
+    return ensure_dir_p(home() / ".config")
 
 
-def vendor_dir():
-    p = Path(user_application_dir(), "vendor")
-    p.mkdir(parents=True, exist_ok=True)
-    return p
+def vendor_dir() -> Path:
+    return ensure_dir_p(local_share_grapejuice() / "vendor")
 
 
-def dot_local():
-    path = os.path.join(home(), ".local")
-    if not os.path.exists(path):
-        os.makedirs(path)
-
-    return path
+def dot_local() -> Path:
+    return ensure_dir_p(home() / ".local")
 
 
-def local_share():
-    return os.path.join(dot_local(), "share")
+def local_share() -> Path:
+    return dot_local() / "share"
 
 
 def local_var():
@@ -221,13 +146,12 @@ def logging_directory():
 
 def xdg_documents():
     run = subprocess.run(["xdg-user-dir", "DOCUMENTS"], stdout=subprocess.PIPE, check=False)
-    documents_path = run.stdout.decode("utf-8").rstrip()
+    documents_path = Path(run.stdout.decode("utf-8").rstrip())
 
-    if os.path.exists(documents_path):
+    if documents_path.exists():
         return documents_path
 
-    documents_path = os.path.join(home(), "Documents")
-    return ensure_dir(documents_path)
+    return ensure_dir_p(home() / "Documents")
 
 
 def roblox_app_experience_url():
@@ -359,17 +283,6 @@ def rbxfpsunlocker_vendor_download_url():
     except Exception as e:
         LOG.error(str(e))
         return "https://github.com/axstin/rbxfpsunlocker/files/5203791/rbxfpsunlocker-x86.zip"
-
-
-def rbxfpsunlocker_tweak_name():
-    return "rbxfpsunlocker"
-
-
-def is_fps_unlocker_enabled() -> bool:
-    from grapejuice_common.features.settings import current_settings
-    from grapejuice_common.features import settings
-
-    return rbxfpsunlocker_tweak_name() in current_settings.get(settings.k_enabled_tweaks)
 
 
 def text_encoding() -> str:

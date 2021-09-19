@@ -5,8 +5,7 @@ from typing import Iterable
 from grapejuice import background
 from grapejuice.gui.yes_no_dialog import yes_no_dialog
 from grapejuice.tasks import DisableMimeAssociations, InstallRoblox, SandboxWine, \
-    RunRobloxStudio, ExtractFastFlags, OpenLogsDirectory, OpenConfigFile, \
-    PerformUpdate, InstallFPSUnlocker
+    RunRobloxStudio, ExtractFastFlags, OpenLogsDirectory, PerformUpdate, OpenConfigFile
 from grapejuice_common import variables, robloxctrl, uninstall, update_info_providers
 from grapejuice_common import winectrl
 from grapejuice_common.features import settings
@@ -81,26 +80,6 @@ class MainWindowHandlers:
 
     def disable_mime_assoc(self, *_):
         run_task_once(DisableMimeAssociations, generic_already_running)
-
-    def install_fps_unlocker(self, *_):
-        def no_wine_dialog() -> None:
-            dialog("Grapejuice could not find a working Wine binary, please install Wine using your operating "
-                   "system's package manager in order to install and use Roblox.")
-
-        try:
-            wine_bin = variables.wine_binary()
-            if not os.path.exists(wine_bin):
-                no_wine_dialog()
-                return
-
-        except NoWineError:
-            no_wine_dialog()
-            return
-
-        if not wine_ok():
-            return
-
-        run_task_once(InstallFPSUnlocker, generic_already_running)
 
     def sandbox(self, *_):
         run_task_once(SandboxWine, generic_already_running)

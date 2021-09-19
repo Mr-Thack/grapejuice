@@ -11,7 +11,7 @@ from grapejuice_common import variables
 
 
 def _strip_pii(s: str):
-    s = s.replace(variables.home(), "~")
+    s = s.replace(str(variables.home()), "~")
 
     if getpass.getuser().lower() != "root":
         s = s.replace(getpass.getuser(), "[REDACTED]")

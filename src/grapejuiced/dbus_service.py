@@ -15,7 +15,7 @@ class DBusService(dbus.service.Object):
         out_signature="b"
     )
     def EditLocalGame(self, path):
-        from grapejuice_common import robloxctrl
+        from grapejuice_common.wine_stuff import robloxctrl
 
         return robloxctrl.run_studio(path)
 
@@ -25,7 +25,7 @@ class DBusService(dbus.service.Object):
         out_signature="b"
     )
     def EditCloudGame(self, uri):
-        from grapejuice_common import robloxctrl
+        from grapejuice_common.wine_stuff import robloxctrl
         return robloxctrl.run_studio(uri)
 
     @dbus.service.method(
@@ -34,7 +34,7 @@ class DBusService(dbus.service.Object):
         out_signature="b"
     )
     def LaunchStudio(self):
-        from grapejuice_common import robloxctrl
+        from grapejuice_common.wine_stuff import robloxctrl
         return robloxctrl.run_studio()
 
     @dbus.service.method(
@@ -43,7 +43,7 @@ class DBusService(dbus.service.Object):
         out_signature=""
     )
     def PlayGame(self, uri):
-        from grapejuice_common import robloxctrl
+        from grapejuice_common.wine_stuff import robloxctrl
 
         def do_run():
             robloxctrl.run_player(uri)
@@ -60,7 +60,7 @@ class DBusService(dbus.service.Object):
         out_signature=""
     )
     def InstallRoblox(self):
-        from grapejuice_common import robloxctrl
+        from grapejuice_common.wine_stuff import robloxctrl
         robloxctrl.run_installer()
 
     @dbus.service.method(
@@ -69,7 +69,7 @@ class DBusService(dbus.service.Object):
         out_signature=""
     )
     def ExtractFastFlags(self):
-        from grapejuice_common import robloxctrl
+        from grapejuice_common.wine_stuff import robloxctrl
         robloxctrl.fast_flag_extract()
 
     @dbus.service.method(

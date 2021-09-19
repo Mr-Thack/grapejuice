@@ -171,7 +171,7 @@ def guess_relevant_provider() -> UpdateInformationProvider:
     if stat.st_uid == 0 and stat.st_gid == 0:
         return SystemUpdateInformationProvider()
 
-    elif str(this_file).startswith(variables.home()):
+    elif str(this_file).startswith(str(variables.home())):
         return SourceUpdateInformationProvider()
 
     else:

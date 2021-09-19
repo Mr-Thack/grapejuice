@@ -3,7 +3,7 @@ from typing import Union, Dict
 
 from gi.repository import Gtk
 
-from grapejuice_common import robloxctrl
+from grapejuice_common.wine_stuff import robloxctrl
 from grapejuice_common import variables
 from grapejuice_common.features.fast_flags import FastFlagList, FastFlag
 from grapejuice_common.gtk.GtkPaginator import GtkPaginator

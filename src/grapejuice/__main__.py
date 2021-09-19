@@ -63,7 +63,7 @@ def func_studio(args):
 
 
 def func_install_roblox(args):
-    from grapejuice_common import robloxctrl
+    from grapejuice_common.wine_stuff import robloxctrl
 
     do_install = not (args.only_once and robloxctrl.locate_player_launcher())
 
