@@ -62,13 +62,9 @@ def func_studio(args):
         dbus_connection().launch_studio()
 
 
-def func_install_roblox(args):
-    from grapejuice_common.wine import robloxctrl
-
-    do_install = not (args.only_once and robloxctrl.locate_player_launcher())
-
-    if do_install:
-        robloxctrl.run_installer()
+def func_install_roblox(_args):
+    # TODO: Reimplement Roblox install
+    print("Will have to re-implement")
 
 
 def func_uninstall_grapejuice(*_):

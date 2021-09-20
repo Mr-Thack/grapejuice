@@ -289,11 +289,5 @@ class FastFlagEditor(WindowBase):
     def delete_user_flags(self, *_):
         self.reset_all_flags()
 
-        paths = (
-            robloxctrl.locate_studio_app_settings(),
-            robloxctrl.locate_player_app_settings()
-        )
-
-        for path in paths:
-            if path and path.exists():
-                os.remove(path)
+        for path in filter(lambda p: p and p.exists(), get_app_settings_paths()):
+            os.remove(path)
