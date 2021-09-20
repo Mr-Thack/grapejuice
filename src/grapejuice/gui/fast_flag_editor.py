@@ -94,7 +94,9 @@ class FastFlagEditor(WindowBase):
             self._fast_flags = FastFlagList().import_dict(fast_flags)
 
         else:
-            self._fast_flags = FastFlagList().import_file(studio_settings_path)
+            prefix = get_studio_wineprefix()
+
+            self._fast_flags = FastFlagList().import_file(prefix.roblox.fast_flag_dump_path)
 
         studio_settings_exist = studio_settings_path is not None and os.path.exists(studio_settings_path)
         player_settings_exist = player_settings_path is not None and os.path.exists(player_settings_path)

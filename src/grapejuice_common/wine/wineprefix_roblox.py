@@ -104,6 +104,10 @@ class WineprefixRoblox:
         return self.locate_roblox_executable_in_versions("RobloxPlayerLauncher.exe")
 
     @property
+    def fast_flag_dump_path(self) -> Path:
+        return self._paths.roblox_appdata / "ClientSettings" / "StudioAppSettings.json"
+
+    @property
     def roblox_studio_app_settings_path(self) -> Union[Path, None]:
         return _app_settings_path(self.roblox_studio_executable_path)
 
@@ -152,7 +156,7 @@ class WineprefixRoblox:
         return self._core_control.run_exe(*run_args, run_async=True)
 
     def extract_fast_flags(self):
-        fast_flag_path = self.roblox_studio_app_settings_path
+        fast_flag_path = self.fast_flag_dump_path
 
         if fast_flag_path.exists():
             os.remove(fast_flag_path)
