@@ -3,12 +3,12 @@ from typing import Union, Dict
 
 from gi.repository import Gtk
 
-from grapejuice_common.wine_stuff import robloxctrl
 from grapejuice_common import variables
 from grapejuice_common.features.fast_flags import FastFlagList, FastFlag
 from grapejuice_common.gtk.GtkPaginator import GtkPaginator
 from grapejuice_common.gtk.gtk_stuff import WindowBase, dialog
 from grapejuice_common.util.paginator import Paginator
+from grapejuice_common.wine.wine_functions import get_studio_wineprefix
 
 
 class WidgetStuff:
@@ -18,6 +18,12 @@ class WidgetStuff:
         self.set_value = set_value
         self.icon_changes: Union[None, Gtk.Image] = None
         self.reset_button: Union[None, Gtk.Button] = None
+
+
+def get_app_settings_paths():
+    prefix = get_studio_wineprefix()
+
+    return prefix.roblox.roblox_studio_app_settings_path, prefix.roblox.roblox_player_app_settings_path
 
 
 def flag_to_widget(flag: FastFlag, on_changed: callable = None) -> Union[None, WidgetStuff]:
@@ -82,14 +88,14 @@ class FastFlagEditor(WindowBase):
     def __init__(self, fast_flags: Union[Dict[str, any], None] = None):
         super().__init__(variables.fast_flag_editor_glade(), self)
 
+        studio_settings_path, player_settings_path = get_app_settings_paths()
+
         if fast_flags is not None:
             self._fast_flags = FastFlagList().import_dict(fast_flags)
 
         else:
-            self._fast_flags = FastFlagList().import_file(variables.wine_roblox_studio_app_settings())
+            self._fast_flags = FastFlagList().import_file(studio_settings_path)
 
-        studio_settings_path = robloxctrl.locate_studio_app_settings()
-        player_settings_path = robloxctrl.locate_player_app_settings()
         studio_settings_exist = studio_settings_path is not None and os.path.exists(studio_settings_path)
         player_settings_exist = player_settings_path is not None and os.path.exists(player_settings_path)
 
@@ -256,11 +262,10 @@ class FastFlagEditor(WindowBase):
     def save_flags(self, *_):
         self._input_values_to_flags()
         changed_flags = self._fast_flags.get_changed_flags()
-        studio_save_path = robloxctrl.locate_studio_app_settings()
-        player_save_path = robloxctrl.locate_player_app_settings()
+        studio_settings_path, player_settings_path = get_app_settings_paths()
 
-        changed_flags.export_to_file(studio_save_path)
-        changed_flags.export_to_file(player_save_path)
+        changed_flags.export_to_file(studio_settings_path)
+        changed_flags.export_to_file(player_settings_path)
 
         self._unsaved_changes = False
 

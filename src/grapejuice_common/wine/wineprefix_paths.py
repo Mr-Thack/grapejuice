@@ -9,6 +9,14 @@ class WineprefixPaths:
         self._base_directory = base_directory
 
     @property
+    def base_directory(self) -> Path:
+        return self._base_directory
+
+    @property
+    def present_on_disk(self) -> bool:
+        return self._base_directory.exists()
+
+    @property
     def drive_c(self) -> Path:
         return self._base_directory / "drive_c"
 
@@ -53,16 +61,3 @@ class WineprefixPaths:
     def installer_download_location(self):
         # Do not call it RobloxPlayerLauncherBeta because it will try to import itself
         return self.temp_directory / "Roblox_Installer.exe"
-
-
-class Wineprefix:
-    _base_directory: Path
-    _paths: WineprefixPaths
-
-    def __init__(self, base_directory: Path):
-        self._base_directory = base_directory
-        self._paths = WineprefixPaths(base_directory)
-
-    @property
-    def paths(self):
-        return self._paths

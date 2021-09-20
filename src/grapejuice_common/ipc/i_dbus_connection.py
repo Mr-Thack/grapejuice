@@ -26,13 +26,11 @@ class IDBusConnection(ABC):
         pass
 
     @abstractmethod
-    def install_roblox(self):
-        pass
-
-    @abstractmethod
     def version(self):
         pass
 
     @abstractmethod
     def extract_fast_flags(self):
         pass
+
+    # TODO: Reimplment install roblox function

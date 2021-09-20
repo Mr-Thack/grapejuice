@@ -43,20 +43,6 @@
     <property name="pixel-size">48</property>
     <property name="icon-name">folder-documents-symbolic</property>
   </object>
-  <object class="GtkImage" id="icon_mime2">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">edit-clear-symbolic</property>
-  </object>
-  <object class="GtkImage" id="icon_registry_editor">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">5</property>
-    <property name="margin-bottom">5</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">document-properties-symbolic</property>
-  </object>
   <object class="GtkImage" id="icon_reinstall">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -68,14 +54,6 @@
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">grapejuice-roblox-studio</property>
-  </object>
-  <object class="GtkImage" id="icon_sandbox">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">5</property>
-    <property name="margin-bottom">5</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">document-revert-symbolic-rtl</property>
   </object>
   <object class="GtkImage" id="icon_uninstall">
     <property name="visible">True</property>
@@ -90,22 +68,6 @@
     <property name="can-focus">False</property>
     <property name="margin-end">5</property>
     <property name="icon-name">software-update-available-symbolic</property>
-  </object>
-  <object class="GtkImage" id="icon_wine_config">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">5</property>
-    <property name="margin-bottom">5</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">document-properties-symbolic</property>
-  </object>
-  <object class="GtkImage" id="icon_winetricks">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">5</property>
-    <property name="margin-bottom">5</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">application-x-addon-symbolic</property>
   </object>
   <object class="GtkPopoverMenu" id="main_menu">
     <property name="can-focus">False</property>
@@ -332,22 +294,6 @@
                 <property name="column-homogeneous">True</property>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Install Roblox</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_install</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="run_roblox_installer" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
                     <property name="label" translatable="yes">Open logs directory</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
@@ -358,7 +304,7 @@
                     <signal name="clicked" handler="open_logs_directory" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">1</property>
+                    <property name="left-attach">0</property>
                     <property name="top-attach">0</property>
                   </packing>
                 </child>
@@ -374,7 +320,7 @@
                     <signal name="clicked" handler="open_config_file" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">2</property>
+                    <property name="left-attach">1</property>
                     <property name="top-attach">0</property>
                   </packing>
                 </child>
@@ -496,52 +442,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Wine Configuration</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_wine_config</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="run_winecfg" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Winetricks</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_winetricks</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="run_winetricks" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Open Drive C</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_drive</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="open_drive_c" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">2</property>
-                    <property name="top-attach">1</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
                   <placeholder/>
@@ -551,9 +452,9 @@
                 </child>
               </object>
               <packing>
-                <property name="name">page_wine</property>
-                <property name="title" translatable="yes">Wine</property>
-                <property name="position">2</property>
+                <property name="name">page_maintenance</property>
+                <property name="title" translatable="yes">Maintenance</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>

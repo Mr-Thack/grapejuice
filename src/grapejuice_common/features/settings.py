@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict, List
 
 from grapejuice_common import variables
-from grapejuice_common.wine_stuff.wineprefix_flags import WineprefixFlags
+from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 LOG = logging.getLogger(__name__)
 
@@ -16,7 +16,6 @@ k_wine_binary = "wine_binary"
 k_dll_overrides = "dll_overrides"
 k_no_daemon_mode = "no_daemon_mode"
 k_release_channel = "release_channel"
-k_environment_variables = "env"
 k_disable_updates = "disable_updates"
 k_wineprefixes = "wineprefixes"
 k_enabled_tweaks = "enabled_tweaks"
@@ -31,15 +30,15 @@ def default_settings() -> Dict[str, any]:
         k_dll_overrides: "dxdiagn=;winemenubuilder.exe=",
         k_no_daemon_mode: True,
         k_release_channel: "master",
-        k_environment_variables: dict(),
         k_disable_updates: False,
         k_ignore_wine_version: False,
         k_wineprefixes: [{
             "priority": 0,
             "name_on_disk": "default",
-            "flags": [
-                WineprefixFlags.studio.value,
-                WineprefixFlags.player.value
+            "wine_home": "",
+            "hints": [
+                WineprefixHint.studio.value,
+                WineprefixHint.player.value
             ]
         }]
     }

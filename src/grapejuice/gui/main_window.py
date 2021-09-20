@@ -4,18 +4,21 @@ from typing import Iterable
 
 from grapejuice import background
 from grapejuice.gui.yes_no_dialog import yes_no_dialog
-from grapejuice.tasks import DisableMimeAssociations, InstallRoblox, SandboxWine, \
-    RunRobloxStudio, ExtractFastFlags, OpenLogsDirectory, PerformUpdate, OpenConfigFile
-from grapejuice_common import variables, robloxctrl, uninstall, update_info_providers
-from grapejuice_common import winectrl
+from grapejuice.tasks import \
+    RunRobloxStudio, \
+    ExtractFastFlags, \
+    OpenLogsDirectory, \
+    PerformUpdate, \
+    OpenConfigFile
+
+from grapejuice_common import variables, uninstall, update_info_providers
 from grapejuice_common.features import settings
 from grapejuice_common.features.settings import current_settings
 from grapejuice_common.gtk.gtk_stuff import WindowBase, dialog
-from grapejuice_common.registry_utils import logged_into_studio
 from grapejuice_common.update_info_providers import UpdateInformationProvider
-from grapejuice_common.util.errors import NoWineError
 from grapejuice_common.util.event import Event
-from grapejuice_common.winectrl import wine_ok
+from grapejuice_common.wine.wine_functions import get_wineprefix
+from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 LOG = logging.getLogger(__name__)
 
@@ -66,58 +69,19 @@ class MainWindowHandlers:
 
     def on_destroy(self, *_):
         from gi.repository import Gtk
+
         on_destroy()
         Gtk.main_quit()
 
-    def run_winecfg(self, *_):
-        winectrl.winecfg()
-
-    def run_regedit(self, *_):
-        winectrl.regedit()
-
-    def run_winetricks(self, *_):
-        winectrl.wine_tricks()
-
-    def disable_mime_assoc(self, *_):
-        run_task_once(DisableMimeAssociations, generic_already_running)
-
-    def sandbox(self, *_):
-        run_task_once(SandboxWine, generic_already_running)
-
-    def run_roblox_installer(self, *_):
-        def no_wine_dialog() -> None:
-            dialog("Grapejuice could not find a working Wine binary, please install Wine using your operating "
-                   "system's package manager in order to install and use Roblox.")
-
-        try:
-            wine_bin = variables.wine_binary()
-            if not os.path.exists(wine_bin):
-                no_wine_dialog()
-                return
-
-        except NoWineError:
-            no_wine_dialog()
-            return
-
-        if not wine_ok(player=True, show_dialog=False):
-            player_wine = variables.required_player_wine_version()
-
-            dialog(f"Warning: you need at least {player_wine} to run Roblox Player! "
-                   "Grapejuice will allow you to install Roblox, but the Player will not work!")
-
-        run_task_once(InstallRoblox, generic_already_running)
-
     def run_roblox_studio(self, *_):
-        studio_launcher_location = robloxctrl.locate_studio_launcher()
-        if not studio_launcher_location:
+        prefix = get_wineprefix(hints=[WineprefixHint.studio])
+
+        if prefix.roblox.roblox_studio_launcher_path is None:
             dialog("Grapejuice could not locate Roblox Studio. You might have to install it first by going to the "
                    "maintenance tab and clicking 'Install Roblox'")
             return
 
-        if not wine_ok():
-            return
-
-        if not logged_into_studio() and yes_no_dialog(
+        if not prefix.roblox.is_logged_into_studio() and yes_no_dialog(
             "Log into Roblox",
             "You are currently not signed into Roblox Studio. "
             "Roblox Studio is known to require an account to use. Would you like to sign in now?"
@@ -126,12 +90,6 @@ class MainWindowHandlers:
 
         else:
             run_task_once(RunRobloxStudio, generic_already_running)
-
-    def wine_explorer(self, *_):
-        winectrl.explorer()
-
-    def open_drive_c(self, *_):
-        xdg_open(variables.wine_drive_c())
 
     def show_about(self, *_):
         from grapejuice.gui.about_window import AboutWindow
@@ -153,6 +111,7 @@ class MainWindowHandlers:
             def poll():
                 if task.finished:
                     from grapejuice.gui.fast_flag_editor import FastFlagEditor
+
                     wnd = FastFlagEditor()
                     wnd.window.show()
 

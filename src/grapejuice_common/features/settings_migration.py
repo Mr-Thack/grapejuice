@@ -1,4 +1,5 @@
 import logging
+import os
 import shutil
 from typing import Dict
 
@@ -34,26 +35,53 @@ def undo_migration_one(_settings: Dict):
 
 @register_migration(1, 2)
 def upgrade_wineprefix(settings: Dict):
+    if len(settings[k_wineprefixes]) <= 0:
+        return
+
+    if settings.get("env", None) and len(settings.get("env")) > 0:
+        settings[k_wineprefixes][0]["env"] = {
+            **settings.get("env"),
+            **settings[k_wineprefixes][0].get("env", dict())
+        }
+
+        settings.pop("env")
+
     original_prefix_path = variables.local_share_grapejuice() / "wineprefix"
     new_prefix_path = variables.wineprefixes_directory() / settings[k_wineprefixes][0]["name_on_disk"]
 
     # Try to not destroy any prefixes
     if original_prefix_path.exists() and not new_prefix_path.exists():
         new_prefix_path.parent.mkdir(parents=True, exist_ok=True)
+
         shutil.move(original_prefix_path, new_prefix_path)
+
+        # Legacy tool compatability
+        os.symlink(
+            new_prefix_path,
+            original_prefix_path
+        )
 
 
 @register_migration(2, 1)
 def downgrade_wineprefix(settings: Dict):
+    if len(settings[k_wineprefixes]) <= 0:
+        return
+
+    settings["env"] = settings[k_wineprefixes][0].get("env", dict())
+
     original_prefix_path = variables.local_share_grapejuice() / "wineprefix"
     new_prefix_path = variables.wineprefixes_directory() / settings[k_wineprefixes][0]["name_on_disk"]
 
     # Try to not destroy any prefixes
     if original_prefix_path.exists():
-        n = 1
-        while original_prefix_path.exists():
-            original_prefix_path = variables.local_share_grapejuice() / f"wineprefix ({n})"
-            n += 1
+        if original_prefix_path.is_symlink():
+            os.remove(original_prefix_path)
+
+        else:
+            n = 1
+            while original_prefix_path.exists():
+                original_prefix_path = variables.local_share_grapejuice() / f"wineprefix ({n})"
+                n += 1
 
     original_prefix_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.move(new_prefix_path, original_prefix_path)

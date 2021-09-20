@@ -88,9 +88,6 @@ class DBusConnection(IDBusConnection):
 
         return self.launch_studio()
 
-    def install_roblox(self):
-        self.proxy.InstallRoblox()
-
     def _spawn_daemon(self):
         LOG.debug("Spawning Grapejuice daemon")
         os.spawnlp(os.P_NOWAIT, sys.executable, sys.executable, "-m", "grapejuiced", "daemonize")

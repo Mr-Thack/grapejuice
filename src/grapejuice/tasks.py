@@ -4,37 +4,7 @@ import sys
 
 from grapejuice import background
 from grapejuice_common import variables
-from grapejuice_common.wine_stuff import winectrl
 from grapejuice_common.update_info_providers import UpdateInformationProvider
-
-
-def install_roblox():
-    from grapejuice_common.ipc.dbus_client import dbus_connection
-    dbus_connection().install_roblox()
-
-
-class DisableMimeAssociations(background.BackgroundTask):
-    def __init__(self, **kwargs):
-        super().__init__("Disabling Wine associations", **kwargs)
-
-    def work(self) -> None:
-        winectrl.disable_mime_assoc()
-
-
-class InstallRoblox(background.BackgroundTask):
-    def __init__(self, **kwargs):
-        super().__init__("Installing Roblox", **kwargs)
-
-    def work(self) -> None:
-        install_roblox()
-
-
-class SandboxWine(background.BackgroundTask):
-    def __init__(self, **kwargs):
-        super().__init__("Sandboxing the Wine prefix", **kwargs)
-
-    def work(self) -> None:
-        winectrl.sandbox()
 
 
 class RunRobloxStudio(background.BackgroundTask):
@@ -52,6 +22,7 @@ class ExtractFastFlags(background.BackgroundTask):
 
     def work(self) -> None:
         from grapejuice_common.ipc.dbus_client import dbus_connection
+
         dbus_connection().extract_fast_flags()
 
 

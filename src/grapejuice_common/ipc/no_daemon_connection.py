@@ -11,36 +11,39 @@ class NoDaemonModeConnection(IDBusConnection):
         return True
 
     def launch_studio(self):
-        from grapejuice_common.wine_stuff import robloxctrl
+        from grapejuice_common.wine.wine_functions import get_studio_wineprefix
 
-        robloxctrl.run_studio()
+        prefix = get_studio_wineprefix()
+        prefix.roblox.run_roblox_studio()
 
     def play_game(self, uri):
-        from grapejuice_common.wine_stuff import robloxctrl
+        from grapejuice_common.wine.wine_functions import get_player_wineprefix
+
+        prefix = get_player_wineprefix()
 
         def do_run():
-            robloxctrl.run_player(uri)
+            prefix.roblox.run_roblox_player(uri)
 
-        if robloxctrl.locate_player_launcher():
+        if prefix.roblox.roblox_player_launcher_path is not None:
             do_run()
 
         else:
-            robloxctrl.run_installer(post_install_function=do_run)
+            prefix.roblox.install_roblox(post_install_function=do_run)
 
     def edit_local_game(self, place_path):
-        from grapejuice_common.wine_stuff import robloxctrl
+        from grapejuice_common.wine.wine_functions import get_studio_wineprefix
 
-        robloxctrl.run_studio(place_path)
+        prefix = get_studio_wineprefix()
+        prefix.roblox.run_roblox_studio(
+            ide=True,
+            uri=place_path
+        )
 
     def edit_cloud_game(self, uri):
-        from grapejuice_common.wine_stuff import robloxctrl
+        from grapejuice_common.wine.wine_functions import get_studio_wineprefix
 
-        robloxctrl.run_studio(uri)
-
-    def install_roblox(self):
-        from grapejuice_common.wine_stuff import robloxctrl
-
-        robloxctrl.run_installer()
+        prefix = get_studio_wineprefix()
+        prefix.roblox.run_roblox_studio(uri)
 
     def version(self):
         from grapejuiced import __version__
@@ -48,6 +51,7 @@ class NoDaemonModeConnection(IDBusConnection):
         return __version__
 
     def extract_fast_flags(self):
-        from grapejuice_common.wine_stuff import robloxctrl
+        from grapejuice_common.wine.wine_functions import get_studio_wineprefix
 
-        robloxctrl.fast_flag_extract()
+        prefix = get_studio_wineprefix()
+        prefix.roblox.extract_fast_flags()
