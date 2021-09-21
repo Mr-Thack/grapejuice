@@ -1,9 +1,8 @@
 # Grapejuice
 
-⚠️ You need at least Wine 6.11 for the Roblox game client to work!
-Please grab an up to date copy from your repositories. If your repositories don't have Wine 6.11, have a look at
-WineHQ's official repositories:
-https://wiki.winehq.org/Download
+⚠️ You need at least Wine 6.11 or Wine Staging 6.16 for the Roblox Player to work!
+Please grab an up to date copy from your repositories. If your repositories don't have Wine 6.11/Wine Staging 6.16, have a look at
+[WineHQ's official repositories](https://wiki.winehq.org/Download).
 
 ---
 
@@ -14,35 +13,39 @@ The primary gap-filler feature is the fact that Wine by default creates no proto
 functions at its core. Without protocol handling, you won't be able to launch Roblox Studio and Experiences from the
 website!
 
+Note that Grapejuice is unofficial software. This is not officially supported by Roblox.
+
 ## Installing Grapejuice from source
 
-Installing from source differs per distributions, please follow the appropriate installation guide for yours. All the
-installation guides can be found in the [Grapejuice Wiki](https://gitlab.com/brinkervii/grapejuice/wikis/home)
+The installation guide can be found in the [Grapejuice Wiki](https://gitlab.com/brinkervii/grapejuice/wikis/home).
 
 ## Troubleshooting
 
 Are you experiencing some trouble running Roblox Studio with Grapejuice? Please check out
-the [Troubleshooting Guide](https://gitlab.com/brinkervii/grapejuice/wikis/Troubleshooting)
+the [Troubleshooting Guide](https://gitlab.com/brinkervii/grapejuice/wikis/Troubleshooting).
 
 ## Features
 
-- Contain and automate a Wine prefix
+- Sets up a Wine prefix automatically
 - Edit Roblox experiences from the website
-- Enjoy Roblox experiences by launching them from the website.
-- Expose utility functions
-- FFlag editor for tweaking Roblox' behaviour
+- Enjoy Roblox experiences by launching them from the website
+- FFlag editor for tweaking Roblox's behaviour
 
 ## Roblox and Wine compatibility
 
-What works:
+Most of Studio's features work on the latest version of Wine. Known issues:
 
-- Roblox Studio
-- Team Create
-- Play Solo
-- Test Server
-- Roblox Player, granted you have an up to date version of Wine.
+- Black box following cursor
+- Flickering widgets (see troubleshooting section for a fix)
 
-What doesn't work:
+Known issues on the player:
 
-- Plugin gui's may cause seizures with some rendering methods. More about this issue is discussed in
-  the [Troubleshooting Guide](https://gitlab.com/brinkervii/grapejuice/wikis/Troubleshooting)
+- Locking the cursor, such as by right clicking to rotate the camera, causes the cursor to stay locked.
+You can install a pre-compiled patched Wine version by running [this Python script](https://pastebin.com/raw/5SeVb005),
+or you can compile Wine yourself using [this guide](https://github.com/e666666/robloxWineBuildGuide).
+Be careful with the guide and the script, as they're made from people on the internet.
+- Window decorations (bar on the top of windows) can disappear after entering and exiting fullscreen
+- Screenshot key in the player doesn't work, but screenshot button does
+- Built-in screen recorder doesn't work
+- Player process occasionally stays after closing the window
+- Non-QWERTY keyboard layouts can cause problems with controls
