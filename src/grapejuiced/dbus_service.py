@@ -14,6 +14,14 @@ class DBusService(dbus.service.Object):
 
     @dbus.service.method(
         dbus_interface=bus_name,
+        in_signature="",
+        out_signature=""
+    )
+    def InstallRoblox(self, path):
+        self._dry_connection.install_roblox()
+
+    @dbus.service.method(
+        dbus_interface=bus_name,
         in_signature="s",
         out_signature=""
     )

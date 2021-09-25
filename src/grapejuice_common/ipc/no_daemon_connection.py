@@ -1,6 +1,7 @@
 import logging
 
 from grapejuice_common.ipc.i_dbus_connection import IDBusConnection
+from grapejuice_common.wine.wine_functions import initialize_roblox_in_default_prefix
 
 LOG = logging.getLogger(__name__)
 
@@ -55,3 +56,6 @@ class NoDaemonModeConnection(IDBusConnection):
 
         prefix = get_studio_wineprefix()
         prefix.roblox.extract_fast_flags()
+
+    def install_roblox(self):
+        initialize_roblox_in_default_prefix()
