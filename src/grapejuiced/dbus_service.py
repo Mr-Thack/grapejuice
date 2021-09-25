@@ -17,7 +17,7 @@ class DBusService(dbus.service.Object):
         in_signature="",
         out_signature=""
     )
-    def InstallRoblox(self, path):
+    def InstallRoblox(self):
         self._dry_connection.install_roblox()
 
     @dbus.service.method(
