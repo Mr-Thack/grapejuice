@@ -1,9 +1,11 @@
 import json
 import logging
+import uuid
 from pathlib import Path
 from typing import Dict, List
 
 from grapejuice_common import variables
+from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 LOG = logging.getLogger(__name__)
@@ -27,15 +29,17 @@ def default_settings() -> Dict[str, any]:
         k_version: CURRENT_SETTINGS_VERSION,
         k_show_fast_flag_warning: True,
         k_wine_binary: "",
-        k_dll_overrides: "dxdiagn=;winemenubuilder.exe=",
         k_no_daemon_mode: True,
         k_release_channel: "master",
         k_disable_updates: False,
         k_ignore_wine_version: False,
         k_wineprefixes: [{
+            "id": str(uuid.uuid4()),
             "priority": 0,
             "name_on_disk": "default",
             "wine_home": "",
+            k_dll_overrides: "ucrtbase=n,b;api-ms-win-crt-private-l1-1-0=n,b",
+            "env": {},
             "hints": [
                 WineprefixHint.studio.value,
                 WineprefixHint.player.value
@@ -152,6 +156,18 @@ class UserSettings:
             }
 
             json.dump(self._settings_object, fp, indent=2)
+
+    def save_wineprefix(self, prefix: Wineprefix):
+        did_update = False
+
+        for prefix_configuration in self._settings_object.get(k_wineprefixes, []):
+            if prefix_configuration.get("id") == prefix.configuration.id:
+                for k, v in prefix.configuration.user_configuration_object.items():
+                    prefix_configuration[k] = v
+                    did_update = True
+
+        if did_update:
+            self.save()
 
 
 current_settings = UserSettings()

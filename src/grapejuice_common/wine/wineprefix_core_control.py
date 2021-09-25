@@ -13,6 +13,8 @@ from typing import Union, List
 
 from grapejuice_common import variables
 from grapejuice_common.logs.log_util import log_function
+from grapejuice_common.util.string_util import non_empty_string
+from grapejuice_common.wine.wineprefix_configuration import WineprefixConfiguration
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths
 
 LOG = logging.getLogger(__name__)
@@ -167,20 +169,33 @@ def run_exe_in_daemon(command: List[str], post_run_function: callable = None) ->
     return wrapper
 
 
+DLL_OVERRIDE_SEP = ";"
+
+
+def default_dll_overrides() -> List[str]:
+    return [
+        "dxdiagn=",  # Disable DX9 warning
+        "winemenubuilder.exe="  # Prevent Roblox from making shortcuts
+    ]
+
+
 class WineprefixCoreControl:
     _paths: WineprefixPaths
+    _configuration: WineprefixConfiguration
 
-    def __init__(self, paths: WineprefixPaths):
+    def __init__(self, paths: WineprefixPaths, configuration: WineprefixConfiguration):
         self._paths = paths
+        self._configuration = configuration
 
     def prepare_for_launch(self):
-        from grapejuice_common.features.settings import current_settings
-        from grapejuice_common.features import settings
+        pco = self._configuration.program_configuration_object
 
-        user_env = dict()  # TODO: Include user environment variables
+        user_env = pco.get("env", dict())
+        dll_overrides = list(filter(non_empty_string, pco.get("dll_overrides", "").split(DLL_OVERRIDE_SEP)))
+        dll_overrides.extend(default_dll_overrides())
+
         apply_env = {
-            # TODO: Replace dll override config with hints
-            "WINEDLLOVERRIDES": current_settings.get(settings.k_dll_overrides),
+            "WINEDLLOVERRIDES": DLL_OVERRIDE_SEP.join(dll_overrides),
             **user_env,
             "WINEPREFIX": str(self._paths.base_directory),
             "WINEARCH": "win64"

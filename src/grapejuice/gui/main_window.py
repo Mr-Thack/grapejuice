@@ -17,7 +17,6 @@ from grapejuice_common.features.settings import current_settings
 from grapejuice_common.gtk.gtk_stuff import WindowBase, dialog
 from grapejuice_common.update_info_providers import UpdateInformationProvider
 from grapejuice_common.util.event import Event
-from grapejuice_common.wine.wine_functions import get_wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 LOG = logging.getLogger(__name__)
@@ -74,6 +73,8 @@ class MainWindowHandlers:
         Gtk.main_quit()
 
     def run_roblox_studio(self, *_):
+        from grapejuice_common.wine.wine_functions import get_wineprefix
+
         prefix = get_wineprefix(hints=[WineprefixHint.studio])
 
         if prefix.roblox.roblox_studio_launcher_path is None:
