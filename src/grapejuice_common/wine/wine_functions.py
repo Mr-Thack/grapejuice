@@ -2,6 +2,7 @@ import logging
 from typing import List, Union
 
 from grapejuice_common import variables
+from grapejuice_common.wine.recipes.roblox_player_recipe import RobloxPlayerRecipe
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
@@ -31,3 +32,11 @@ def get_studio_wineprefix(other_hints: Union[List[WineprefixHint], None] = None)
 
 def get_player_wineprefix(other_hints: Union[List[WineprefixHint], None] = None):
     return get_wineprefix(hints=list({WineprefixHint.player, *(other_hints or [])}))
+
+
+def initialize_roblox_in_default_prefix():
+    prefix = get_player_wineprefix()
+    prefix.core_control.create_prefix()
+
+    recipe = RobloxPlayerRecipe()
+    recipe.make_in(prefix)

@@ -63,8 +63,9 @@ def func_studio(args):
 
 
 def func_install_roblox(_args):
-    # TODO: Reimplement Roblox install
-    print("Will have to re-implement")
+    from grapejuice_common.wine.wine_functions import initialize_roblox_in_default_prefix
+
+    initialize_roblox_in_default_prefix()
 
 
 def func_uninstall_grapejuice(*_):

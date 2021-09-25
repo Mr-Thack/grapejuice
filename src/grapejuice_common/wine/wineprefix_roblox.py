@@ -101,7 +101,7 @@ class WineprefixRoblox:
 
     @property
     def roblox_player_launcher_path(self) -> Union[Path, None]:
-        return self.locate_roblox_executable_in_versions("RobloxPlayerLauncher.exe")
+        return self.locate_roblox_executable("RobloxPlayerLauncher.exe")
 
     @property
     def fast_flag_dump_path(self) -> Path:
@@ -141,7 +141,7 @@ class WineprefixRoblox:
 
         self._core_control.run_exe(player_launcher_path, uri)
 
-    def run_roblox_studio_with_events(self, **events) -> ProcessWrapper:
+    def run_roblox_studio_with_events(self, run_async: bool = True, **events) -> ProcessWrapper:
         roblox_studio_path = self.roblox_studio_executable_path
 
         if roblox_studio_path is None:
@@ -153,7 +153,7 @@ class WineprefixRoblox:
             run_args.append("-" + k)
             run_args.append(v)
 
-        return self._core_control.run_exe(*run_args, run_async=True)
+        return self._core_control.run_exe(*run_args, run_async=run_async)
 
     def extract_fast_flags(self):
         fast_flag_path = self.fast_flag_dump_path
