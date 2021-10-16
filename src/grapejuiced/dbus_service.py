@@ -17,7 +17,7 @@ class DBusService(dbus.service.Object):
     def EditLocalGame(self, path):
         from grapejuice_common import robloxctrl
 
-        return robloxctrl.run_studio(path, True)
+        return robloxctrl.run_studio(path)
 
     @dbus.service.method(
         dbus_interface=bus_name,

@@ -109,21 +109,15 @@ def locate_player_app_settings() -> Union[Path, None]:
     return player_exe.parent / "ClientSettings" / "ClientAppSettings.json"
 
 
-def run_studio(uri="", ide=False):
+def run_studio(uri=""):
     launcher = locate_studio_launcher()
+    assert launcher, "Could not locate Roblox Studio launcher"
 
-    if launcher is None:
-        return False
-
-    if ide:
-        winectrl.run_exe(launcher, "-ide", uri)
+    if uri:
+        winectrl.run_exe(launcher, uri)
 
     else:
-        if uri:
-            winectrl.run_exe(launcher, uri)
-
-        else:
-            winectrl.run_exe(launcher, "-ide")
+        winectrl.run_exe(launcher)
 
     return True
 

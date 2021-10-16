@@ -30,7 +30,7 @@ class NoDaemonModeConnection(IDBusConnection):
     def edit_local_game(self, place_path):
         from grapejuice_common import robloxctrl
 
-        robloxctrl.run_studio(place_path, True)
+        robloxctrl.run_studio(place_path)
 
     def edit_cloud_game(self, uri):
         from grapejuice_common import robloxctrl
