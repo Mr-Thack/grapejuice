@@ -67,6 +67,12 @@ class OpenLogsDirectory(background.BackgroundTask):
 
         subprocess.check_call(["xdg-open", path])
 
+class OpenConfigFile(background.BackgroundTask):
+    def __init__(self, **kwargs):
+        super().__init__("Opening config file", **kwargs)
+
+    def work(self) -> None:
+        subprocess.check_call(["xdg-open", variables.grapejuice_user_settings()])
 
 class PerformUpdate(background.BackgroundTask):
     def __init__(self, update_provider: UpdateInformationProvider, reopen: bool = False, **kwargs):
