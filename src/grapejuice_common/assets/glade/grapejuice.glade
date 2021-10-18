@@ -2,6 +2,14 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkImage" id="icon_config_file">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">5</property>
+    <property name="margin-bottom">5</property>
+    <property name="pixel-size">48</property>
+    <property name="icon-name">document-properties-symbolic</property>
+  </object>
   <object class="GtkImage" id="fflag_editor">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -320,7 +328,7 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=3 n-rows=2 -->
+              <!-- n-columns=4 n-rows=2 -->
               <object class="GtkGrid" id="page_maintenance">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -357,6 +365,22 @@
                   </object>
                   <packing>
                     <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">Open config file</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="image">icon_config_file</property>
+                    <property name="image-position">top</property>
+                    <property name="always-show-image">True</property>
+                    <signal name="clicked" handler="open_config_file" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">3</property>
                     <property name="top-attach">0</property>
                   </packing>
                 </child>

@@ -5,7 +5,8 @@ from typing import Iterable
 from grapejuice import background
 from grapejuice.gui.yes_no_dialog import yes_no_dialog
 from grapejuice.tasks import DisableMimeAssociations, InstallRoblox, SandboxWine, \
-    RunRobloxStudio, ExtractFastFlags, OpenLogsDirectory, PerformUpdate, InstallFPSUnlocker
+    RunRobloxStudio, ExtractFastFlags, OpenLogsDirectory, OpenConfigFile, \
+    PerformUpdate, InstallFPSUnlocker
 from grapejuice_common import variables, robloxctrl, uninstall, update_info_providers
 from grapejuice_common import winectrl
 from grapejuice_common.features import settings
@@ -241,11 +242,16 @@ class MainWindowHandlers:
         on_background_errors_shown()
 
 
+class MainWindowHandlersExtended(MainWindowHandlers):
+    def open_config_file(self, *_):
+        run_task_once(OpenConfigFile, generic_already_running)
+
+
 class MainWindow(WindowBase):
     def __init__(self):
         super().__init__(
             variables.grapejuice_glade(),
-            MainWindowHandlers()
+            MainWindowHandlersExtended()
         )
 
         self._background_task_errors = []
