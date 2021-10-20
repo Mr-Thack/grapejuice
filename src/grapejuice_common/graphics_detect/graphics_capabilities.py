@@ -37,7 +37,12 @@ class GraphicsCapabilities:
         if len(drivers) < 2:
             return False
 
-        return drivers[0] == "i915"
+        return "i915" in drivers and \
+               (
+                   ("nvidia" in drivers or "nouveau" in drivers)
+                   and
+                   ("amdgpu" in drivers or "r600" in drivers)
+               )
 
     @property
     def graphics_vendors(self) -> List[GraphicsVendor]:
