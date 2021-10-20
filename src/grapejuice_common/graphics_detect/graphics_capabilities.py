@@ -40,7 +40,7 @@ class GraphicsCapabilities:
         return ("i915" in drivers) and \
                (
                    (("nvidia" in drivers) or ("nouveau" in drivers))
-                   and
+                   or
                    (("amdgpu" in drivers) or ("r600" in drivers))
                )
 
