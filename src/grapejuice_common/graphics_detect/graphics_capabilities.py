@@ -37,11 +37,11 @@ class GraphicsCapabilities:
         if len(drivers) < 2:
             return False
 
-        return "i915" in drivers and \
+        return ("i915" in drivers) and \
                (
-                   ("nvidia" in drivers or "nouveau" in drivers)
+                   (("nvidia" in drivers) or ("nouveau" in drivers))
                    and
-                   ("amdgpu" in drivers or "r600" in drivers)
+                   (("amdgpu" in drivers) or ("r600" in drivers))
                )
 
     @property
