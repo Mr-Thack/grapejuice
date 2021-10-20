@@ -10,7 +10,8 @@ def main():
     as_json = json.dumps({
         "kernel_drivers": cap.all_kernel_drivers,
         "hybrid_graphics": cap.hybrid_graphics,
-        "graphics_vendors": list(map(lambda e: e.name, cap.graphics_vendors))
+        "graphics_vendors": list(map(lambda e: e.name, cap.graphics_vendors)),
+        "graphics_cards": list(map(lambda d: getattr(d, "attributes"), pci.graphics_cards))
     }, indent=2)
 
     print(as_json)
