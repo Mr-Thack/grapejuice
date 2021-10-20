@@ -1,6 +1,5 @@
 import argparse
 import logging
-import random
 import sys
 from typing import Callable
 
@@ -98,6 +97,12 @@ def func_uninstall_grapejuice(*_):
         print("Uninstallation aborted")
 
 
+def func_graphics_cap(*_):
+    from grapejuice_common.graphics_detect.graphics_defect_f_test import main as gd_main
+
+    gd_main()
+
+
 def run_daemon_instead(argv):
     from grapejuiced.__main__ import main as daemon_main
     daemon_main([sys.argv[0], *argv])
@@ -123,9 +128,6 @@ def main(in_args=None):
     if len(in_args) > 1:
         if in_args[1].lower() == "grapejuiced":
             return run_daemon_instead(in_args[2:])
-
-    if random.randint(0, 10) == 5:
-        print("beep beep")
 
     parser = argparse.ArgumentParser(prog="grapejuice", description="Manage Roblox on Linux")
     subparsers = parser.add_subparsers(title="subcommands", help="sub-command help")
@@ -158,6 +160,10 @@ def main(in_args=None):
 
     parser_app = subparsers.add_parser("app")
     parser_app.set_defaults(func=func_app)
+
+    # WARNING: TEMPORARY FUNCTIONALITY
+    parser_graphics_cap = subparsers.add_parser("__graphics_cap")
+    parser_graphics_cap.set_defaults(func=func_graphics_cap)
 
     args = parser.parse_args(in_args[1:])
 
