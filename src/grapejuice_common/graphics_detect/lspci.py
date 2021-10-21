@@ -77,7 +77,9 @@ class LSPci:
 
         for line in content.split("\n"):
             if not line.strip():
-                self._entries.append(work)
+                if work is not None:
+                    self._entries.append(work)
+
                 work = None
 
                 continue
@@ -101,8 +103,6 @@ class LSPci:
 
         if work is not None:
             self._entries.append(work)
-
-        self._entries = list(filter(lambda x: not not x, self._entries))
 
     @property
     def graphics_cards(self) -> List[LSPciEntry]:
