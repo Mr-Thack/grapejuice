@@ -32,7 +32,7 @@ class LSPciEntry:
                 lambda s: not not s,
                 map(
                     str.strip,
-                    re.split(r"\s+", self.attributes.get("kernel modules", ""))
+                    re.split(r"[,\s]+", self.attributes.get("kernel modules", ""))
                 )
             )
         )
