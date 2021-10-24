@@ -33,12 +33,13 @@ def run_installer(post_install_function: callable = None):
 
     p = variables.installer_path()
 
-    if os.path.isfile(p) and os.stat(p).st_size > 1:
+    if p.is_file() and os.stat(p).st_size > 0:
         LOG.info(f"Running installer at {p}")
 
         winectrl.run_exe(p, post_run_function=post_install_function)
+
     else:
-        raise RobloxDownloadError
+        raise RobloxDownloadError()
 
 
 @log_function
