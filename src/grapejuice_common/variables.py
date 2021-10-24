@@ -308,7 +308,11 @@ def wine_binary_64():
 
 
 def required_wine_version():
-    return "wine-4.0"
+    return "wine-6.0"
+
+
+def required_player_wine_version():
+    return "wine-6.11"
 
 
 def at_exit_handler(*args, **kwargs):

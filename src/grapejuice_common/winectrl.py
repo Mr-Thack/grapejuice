@@ -14,13 +14,10 @@ from subprocess import DEVNULL
 from typing import List, Union
 
 from grapejuice_common import variables
+from grapejuice_common.gtk.gtk_stuff import dialog
 from grapejuice_common.logs.log_util import log_on_call, log_function
 
 LOG = logging.getLogger(__name__)
-
-space_version_ptn = re.compile(r"wine-(.+?)\s+")
-non_space_version_ptn = re.compile(r"wine-(.+)")
-space = " "
 
 open_fds = []
 
@@ -59,12 +56,14 @@ def prepare():
     from grapejuice_common.features import settings
 
     prefix_dir = variables.wineprefix_dir()
+    wine_binary = variables.wine_binary()
 
     user_env = current_settings.get(settings.k_environment_variables, {})
     apply_env = {
         "WINEDLLOVERRIDES": current_settings.get(settings.k_dll_overrides),
         **user_env,
         "WINEPREFIX": prefix_dir,
+        "WINE": wine_binary,
         "WINEARCH": "win64"
     }
 
@@ -143,11 +142,19 @@ def load_patched_registry_files(source: Path, patches: dict = None):
 def wine_tricks():
     prepare()
 
-    processes.append(ProcessWrapper(
-        subprocess.Popen(["winetricks"])
-    ))
+    if shutil.which("winetricks"):
+        processes.append(ProcessWrapper(
+            subprocess.Popen(["winetricks"])
+        ))
+    else:
+        LOG.error("Winetricks script could not be found")
+        dialog("Grapejuice could not find the Winetricks script in your system, "
+               "please install it using your package manager.")
+        return False
 
     poll_processes()
+
+    return True
 
 
 @log_on_call("Disabling MIME associations in wineprefix")
@@ -341,6 +348,73 @@ def poll_processes():
 
     from gi.repository import GObject
     GObject.timeout_add(100, _poll_processes)
+
+
+@log_function
+def wine_ok(system_wine: str = None, show_dialog=True, player=False):
+    from grapejuice_common.features import settings
+    from grapejuice_common.features.settings import current_settings
+
+    if current_settings.get(settings.k_ignore_wine_version):
+        return True
+
+    from grapejuice_common.ipc.dbus_client import dbus_connection
+
+    def prepare_version(s):
+        from packaging import version
+
+        match = re.search(r"^\w+[\s-](\d+)([\d.]*)", s)
+
+        assert match is not None
+
+        version_string = re.sub(r"\W+$", "", match.group(1) + match.group(2))
+
+        return version.parse(version_string)
+
+    if system_wine is None:
+        system_wine = prepare_version(dbus_connection().wine_version())
+    else:
+        system_wine = prepare_version(system_wine)
+
+    if player:
+        required_wine = prepare_version(variables.required_player_wine_version())
+    else:
+        required_wine = prepare_version(variables.required_wine_version())
+
+    def version_to_string(v):
+        if v.public:
+            return v.public
+
+        if v.base_version:
+            return v.base_version
+
+        return repr(v)
+
+    if system_wine < required_wine:
+        if show_dialog:
+            system_f = version_to_string(system_wine)
+            required_f = version_to_string(required_wine)
+
+            if player:
+                msg = f"Your system has Wine version {system_f} installed, you need at least Wine version " \
+                      f"{required_f} in order to run Roblox Player."
+            else:
+                msg = f"Your system has Wine version {system_f} installed, you need at least Wine version " \
+                      f"{required_f} in order to run Roblox in general."
+
+            dialog(msg)
+
+        return False
+
+    return True
+
+
+def wine_version():
+    version = subprocess.check_output([variables.wine_binary(), "--version"]).decode(sys.stdout.encoding)
+    if not version:
+        return "wine-0.0.0"
+
+    return version
 
 
 def close_fds(*_, **__):
