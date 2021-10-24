@@ -77,6 +77,7 @@
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="image">start_button_icon</property>
+                <property name="always-show-image">True</property>
                 <signal name="clicked" handler="_show_start_page" swapped="no"/>
               </object>
               <packing>
