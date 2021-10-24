@@ -37,7 +37,7 @@ class GrapejuiceLogFormatter(logging.Formatter):
 
 
 class LoggerConfiguration:
-    _output_stream: IO = sys.stdout
+    _output_stream: IO = sys.stderr
     _output_file: Union[str, Path] = None
     _formatter: logging.Formatter = None
     _environment_key: Union[str, None] = "LOG_LEVEL"
