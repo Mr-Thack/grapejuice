@@ -15,28 +15,6 @@
     <property name="pixel-size">48</property>
     <property name="icon-name">document-properties-symbolic</property>
   </object>
-  <object class="GtkImage" id="icon_drive">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">drive-harddisk-ieee1394-symbolic</property>
-  </object>
-  <object class="GtkImage" id="icon_file_manager">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">5</property>
-    <property name="margin-bottom">5</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">folder-documents-symbolic</property>
-  </object>
-  <object class="GtkImage" id="icon_install">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">5</property>
-    <property name="margin-bottom">5</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">package-x-generic-symbolic</property>
-  </object>
   <object class="GtkImage" id="icon_logs">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -336,12 +314,9 @@
                     <signal name="clicked" handler="uninstall_grapejuice" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">1</property>
+                    <property name="left-attach">0</property>
                     <property name="top-attach">1</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
                 <child>
                   <object class="GtkButton" id="reinstall_grapejuice_button">
@@ -355,94 +330,9 @@
                     <signal name="clicked" handler="reinstall_grapejuice" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">2</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="name">page_maintenance</property>
-                <property name="title" translatable="yes">Maintenance</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <!-- n-columns=3 n-rows=3 -->
-              <object class="GtkGrid" id="page_wine">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="row-spacing">5</property>
-                <property name="column-spacing">5</property>
-                <property name="row-homogeneous">True</property>
-                <property name="column-homogeneous">True</property>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Wine Explorer</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_file_manager</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="wine_explorer" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Sandbox</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_sandbox</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="sandbox" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Disable MIME Associations</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_mime2</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="disable_mime_assoc" swapped="no"/>
-                  </object>
-                  <packing>
                     <property name="left-attach">1</property>
                     <property name="top-attach">1</property>
                   </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Registry Editor</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_registry_editor</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="run_regedit" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">2</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
                 <child>
                   <placeholder/>
