@@ -13,6 +13,8 @@ from string import Template
 from subprocess import DEVNULL
 from typing import List, Union
 
+from packaging import version
+
 from grapejuice_common import variables
 from grapejuice_common.gtk.gtk_stuff import dialog
 from grapejuice_common.logs.log_util import log_on_call, log_function
@@ -350,51 +352,55 @@ def poll_processes():
     GObject.timeout_add(100, _poll_processes)
 
 
-@log_function
-def wine_ok(system_wine: str = None, show_dialog=True, player=False):
+def _parse_wine_version(s) -> version:
+    match = re.search(r"^\w+[\s-](\d+)([\d.]*)", s)
+    assert match is not None, f"Invalid version string: {s}"
+
+    version_string = re.sub(r"\W+$", "", match.group(1) + match.group(2))
+
+    return version.parse(version_string)
+
+
+def _version_to_string(v) -> str:
+    if v.public:
+        return v.public
+
+    if v.base_version:
+        return v.base_version
+
+    return repr(v)
+
+
+def _ignore_wine_version() -> bool:
     from grapejuice_common.features import settings
     from grapejuice_common.features.settings import current_settings
 
-    if current_settings.get(settings.k_ignore_wine_version):
+    return current_settings.get(settings.k_ignore_wine_version, False)
+
+
+@log_function
+def wine_ok(system_wine: str = None, show_dialog=True, player=False) -> bool:
+    if _ignore_wine_version():
         return True
 
     from grapejuice_common.ipc.dbus_client import dbus_connection
 
-    def prepare_version(s):
-        from packaging import version
-
-        match = re.search(r"^\w+[\s-](\d+)([\d.]*)", s)
-
-        assert match is not None
-
-        version_string = re.sub(r"\W+$", "", match.group(1) + match.group(2))
-
-        return version.parse(version_string)
-
     if system_wine is None:
-        system_wine = prepare_version(dbus_connection().wine_version())
+        system_wine = _parse_wine_version(dbus_connection().wine_version())
 
     else:
-        system_wine = prepare_version(system_wine)
+        system_wine = _parse_wine_version(system_wine)
 
     if player:
-        required_wine = prepare_version(variables.required_player_wine_version())
+        required_wine = _parse_wine_version(variables.required_player_wine_version())
+
     else:
-        required_wine = prepare_version(variables.required_wine_version())
-
-    def version_to_string(v):
-        if v.public:
-            return v.public
-
-        if v.base_version:
-            return v.base_version
-
-        return repr(v)
+        required_wine = _parse_wine_version(variables.required_wine_version())
 
     if system_wine < required_wine:
         if show_dialog:
-            system_f = version_to_string(system_wine)
-            required_f = version_to_string(required_wine)
+            system_f = _version_to_string(system_wine)
+            required_f = _version_to_string(required_wine)
 
             if player:
                 msg = f"Your system has Wine version {system_f} installed, you need at least Wine version " \
@@ -410,12 +416,16 @@ def wine_ok(system_wine: str = None, show_dialog=True, player=False):
     return True
 
 
-def wine_version():
-    version = subprocess.check_output([variables.wine_binary(), "--version"]).decode(sys.stdout.encoding)
-    if not version:
+def wine_version() -> str:
+    wine_version_string = subprocess \
+        .check_output([variables.wine_binary(), "--version"]) \
+        .decode(sys.stdout.encoding) \
+        .strip()
+
+    if not wine_version_string:
         return "wine-0.0.0"
 
-    return version
+    return wine_version_string
 
 
 def close_fds(*_, **__):
