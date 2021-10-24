@@ -378,24 +378,30 @@ def _ignore_wine_version() -> bool:
     return current_settings.get(settings.k_ignore_wine_version, False)
 
 
+def _wine_version() -> str:
+    wine_version_string = subprocess \
+        .check_output([variables.wine_binary(), "--version"]) \
+        .decode(sys.stdout.encoding) \
+        .strip()
+
+    if not wine_version_string:
+        return "wine-0.0.0"
+
+    return wine_version_string
+
+
 @log_function
 def wine_ok(system_wine: str = None, show_dialog=True, player=False) -> bool:
     if _ignore_wine_version():
         return True
 
-    from grapejuice_common.ipc.dbus_client import dbus_connection
+    system_wine = _parse_wine_version(
+        _wine_version() if system_wine is None else system_wine
+    )
 
-    if system_wine is None:
-        system_wine = _parse_wine_version(dbus_connection().wine_version())
-
-    else:
-        system_wine = _parse_wine_version(system_wine)
-
-    if player:
-        required_wine = _parse_wine_version(variables.required_player_wine_version())
-
-    else:
-        required_wine = _parse_wine_version(variables.required_wine_version())
+    required_wine = _parse_wine_version(
+        variables.required_player_wine_version() if player else variables.required_wine_version()
+    )
 
     if system_wine < required_wine:
         if show_dialog:
@@ -414,18 +420,6 @@ def wine_ok(system_wine: str = None, show_dialog=True, player=False) -> bool:
         return False
 
     return True
-
-
-def wine_version() -> str:
-    wine_version_string = subprocess \
-        .check_output([variables.wine_binary(), "--version"]) \
-        .decode(sys.stdout.encoding) \
-        .strip()
-
-    if not wine_version_string:
-        return "wine-0.0.0"
-
-    return wine_version_string
 
 
 def close_fds(*_, **__):

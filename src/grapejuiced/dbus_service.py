@@ -77,14 +77,5 @@ class DBusService(dbus.service.Object):
         in_signature="",
         out_signature="s"
     )
-    def WineVersion(self):
-        from grapejuice_common import winectrl
-        winectrl.wine_version()
-
-    @dbus.service.method(
-        dbus_interface=bus_name,
-        in_signature="",
-        out_signature="s"
-    )
     def Version(self):
         return self.version_string

@@ -51,8 +51,3 @@ class NoDaemonModeConnection(IDBusConnection):
         from grapejuice_common import robloxctrl
 
         robloxctrl.fast_flag_extract()
-
-    def wine_version(self):
-        from grapejuice_common import winectrl
-
-        return winectrl.wine_version()
