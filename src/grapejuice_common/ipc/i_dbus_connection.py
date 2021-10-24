@@ -36,3 +36,7 @@ class IDBusConnection(ABC):
     @abstractmethod
     def extract_fast_flags(self):
         pass
+
+    @abstractmethod
+    def wine_version(self):
+        pass

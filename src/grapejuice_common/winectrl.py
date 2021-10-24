@@ -373,6 +373,7 @@ def wine_ok(system_wine: str = None, show_dialog=True, player=False):
 
     if system_wine is None:
         system_wine = prepare_version(dbus_connection().wine_version())
+
     else:
         system_wine = prepare_version(system_wine)
 
