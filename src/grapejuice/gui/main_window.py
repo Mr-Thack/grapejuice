@@ -123,7 +123,7 @@ class MainWindowHandlers:
         if not wine_ok(player=True, show_dialog=False):
             player_wine = variables.required_player_wine_version()
 
-            dialog(f"Warning: you need at least {player_wine} to run Roblox Player "
+            dialog(f"Warning: you need at least {player_wine} to run Roblox Player! "
                    "Grapejuice will allow you to install Roblox, but the Player will not work!")
 
         run_task_once(InstallRoblox, generic_already_running)
