@@ -1,7 +1,11 @@
 from pathlib import Path
-from typing import Optional, Type, TypeVar
+from typing import Optional, Type, TypeVar, List
 
 HandlerType = TypeVar("HandlerType")
+
+
+def handler(x):
+    return x
 
 
 class WidgetAccessor:
@@ -31,13 +35,16 @@ class NullWidgetAccessor(WidgetAccessor):
 class GtkBase:
     _widgets: WidgetAccessor
     _builder: Optional = None
-    _handlers: Optional[HandlerType] = None
+    _handlers: List[HandlerType] = None
 
     def __init__(
         self,
         glade_path: Optional[Path] = None,
-        handler_class: Optional[Type[HandlerType]] = None
+        handler_class: Optional[Type[HandlerType]] = None,
+        handler_instance: Optional[HandlerType] = None
     ):
+        self._handlers = []
+
         if glade_path is not None:
             from gi.repository import Gtk
 
@@ -49,9 +56,13 @@ class GtkBase:
 
         else:
             if handler_class is not None:
-                self._handlers = handler_class()
+                self._handlers.append(handler_class())
 
-            self._builder.connect_signals(self._handlers)
+            if handler_instance is not None:
+                self._handlers.append(handler_instance)
+
+            for h in self._handlers:
+                self._builder.connect_signals(h)
 
             self._widgets = WidgetAccessor(self._builder)
 

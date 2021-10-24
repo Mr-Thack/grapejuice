@@ -1,17 +1,18 @@
 import uuid
+from dataclasses import asdict
 from typing import Dict, Union, List
+
+from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 
 WineprefixConfigurationObject = Dict[str, Union[Dict, List, str, float, int, bool]]
 
 
 class WineprefixConfiguration:
-    _configuration_object: WineprefixConfigurationObject
+    _model: WineprefixConfigurationModel
     _program_configuration_overrides: WineprefixConfigurationObject
 
-    def __init__(self, configuration_object: WineprefixConfigurationObject):
-        self._configuration_object = {
-            **configuration_object
-        }
+    def __init__(self, model: WineprefixConfigurationModel):
+        self._model = model
 
         self._program_configuration_overrides = dict()
 
@@ -21,13 +22,11 @@ class WineprefixConfiguration:
 
     @property
     def user_configuration_object(self) -> WineprefixConfigurationObject:
-        return {
-            **self._configuration_object,
-        }
+        return asdict(self._model)
 
     @property
     def program_configuration_object(self) -> WineprefixConfigurationObject:
         return {
-            **self._configuration_object,
+            **self.user_configuration_object,
             **self._program_configuration_overrides
         }

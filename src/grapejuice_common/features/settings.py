@@ -5,6 +5,8 @@ from pathlib import Path
 from typing import Dict, List
 
 from grapejuice_common import variables
+from grapejuice_common.features import wineprefix_configuration_model
+from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
@@ -90,11 +92,15 @@ class UserSettings:
         return self.get(k_version, 0)
 
     @property
-    def wineprefixes_sorted(self) -> List[Dict]:
+    def raw_wineprefixes_sorted(self) -> List[Dict]:
         return list(sorted(
             self._settings_object.get(k_wineprefixes),
             key=lambda wp: wp.get("priority", 999)
         ))
+
+    @property
+    def parsed_wineprefixes_sorted(self) -> List[WineprefixConfigurationModel]:
+        return list(map(wineprefix_configuration_model.from_json, self.raw_wineprefixes_sorted))
 
     def get(self, key: str, default_value: any = None):
         if self._settings_object:
@@ -144,7 +150,7 @@ class UserSettings:
 
         self.perform_migrations()
 
-        self._settings_object[k_wineprefixes] = self.wineprefixes_sorted
+        self._settings_object[k_wineprefixes] = self.raw_wineprefixes_sorted
 
     def save(self):
         LOG.debug(f"Saving settings file to '{self._location}'")

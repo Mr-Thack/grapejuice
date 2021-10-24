@@ -5,3 +5,4 @@ class WineprefixHint(Enum):
     studio = "studio"
     player = "player"
     fps_unlocker = "fps_unlocker"
+    app = "app"
