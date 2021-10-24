@@ -39,6 +39,7 @@ def default_settings() -> Dict[str, any]:
             "id": str(uuid.uuid4()),
             "priority": 0,
             "name_on_disk": "default",
+            "display_name": "Default",
             "wine_home": "",
             k_dll_overrides: "ucrtbase=n,b;api-ms-win-crt-private-l1-1-0=n,b",
             "env": {},
