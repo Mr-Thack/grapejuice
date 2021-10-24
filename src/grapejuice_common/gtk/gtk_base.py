@@ -1,0 +1,60 @@
+from pathlib import Path
+from typing import Optional, Type, TypeVar
+
+HandlerType = TypeVar("HandlerType")
+
+
+class WidgetAccessor:
+    _builder: Optional
+
+    def __init__(self, builder):
+        self._builder = builder
+
+    def __getattr__(self, item):
+        return self._builder.get_object(item)
+
+    def __getitem__(self, item):
+        return self._builder.get_object(item)
+
+
+class NullWidgetAccessor(WidgetAccessor):
+    def __init__(self):
+        super().__init__(None)
+
+    def __getattr__(self, _):
+        return None
+
+    def __getitem__(self, _):
+        return None
+
+
+class GtkBase:
+    _widgets: WidgetAccessor
+    _builder: Optional = None
+    _handlers: Optional[HandlerType] = None
+
+    def __init__(
+        self,
+        glade_path: Optional[Path] = None,
+        handler_class: Optional[Type[HandlerType]] = None
+    ):
+        if glade_path is not None:
+            from gi.repository import Gtk
+
+            self._builder = Gtk.Builder()
+            self._builder.add_from_file(glade_path)
+
+        if self._builder is None:
+            self._widgets = NullWidgetAccessor()
+
+        else:
+            if handler_class is not None:
+                self._handlers = handler_class()
+
+            self._builder.connect_signals(self._handlers)
+
+            self._widgets = WidgetAccessor(self._builder)
+
+    @property
+    def widgets(self) -> WidgetAccessor:
+        return self._widgets

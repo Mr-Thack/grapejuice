@@ -16,8 +16,8 @@ def main_gui():
         self_test.post.run()
 
         from grapejuice.gui.main_window import MainWindow
-        main_window = MainWindow()
-        main_window.show()
+        window = MainWindow()
+        window.show()
 
     gtk_boot(make_main_window)
 

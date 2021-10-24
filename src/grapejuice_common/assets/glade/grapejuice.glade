@@ -1,398 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.38.2 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
-  <object class="GtkImage" id="fflag_editor">
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkImage" id="start_button_icon">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="icon-name">application-x-addon-symbolic</property>
-  </object>
-  <object class="GtkImage" id="icon_config_file">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">5</property>
-    <property name="margin-bottom">5</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">document-properties-symbolic</property>
-  </object>
-  <object class="GtkImage" id="icon_logs">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">folder-documents-symbolic</property>
-  </object>
-  <object class="GtkImage" id="icon_reinstall">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">view-refresh-symbolic</property>
-  </object>
-  <object class="GtkImage" id="icon_roblox_studio">
-    <property name="height-request">16</property>
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">grapejuice-roblox-studio</property>
-  </object>
-  <object class="GtkImage" id="icon_uninstall">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">5</property>
-    <property name="margin-bottom">5</property>
-    <property name="pixel-size">48</property>
-    <property name="icon-name">edit-delete-symbolic</property>
-  </object>
-  <object class="GtkImage" id="icon_update">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-end">5</property>
-    <property name="icon-name">software-update-available-symbolic</property>
-  </object>
-  <object class="GtkPopoverMenu" id="main_menu">
-    <property name="can-focus">False</property>
-    <property name="position">bottom</property>
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="halign">center</property>
-        <property name="margin-left">10</property>
-        <property name="margin-right">10</property>
-        <property name="margin-top">10</property>
-        <property name="margin-bottom">10</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">10</property>
-        <child>
-          <object class="GtkButton">
-            <property name="label" translatable="yes">About</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <signal name="clicked" handler="show_about" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton">
-            <property name="label" translatable="yes">Wiki</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <signal name="clicked" handler="show_wiki" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton">
-            <property name="label" translatable="yes">Exit</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <signal name="clicked" handler="on_destroy" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="submenu">submenu0</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-  </object>
-  <object class="GtkImage" id="sign_into_roblox">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">avatar-default-symbolic</property>
+    <property name="icon-name">gtk-home-symbolic</property>
   </object>
   <object class="GtkWindow" id="main_window">
     <property name="can-focus">False</property>
-    <property name="role">Grapejuice</property>
-    <property name="resizable">False</property>
-    <property name="default-width">550</property>
-    <property name="default-height">300</property>
+    <property name="window-position">center</property>
     <property name="icon-name">grapejuice</property>
-    <property name="startup-id">Grapejuice</property>
-    <signal name="destroy" handler="on_destroy" swapped="no"/>
     <child>
-      <object class="GtkBox">
+      <object class="GtkPaned">
         <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="orientation">vertical</property>
+        <property name="can-focus">True</property>
+        <property name="position">175</property>
+        <property name="position-set">True</property>
         <child>
-          <placeholder/>
-        </child>
-        <child>
-          <object class="GtkStack" id="main_stack">
+          <object class="GtkBox">
+            <property name="width-request">120</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="margin-start">10</property>
             <property name="margin-end">10</property>
             <property name="margin-top">10</property>
             <property name="margin-bottom">10</property>
-            <property name="transition-duration">150</property>
-            <property name="transition-type">slide-left-right</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkBox" id="page_main">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">10</property>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Roblox Studio</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_roblox_studio</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="run_roblox_studio" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Sign into Roblox Studio</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">sign_into_roblox</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="open_roblox_return_to_studio" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Roblox FFlag editor</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">fflag_editor</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="open_fast_flag_editor" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkFixed">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="vexpand">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="update_status">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel" id="update_status_label">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="halign">center</property>
-                        <property name="label" translatable="yes">Fetching update status...</property>
-                        <property name="justify">center</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="update_button">
-                        <property name="label" translatable="yes">Update Grapejuice</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="halign">center</property>
-                        <property name="margin-start">5</property>
-                        <property name="margin-end">5</property>
-                        <property name="margin-top">5</property>
-                        <property name="margin-bottom">5</property>
-                        <property name="image">icon_update</property>
-                        <property name="always-show-image">True</property>
-                        <signal name="clicked" handler="update_grapejuice" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="name">page_main</property>
-                <property name="title" translatable="yes">Launcher</property>
-              </packing>
-            </child>
-            <child>
-              <!-- n-columns=3 n-rows=2 -->
-              <object class="GtkGrid" id="page_maintenance">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="row-spacing">5</property>
-                <property name="column-spacing">5</property>
-                <property name="row-homogeneous">True</property>
-                <property name="column-homogeneous">True</property>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Open logs directory</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_logs</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="open_logs_directory" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Open config file</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_config_file</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="open_config_file" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="uninstall_button">
-                    <property name="label" translatable="yes">Uninstall Grapejuice</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_uninstall</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="uninstall_grapejuice" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="reinstall_grapejuice_button">
-                    <property name="label" translatable="yes">Reinstall Grapejuice</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">icon_reinstall</property>
-                    <property name="image-position">top</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="reinstall_grapejuice" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="name">page_maintenance</property>
-                <property name="title" translatable="yes">Maintenance</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="pack-type">end</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-    <child type="titlebar">
-      <object class="GtkHeaderBar">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="show-close-button">True</property>
-        <child type="title">
-          <object class="GtkStackSwitcher">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="halign">center</property>
-            <property name="homogeneous">True</property>
-            <property name="icon-size">8</property>
-            <property name="stack">main_stack</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="spacing">5</property>
-            <child>
-              <object class="GtkMenuButton" id="main_menu_button">
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Start</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="focus-on-click">False</property>
                 <property name="receives-default">True</property>
-                <property name="popover">main_menu</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="pixbuf">../icons/hicolor/24x24/apps/grapejuice.png</property>
-                  </object>
-                </child>
+                <property name="image">start_button_icon</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -401,43 +42,92 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSpinner" id="background_task_spinner">
-                <property name="width-request">24</property>
-                <property name="height-request">24</property>
+              <object class="GtkSeparator">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="valign">center</property>
-                <property name="vexpand">True</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="pack-type">end</property>
                 <property name="position">1</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="background_task_errors_button">
+              <object class="GtkListBox" id="prefix_list">
                 <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-                <property name="image-position">right</property>
-                <property name="always-show-image">True</property>
-                <signal name="clicked" handler="show_background_task_errors" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="icon_background_task_error">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="icon-name">emblem-important</property>
-                  </object>
-                </child>
+                <property name="can-focus">False</property>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">2</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Settings</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="resize">False</property>
+            <property name="shrink">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="page_wrapper">
+            <property name="width-request">500</property>
+            <property name="height-request">400</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="resize">True</property>
+            <property name="shrink">True</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <child type="titlebar">
+      <object class="GtkHeaderBar">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="title" translatable="yes">Grapejuice</property>
+        <property name="show-close-button">True</property>
+        <child>
+          <object class="GtkImage">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="xpad">10</property>
+            <property name="icon-name">grapejuice</property>
+            <property name="icon_size">3</property>
           </object>
         </child>
       </object>
