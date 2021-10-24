@@ -97,12 +97,6 @@ def func_uninstall_grapejuice(*_):
         print("Uninstallation aborted")
 
 
-def func_graphics_cap(*_):
-    from grapejuice_common.graphics_detect.graphics_defect_f_test import main as gd_main
-
-    gd_main()
-
-
 def run_daemon_instead(argv):
     from grapejuiced.__main__ import main as daemon_main
     daemon_main([sys.argv[0], *argv])
@@ -160,10 +154,6 @@ def main(in_args=None):
 
     parser_app = subparsers.add_parser("app")
     parser_app.set_defaults(func=func_app)
-
-    # WARNING: TEMPORARY FUNCTIONALITY
-    parser_graphics_cap = subparsers.add_parser("__graphics_cap")
-    parser_graphics_cap.set_defaults(func=func_graphics_cap)
 
     args = parser.parse_args(in_args[1:])
 
