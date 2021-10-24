@@ -15,18 +15,20 @@ k_release_channel = "release_channel"
 k_environment_variables = "env"
 k_disable_updates = "disable_updates"
 k_enabled_tweaks = "enabled_tweaks"
+k_ignore_wine_version = "ignore_wine_version"
 
 
 def default_settings() -> Dict[str, any]:
     return {
         k_show_fast_flag_warning: True,
         k_wine_binary: "",
-        k_dll_overrides: "ucrtbase=n,b;api-ms-win-crt-private-l1-1-0=n,b;dxdiagn=;winemenubuilder.exe=",
+        k_dll_overrides: "dxdiagn=;winemenubuilder.exe=",
         k_no_daemon_mode: True,
         k_release_channel: "master",
         k_environment_variables: dict(),
         k_enabled_tweaks: list(),
-        k_disable_updates: False
+        k_disable_updates: False,
+        k_ignore_wine_version: False
     }
 
 
@@ -63,7 +65,8 @@ class UserSettings:
                     self._settings_object = json.load(fp)
 
                     for k, v in default_settings().items():
-                        if k not in self._settings_object:
+                        if k not in self._settings_object or self._settings_object[k] == \
+                        "ucrtbase=n,b;api-ms-win-crt-private-l1-1-0=n,b;dxdiagn=;winemenubuilder.exe=":
                             self._settings_object[k] = v
                             save_settings = True
 

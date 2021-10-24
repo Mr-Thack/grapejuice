@@ -8,6 +8,7 @@ from grapejuice_common import variables
 from grapejuice_common import winectrl
 from grapejuice_common.logs.log_util import log_function
 from grapejuice_common.util import download_file
+from grapejuice_common.util.errors import RobloxDownloadError
 
 LOG = logging.getLogger(__name__)
 
@@ -25,13 +26,19 @@ def get_installer():
 
 
 def run_installer(post_install_function: callable = None):
-    winectrl.create_prefix()
+    if not variables.wine_drive_c():
+        winectrl.create_prefix()
+
     get_installer()
 
     p = variables.installer_path()
-    LOG.info(f"Running installer at {p}")
 
-    winectrl.run_exe(p, post_run_function=post_install_function)
+    if os.path.isfile(p) and os.stat(p).st_size > 1:
+        LOG.info(f"Running installer at {p}")
+
+        winectrl.run_exe(p, post_run_function=post_install_function)
+    else:
+        raise RobloxDownloadError
 
 
 @log_function

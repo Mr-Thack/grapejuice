@@ -100,3 +100,8 @@ class DBusConnection(IDBusConnection):
 
     def extract_fast_flags(self):
         self.proxy.ExtractFastFlags()
+
+    def wine_version(self):
+        wine_version = self.proxy.WineVersion()
+        LOG.debug(f"Wine version is {wine_version}")
+        return wine_version
