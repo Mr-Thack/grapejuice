@@ -65,8 +65,7 @@ class UserSettings:
                     self._settings_object = json.load(fp)
 
                     for k, v in default_settings().items():
-                        if k not in self._settings_object or self._settings_object[k] == \
-                        "ucrtbase=n,b;api-ms-win-crt-private-l1-1-0=n,b;dxdiagn=;winemenubuilder.exe=":
+                        if k not in self._settings_object:
                             self._settings_object[k] = v
                             save_settings = True
 
