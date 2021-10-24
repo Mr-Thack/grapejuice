@@ -229,6 +229,8 @@ class WineprefixCoreControl:
 
         target_filename = str(int(time.time())) + ".reg"
         target_path = self._paths.temp_directory / target_filename
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+
         shutil.copyfile(registry_file, target_path)
 
         winreg = f"C:\\windows\\temp\\{target_filename}"
