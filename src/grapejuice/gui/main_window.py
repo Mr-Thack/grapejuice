@@ -32,6 +32,7 @@ class GtkListBoxRowWithIcon(Gtk.ListBoxRow):
 
 class GtkWineprefixRow(GtkListBoxRowWithIcon):
     _prefix_model: WineprefixConfigurationModel = None
+    _label = None
 
     def __init__(self, prefix: WineprefixConfigurationModel, *args, **kwargs):
         icon_name = "user-home-symbolic"
@@ -48,12 +49,16 @@ class GtkWineprefixRow(GtkListBoxRowWithIcon):
 
         label = Gtk.Label()
         label.set_text(prefix.display_name)
+        self._label = label
 
         self.box.add(label)
 
     @property
     def prefix_model(self) -> WineprefixConfigurationModel:
         return self._prefix_model
+
+    def set_text(self, text: str):
+        self._label.set_text(text)
 
 
 class GtkStartUsingGrapejuiceRow(GtkListBoxRowWithIcon):
@@ -179,6 +184,7 @@ class MainWindow(GtkBase):
         def do_finish_editing_prefix_name(_handler):
             if self._current_prefix is not None:
                 self._current_prefix.display_name = self._prefix_name_handler.prefix_name
+                self._update_prefix_in_prefix_list(self._current_prefix)
 
         self._prefix_name_handler.on_finish_editing(do_finish_editing_prefix_name)
 
@@ -220,6 +226,12 @@ class MainWindow(GtkBase):
         listbox.add(add_prefix_row)
 
         listbox.show_all()
+
+    def _update_prefix_in_prefix_list(self, prefix: WineprefixConfigurationModel):
+        for child in self.widgets.prefix_list.get_children():
+            if isinstance(child, GtkWineprefixRow):
+                if child.prefix_model.id == prefix.id:
+                    child.set_text(prefix.display_name)
 
     def _show_prefix(self, prefix: WineprefixConfigurationModel):
         self._set_page(self.widgets.cc_prefix_page)
