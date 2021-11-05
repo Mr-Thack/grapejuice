@@ -1,13 +1,13 @@
 import json
 import logging
 import uuid
+from dataclasses import asdict
 from pathlib import Path
 from typing import Dict, List
 
 from grapejuice_common import variables
 from grapejuice_common.features import wineprefix_configuration_model
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
-from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 LOG = logging.getLogger(__name__)
@@ -164,14 +164,16 @@ class UserSettings:
 
             json.dump(self._settings_object, fp, indent=2)
 
-    def save_wineprefix(self, prefix: Wineprefix):
+    def save_prefix_model(self, prefix: WineprefixConfigurationModel):
         did_update = False
+        prefix_as_dict = asdict(prefix)
 
         for prefix_configuration in self._settings_object.get(k_wineprefixes, []):
-            if prefix_configuration.get("id") == prefix.configuration.id:
-                for k, v in prefix.configuration.user_configuration_object.items():
+            if prefix_configuration["id"] == prefix.id:
+                for k, v in prefix_as_dict.items():
                     prefix_configuration[k] = v
-                    did_update = True
+
+                did_update = True
 
         if did_update:
             self.save()

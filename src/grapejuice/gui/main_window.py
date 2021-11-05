@@ -175,6 +175,10 @@ class MainWindow(GtkBase):
         self._populate_prefix_list()
         self._show_start_page()
 
+    def _save_current_prefix(self):
+        if self._current_prefix is not None:
+            current_settings.save_prefix_model(self._current_prefix)
+
     def _connect_signals(self):
         self.widgets.main_window.connect("destroy", Gtk.main_quit)
         self.widgets.prefix_list.connect("row-selected", self._prefix_row_selected)
@@ -185,6 +189,7 @@ class MainWindow(GtkBase):
             if self._current_prefix is not None:
                 self._current_prefix.display_name = self._prefix_name_handler.prefix_name
                 self._update_prefix_in_prefix_list(self._current_prefix)
+                self._save_current_prefix()
 
         self._prefix_name_handler.on_finish_editing(do_finish_editing_prefix_name)
 
