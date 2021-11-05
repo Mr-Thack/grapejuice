@@ -92,7 +92,6 @@ class MainWindow(GtkBase):
             handler_instance=self
         )
 
-        from gi.repository import Gtk
         self.widgets.main_window.connect("destroy", Gtk.main_quit)
         self.widgets.prefix_list.connect("row-selected", self._prefix_row_selected)
 
