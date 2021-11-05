@@ -1,10 +1,13 @@
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 from grapejuice import background
 from grapejuice_common import variables
 from grapejuice_common.update_info_providers import UpdateInformationProvider
+from grapejuice_common.util import xdg_open
+from grapejuice_common.wine.wineprefix import Wineprefix
 
 
 class RunRobloxStudio(background.BackgroundTask):
@@ -36,12 +39,14 @@ class OpenLogsDirectory(background.BackgroundTask):
 
         subprocess.check_call(["xdg-open", path])
 
+
 class OpenConfigFile(background.BackgroundTask):
     def __init__(self, **kwargs):
         super().__init__("Opening config file", **kwargs)
 
     def work(self) -> None:
         subprocess.check_call(["xdg-open", variables.grapejuice_user_settings()])
+
 
 class PerformUpdate(background.BackgroundTask):
     def __init__(self, update_provider: UpdateInformationProvider, reopen: bool = False, **kwargs):
@@ -59,3 +64,25 @@ class PerformUpdate(background.BackgroundTask):
             Gtk.main_quit()
 
             sys.exit(0)
+
+
+class InstallRoblox(background.BackgroundTask):
+    _prefix: Wineprefix
+
+    def __init__(self, prefix: Wineprefix, **kwargs):
+        super().__init__("Installing Roblox", **kwargs)
+        self._prefix = prefix
+
+    def work(self):
+        self._prefix.roblox.install_roblox()
+
+
+class ShowDriveC(background.BackgroundTask):
+    _path: Path
+
+    def __init__(self, prefix: Wineprefix, **kwargs):
+        super().__init__("Installing Roblox", **kwargs)
+        self._path = prefix.paths.drive_c
+
+    def work(self):
+        xdg_open(str(self._path))

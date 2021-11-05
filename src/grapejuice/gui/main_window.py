@@ -3,10 +3,14 @@ from typing import Optional, List, Callable
 
 from gi.repository import Gtk, Gdk
 
+from grapejuice import gui_task_manager
+from grapejuice.tasks import InstallRoblox, OpenLogsDirectory, ShowDriveC
 from grapejuice_common import variables
 from grapejuice_common.features.settings import current_settings
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.gtk.gtk_base import GtkBase
+from grapejuice_common.util.computed_field import ComputedField
+from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 
@@ -119,9 +123,13 @@ class PrefixNameHandler:
     def finish_editing(self, use_entry_value: bool = True):
         self._set_active_widget(self._label)
 
-        new_name = self._entry.get_text()
-        if not new_name.strip():
+        new_name = self._entry.get_text().strip()
+        if not new_name:
             # Cannot use empty names
+            use_entry_value = False
+
+        if new_name == self.prefix_name:
+            # No need to update
             use_entry_value = False
 
         if use_entry_value:
@@ -161,10 +169,20 @@ class PrefixNameHandler:
         return self._prefix_name
 
 
+def _open_fast_flags_for(prefix: Wineprefix):
+    from grapejuice.gui.fast_flag_warning import FastFlagWarning
+
+    # TODO: Actually open fast flag editor
+
+    wnd = FastFlagWarning(print)
+    wnd.show()
+
+
 class MainWindow(GtkBase):
     _current_page = None
-    _current_prefix: Optional[WineprefixConfigurationModel] = None
+    _current_prefix_model: Optional[WineprefixConfigurationModel] = None
     _prefix_name_handler: PrefixNameHandler
+    _current_prefix: ComputedField[Wineprefix]
 
     def __init__(self):
         super().__init__(glade_path=variables.grapejuice_glade())
@@ -175,20 +193,40 @@ class MainWindow(GtkBase):
         self._populate_prefix_list()
         self._show_start_page()
 
+        self._current_prefix = ComputedField(
+            lambda: None if self._current_prefix_model is None else Wineprefix(self._current_prefix_model)
+        )
+
     def _save_current_prefix(self):
-        if self._current_prefix is not None:
-            current_settings.save_prefix_model(self._current_prefix)
+        if self._current_prefix_model is not None:
+            current_settings.save_prefix_model(self._current_prefix_model)
 
     def _connect_signals(self):
         self.widgets.main_window.connect("destroy", Gtk.main_quit)
         self.widgets.prefix_list.connect("row-selected", self._prefix_row_selected)
 
         self.widgets.edit_prefix_name_button.connect("clicked", self._edit_prefix_name)
+        self.widgets.install_roblox_button.connect(
+            "clicked",
+            lambda _b: gui_task_manager.run_task_once(InstallRoblox, self._current_prefix.value)
+        )
+        self.widgets.view_logs_button.connect(
+            "clicked",
+            lambda _b: gui_task_manager.run_task_once(OpenLogsDirectory)
+        )
+        self.widgets.drive_c_button.connect(
+            "clicked",
+            lambda _b: gui_task_manager.run_task_once(ShowDriveC, self._current_prefix.value)
+        )
+        self.widgets.fflags_button.connect(
+            "clicked",
+            lambda _b: _open_fast_flags_for(self._current_prefix.value)
+        )
 
         def do_finish_editing_prefix_name(_handler):
-            if self._current_prefix is not None:
-                self._current_prefix.display_name = self._prefix_name_handler.prefix_name
-                self._update_prefix_in_prefix_list(self._current_prefix)
+            if self._current_prefix_model is not None:
+                self._current_prefix_model.display_name = self._prefix_name_handler.prefix_name
+                self._update_prefix_in_prefix_list(self._current_prefix_model)
                 self._save_current_prefix()
 
         self._prefix_name_handler.on_finish_editing(do_finish_editing_prefix_name)
@@ -239,8 +277,9 @@ class MainWindow(GtkBase):
                     child.set_text(prefix.display_name)
 
     def _show_prefix(self, prefix: WineprefixConfigurationModel):
+        self._current_prefix.clear_cached_value()
         self._set_page(self.widgets.cc_prefix_page)
-        self._current_prefix = prefix
+        self._current_prefix_model = prefix
         self._prefix_name_handler.set_prefix_name(prefix.display_name)
 
     def _show_page_for_new_prefix(self):
@@ -275,7 +314,7 @@ class MainWindow(GtkBase):
                 self._current_page.show_all()
 
         if clear_current_prefix:
-            self._current_prefix = None
+            self._current_prefix_model = None
 
     def show(self):
         self.widgets.main_window.show()

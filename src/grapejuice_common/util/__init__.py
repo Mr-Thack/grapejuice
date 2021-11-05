@@ -26,3 +26,8 @@ def download_file(url, target_path: Path):
         fp.write(response.content)
 
     return target_path
+
+
+def xdg_open(*args):
+    # Find a less heinous way of opening a program while deferring ownership
+    os.spawnlp(os.P_NOWAIT, "xdg-open", "xdg-open", *args)

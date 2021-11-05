@@ -1,5 +1,4 @@
-from pathlib import Path
-
+from grapejuice_common import variables
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.wine.wineprefix_core_control import WineprefixCoreControl
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths
@@ -9,9 +8,10 @@ from grapejuice_common.wine.wineprefix_roblox import WineprefixRoblox
 class Wineprefix:
     def __init__(
         self,
-        base_directory: Path,
         configuration: WineprefixConfigurationModel
     ):
+        base_directory = variables.wineprefixes_directory() / configuration.name_on_disk
+
         self._paths = WineprefixPaths(base_directory)
         self._configuration = configuration
         self._core_control = WineprefixCoreControl(self._paths, self._configuration)

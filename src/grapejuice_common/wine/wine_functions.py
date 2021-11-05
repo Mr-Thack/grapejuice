@@ -1,7 +1,6 @@
 import logging
 from typing import List, Union
 
-from grapejuice_common import variables
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
@@ -19,10 +18,7 @@ def get_wineprefix(hints: List[WineprefixHint]):
             has_all_hints = has_all_hints and hint.value in prefix_configuration.get("hints", [])
 
         if has_all_hints:
-            path = variables.wineprefixes_directory() / prefix_configuration["name_on_disk"]
-
             return Wineprefix(
-                path,
                 configuration=WineprefixConfigurationModel(**prefix_configuration)
             )
 
