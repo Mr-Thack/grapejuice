@@ -12,9 +12,9 @@ from string import Template
 from typing import Union, List
 
 from grapejuice_common import variables
+from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.logs.log_util import log_function
 from grapejuice_common.util.string_util import non_empty_string
-from grapejuice_common.wine.wineprefix_configuration import WineprefixConfiguration
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths
 
 LOG = logging.getLogger(__name__)
@@ -181,17 +181,15 @@ def default_dll_overrides() -> List[str]:
 
 class WineprefixCoreControl:
     _paths: WineprefixPaths
-    _configuration: WineprefixConfiguration
+    _configuration: WineprefixConfigurationModel
 
-    def __init__(self, paths: WineprefixPaths, configuration: WineprefixConfiguration):
+    def __init__(self, paths: WineprefixPaths, configuration: WineprefixConfigurationModel):
         self._paths = paths
         self._configuration = configuration
 
     def prepare_for_launch(self):
-        pco = self._configuration.program_configuration_object
-
-        user_env = pco.get("env", dict())
-        dll_overrides = list(filter(non_empty_string, pco.get("dll_overrides", "").split(DLL_OVERRIDE_SEP)))
+        user_env = self._configuration.env
+        dll_overrides = list(filter(non_empty_string, self._configuration.dll_overrides.split(DLL_OVERRIDE_SEP)))
         dll_overrides.extend(default_dll_overrides())
 
         apply_env = {

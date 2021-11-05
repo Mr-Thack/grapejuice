@@ -1,8 +1,6 @@
 from pathlib import Path
-from typing import Union
 
-from grapejuice_common.features import wineprefix_configuration_model
-from grapejuice_common.wine.wineprefix_configuration import WineprefixConfiguration, WineprefixConfigurationObject
+from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.wine.wineprefix_core_control import WineprefixCoreControl
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths
 from grapejuice_common.wine.wineprefix_roblox import WineprefixRoblox
@@ -12,13 +10,11 @@ class Wineprefix:
     def __init__(
         self,
         base_directory: Path,
-        configuration_object: Union[WineprefixConfigurationObject, None] = None
+        configuration: WineprefixConfigurationModel
     ):
         self._paths = WineprefixPaths(base_directory)
-        self._configuration = WineprefixConfiguration(
-            wineprefix_configuration_model.from_json(configuration_object)
-        )
-        self._core_control = WineprefixCoreControl(self._paths, self.configuration)
+        self._configuration = configuration
+        self._core_control = WineprefixCoreControl(self._paths, self._configuration)
         self._roblox = WineprefixRoblox(self.paths, self._core_control)
 
     @property
@@ -34,5 +30,5 @@ class Wineprefix:
         return self._roblox
 
     @property
-    def configuration(self) -> WineprefixConfiguration:
+    def configuration(self) -> WineprefixConfigurationModel:
         return self._configuration
