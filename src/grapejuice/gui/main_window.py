@@ -1,7 +1,7 @@
 import uuid
-from typing import Optional
+from typing import Optional, List, Callable
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from grapejuice_common import variables
 from grapejuice_common.features.settings import current_settings
@@ -83,23 +83,114 @@ class GtkAddWineprefixRow(Gtk.Box):
         self.add(image)
 
 
+class PrefixNameHandler:
+    _wrapper = None
+    _active_widget = None
+    _prefix_name: str = ""
+    _on_finish_editing_callbacks: List[Callable[["PrefixNameHandler"], None]]
+
+    def __init__(self, prefix_name_wrapper):
+        self._on_finish_editing_callbacks = []
+        self._wrapper = prefix_name_wrapper
+
+        label = Gtk.Label()
+        label.set_text("__invalid__")
+        self._label = label
+
+        entry = Gtk.Entry()
+        entry.connect("key-press-event", self._on_key_press)
+
+        self._entry = entry
+
+    def _on_key_press(self, _entry, event):
+        key = Gdk.keyval_name(event.keyval)
+
+        if key == "Return":
+            self.finish_editing()
+
+    def on_finish_editing(self, callback: Callable[["PrefixNameHandler"], None]):
+        self._on_finish_editing_callbacks.append(callback)
+
+    def finish_editing(self, use_entry_value: bool = True):
+        self._set_active_widget(self._label)
+
+        new_name = self._entry.get_text()
+        if not new_name.strip():
+            # Cannot use empty names
+            use_entry_value = False
+
+        if use_entry_value:
+            self._prefix_name = new_name
+            self._label.set_text(new_name)
+
+            for cb in self._on_finish_editing_callbacks:
+                cb(self)
+
+    def _clear_active_widget(self):
+        if self._active_widget is not None:
+            self._wrapper.remove(self._active_widget)
+            self._active_widget = None
+
+    def _set_active_widget(self, widget):
+        self._clear_active_widget()
+        self._wrapper.add(widget)
+        self._active_widget = widget
+        widget.show()
+
+    def set_prefix_name(self, name: str):
+        self._set_active_widget(self._label)
+        self._label.set_text(name)
+        self._prefix_name = name
+
+    def activate_entry(self):
+        self._entry.set_text(self._prefix_name)
+        self._set_active_widget(self._entry)
+        self._entry.grab_focus()
+
+    @property
+    def is_editing(self):
+        return self._active_widget is self._entry
+
+    @property
+    def prefix_name(self) -> str:
+        return self._prefix_name
+
+
 class MainWindow(GtkBase):
     _current_page = None
+    _current_prefix: Optional[WineprefixConfigurationModel] = None
+    _prefix_name_handler: PrefixNameHandler
 
     def __init__(self):
-        super().__init__(
-            glade_path=variables.grapejuice_glade(),
-            handler_instance=self
-        )
+        super().__init__(glade_path=variables.grapejuice_glade())
 
-        self.widgets.main_window.connect("destroy", Gtk.main_quit)
-        self.widgets.prefix_list.connect("row-selected", self._prefix_row_selected)
+        self._prefix_name_handler = PrefixNameHandler(self.widgets.prefix_name_wrapper)
 
+        self._connect_signals()
         self._populate_prefix_list()
         self._show_start_page()
 
+    def _connect_signals(self):
+        self.widgets.main_window.connect("destroy", Gtk.main_quit)
+        self.widgets.prefix_list.connect("row-selected", self._prefix_row_selected)
+
+        self.widgets.edit_prefix_name_button.connect("clicked", self._edit_prefix_name)
+
+        def do_finish_editing_prefix_name(_handler):
+            if self._current_prefix is not None:
+                self._current_prefix.display_name = self._prefix_name_handler.prefix_name
+
+        self._prefix_name_handler.on_finish_editing(do_finish_editing_prefix_name)
+
     def _show_start_page(self):
-        self.set_page(self.widgets.cc_start_page)
+        self._set_page(self.widgets.cc_start_page)
+
+    def _edit_prefix_name(self, _button):
+        if self._prefix_name_handler.is_editing:
+            self._prefix_name_handler.finish_editing()
+
+        else:
+            self._prefix_name_handler.activate_entry()
 
     def _prefix_row_selected(self, _prefix_list, prefix_row):
         if isinstance(prefix_row, GtkWineprefixRow):
@@ -131,8 +222,9 @@ class MainWindow(GtkBase):
         listbox.show_all()
 
     def _show_prefix(self, prefix: WineprefixConfigurationModel):
-        self.set_page(self.widgets.cc_prefix_page)
-        self.widgets.prefix_name_label.set_text(prefix.display_name)
+        self._set_page(self.widgets.cc_prefix_page)
+        self._current_prefix = prefix
+        self._prefix_name_handler.set_prefix_name(prefix.display_name)
 
     def _show_page_for_new_prefix(self):
         model = WineprefixConfigurationModel(
@@ -148,7 +240,12 @@ class MainWindow(GtkBase):
 
         self._show_prefix(model)
 
-    def set_page(self, new_page: Optional = None, show_all: Optional[bool] = True):
+    def _set_page(
+        self,
+        new_page: Optional = None,
+        show_all: bool = True,
+        clear_current_prefix: bool = True
+    ):
         if self._current_page is not None:
             self.widgets.page_wrapper.remove(self._current_page)
             self._current_page = None
@@ -159,6 +256,9 @@ class MainWindow(GtkBase):
 
             if show_all:
                 self._current_page.show_all()
+
+        if clear_current_prefix:
+            self._current_prefix = None
 
     def show(self):
         self.widgets.main_window.show()
