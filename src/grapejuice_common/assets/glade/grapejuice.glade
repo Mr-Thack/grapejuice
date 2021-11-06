@@ -45,10 +45,26 @@
       <placeholder/>
     </child>
   </object>
+  <object class="GtkImage" id="drive_c_icon">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">10</property>
+    <property name="margin-bottom">10</property>
+    <property name="icon-name">drive-harddisk-system-symbolic</property>
+    <property name="icon_size">3</property>
+  </object>
   <object class="GtkImage" id="edit_prefix_name_icon">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">document-edit-symbolic</property>
+  </object>
+  <object class="GtkImage" id="fflags_icon">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">10</property>
+    <property name="margin-bottom">10</property>
+    <property name="icon-name">application-x-addon-symbolic</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="install_roblox_icon">
     <property name="visible">True</property>
@@ -57,187 +73,6 @@
     <property name="margin-bottom">10</property>
     <property name="icon-name">package-x-generic-symbolic</property>
     <property name="icon_size">3</property>
-  </object>
-  <object class="GtkImage" id="install_roblox_icon1">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">10</property>
-    <property name="margin-bottom">10</property>
-    <property name="icon-name">system-file-manager-symbolic</property>
-    <property name="icon_size">3</property>
-  </object>
-  <object class="GtkImage" id="install_roblox_icon2">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">10</property>
-    <property name="margin-bottom">10</property>
-    <property name="icon-name">drive-harddisk-system-symbolic</property>
-    <property name="icon_size">3</property>
-  </object>
-  <object class="GtkImage" id="install_roblox_icon3">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">10</property>
-    <property name="margin-bottom">10</property>
-    <property name="icon-name">application-x-addon-symbolic</property>
-    <property name="icon_size">3</property>
-  </object>
-  <object class="GtkBox" id="cc_prefix_page">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="orientation">vertical</property>
-    <property name="spacing">10</property>
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="spacing">15</property>
-        <child>
-          <object class="GtkBox" id="prefix_name_wrapper">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="edit_prefix_name_button">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="image">edit_prefix_name_icon</property>
-            <property name="always-show-image">True</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkSeparator">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkBox" id="prefix_action_buttons">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="spacing">15</property>
-        <property name="homogeneous">True</property>
-        <child>
-          <object class="GtkButton" id="install_roblox_button">
-            <property name="label" translatable="yes">Install Roblox</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="image">install_roblox_icon</property>
-            <property name="image-position">top</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="view_logs_button">
-            <property name="label" translatable="yes">View Logs</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="image">install_roblox_icon1</property>
-            <property name="image-position">top</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="drive_c_button">
-            <property name="label" translatable="yes">Drive C</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="image">install_roblox_icon2</property>
-            <property name="image-position">top</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="fflags_button">
-            <property name="label" translatable="yes">FFlags</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="image">install_roblox_icon3</property>
-            <property name="image-position">top</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">True</property>
-        <property name="fill">True</property>
-        <property name="position">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkSeparator">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">3</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkImage">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="margin-start">25</property>
-        <property name="margin-end">25</property>
-        <property name="margin-top">25</property>
-        <property name="margin-bottom">25</property>
-        <property name="pixbuf">../images/owo.png</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">4</property>
-      </packing>
-    </child>
   </object>
   <object class="GtkWindow" id="main_window">
     <property name="can-focus">False</property>
@@ -342,6 +177,171 @@
           </object>
         </child>
       </object>
+    </child>
+  </object>
+  <object class="GtkImage" id="view_logs_icon">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">10</property>
+    <property name="margin-bottom">10</property>
+    <property name="icon-name">system-file-manager-symbolic</property>
+    <property name="icon_size">3</property>
+  </object>
+  <object class="GtkBox" id="cc_prefix_page">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="orientation">vertical</property>
+    <property name="spacing">10</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="spacing">15</property>
+        <child>
+          <object class="GtkBox" id="prefix_name_wrapper">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="edit_prefix_name_button">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="image">edit_prefix_name_icon</property>
+            <property name="always-show-image">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkSeparator">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="prefix_action_buttons">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="spacing">15</property>
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkButton" id="install_roblox_button">
+            <property name="label" translatable="yes">Install Roblox</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="image">install_roblox_icon</property>
+            <property name="image-position">top</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="view_logs_button">
+            <property name="label" translatable="yes">View Logs</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="image">view_logs_icon</property>
+            <property name="image-position">top</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="drive_c_button">
+            <property name="label" translatable="yes">Drive C</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="image">drive_c_icon</property>
+            <property name="image-position">top</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="fflags_button">
+            <property name="label" translatable="yes">FFlags</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="image">fflags_icon</property>
+            <property name="image-position">top</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkSeparator">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">3</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkImage">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="margin-start">25</property>
+        <property name="margin-end">25</property>
+        <property name="margin-top">25</property>
+        <property name="margin-bottom">25</property>
+        <property name="pixbuf">../images/owo.png</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">4</property>
+      </packing>
     </child>
   </object>
 </interface>
