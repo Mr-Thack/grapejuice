@@ -3,7 +3,7 @@ import logging
 import uuid
 from dataclasses import asdict
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from grapejuice_common import variables
 from grapejuice_common.features import wineprefix_configuration_model
@@ -103,6 +103,13 @@ class UserSettings:
     def parsed_wineprefixes_sorted(self) -> List[WineprefixConfigurationModel]:
         return list(map(wineprefix_configuration_model.from_json, self.raw_wineprefixes_sorted))
 
+    def find_wineprefix(self, search_id: str) -> Optional[WineprefixConfigurationModel]:
+        for prefix_configuration in self._settings_object.get(k_wineprefixes, []):
+            if prefix_configuration["id"] == search_id:
+                return WineprefixConfigurationModel(**prefix_configuration)
+
+        return None
+
     def get(self, key: str, default_value: any = None):
         if self._settings_object:
             return self._settings_object.get(key, default_value)
@@ -164,16 +171,26 @@ class UserSettings:
 
             json.dump(self._settings_object, fp, indent=2)
 
-    def save_prefix_model(self, prefix: WineprefixConfigurationModel):
+    def save_prefix_model(self, model: WineprefixConfigurationModel):
         did_update = False
-        prefix_as_dict = asdict(prefix)
+        model_as_dict = asdict(model)
 
-        for prefix_configuration in self._settings_object.get(k_wineprefixes, []):
-            if prefix_configuration["id"] == prefix.id:
-                for k, v in prefix_as_dict.items():
-                    prefix_configuration[k] = v
+        # Extract and re-insert wineprefixes list in case it doesn't exist
+        prefixes = self._settings_object.get(k_wineprefixes, [])
 
-                did_update = True
+        if self.find_wineprefix(model.id) is None:
+            prefixes.append(model_as_dict)
+            did_update = True
+
+        else:
+            for prefix_configuration in prefixes:
+                if prefix_configuration["id"] == model.id:
+                    for k, v in model_as_dict.items():
+                        prefix_configuration[k] = v
+
+                    did_update = True
+
+        self._settings_object[k_wineprefixes] = prefixes
 
         if did_update:
             self.save()

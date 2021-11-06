@@ -191,6 +191,15 @@ def _open_fast_flags_for(prefix: Wineprefix):
     warning_window.show()
 
 
+def set_gtk_widgets_visibility(widgets, visible):
+    for w in widgets:
+        if visible:
+            w.show()
+
+        else:
+            w.hide()
+
+
 class MainWindow(GtkBase):
     _current_page = None
     _current_prefix_model: Optional[WineprefixConfigurationModel] = None
@@ -236,6 +245,11 @@ class MainWindow(GtkBase):
             lambda _b: _open_fast_flags_for(self._current_prefix.value)
         )
 
+        self.widgets.create_prefix_button.connect(
+            "clicked",
+            lambda _b: self._create_current_prefix()
+        )
+
         def do_finish_editing_prefix_name(_handler):
             if self._current_prefix_model is not None:
                 self._current_prefix_model.display_name = self._prefix_name_handler.prefix_name
@@ -256,7 +270,7 @@ class MainWindow(GtkBase):
 
     def _prefix_row_selected(self, _prefix_list, prefix_row):
         if isinstance(prefix_row, GtkWineprefixRow):
-            self._show_prefix(prefix_row.prefix_model)
+            self._show_prefix_model(prefix_row.prefix_model)
 
         elif isinstance(prefix_row, GtkStartUsingGrapejuiceRow):
             self._show_start_page()
@@ -289,17 +303,45 @@ class MainWindow(GtkBase):
                 if child.prefix_model.id == prefix.id:
                     child.set_text(prefix.display_name)
 
-    def _show_prefix(self, prefix: WineprefixConfigurationModel):
+    def _create_current_prefix(self):
+        model = self._current_prefix_model
+
+        model.create_name_on_disk_from_display_name()
+        prefix = Wineprefix(model)
+
+        def after_installation():
+            self._populate_prefix_list()
+            self._show_prefix_model(self._current_prefix_model)
+
+        current_settings.save_prefix_model(model)
+        prefix.roblox.install_roblox(post_install_function=after_installation)
+
+    def _show_prefix_model(self, prefix: WineprefixConfigurationModel):
         self._current_prefix.clear_cached_value()
         self._set_page(self.widgets.cc_prefix_page)
         self._current_prefix_model = prefix
         self._prefix_name_handler.set_prefix_name(prefix.display_name)
 
+        prefix_exists_on_disk = prefix.exists_on_disk
+
+        set_gtk_widgets_visibility(
+            [
+                self.widgets.prefix_page_sep_0,
+                self.widgets.prefix_action_buttons
+            ],
+            prefix_exists_on_disk
+        )
+
+        set_gtk_widgets_visibility(
+            [self.widgets.create_prefix_button],
+            not prefix_exists_on_disk
+        )
+
     def _show_page_for_new_prefix(self):
         model = WineprefixConfigurationModel(
             str(uuid.uuid4()),
             0,
-            "gaming",
+            "__new_wineprefix",
             "New Wineprefix",
             "",
             "",
@@ -307,7 +349,17 @@ class MainWindow(GtkBase):
             list()
         )
 
-        self._show_prefix(model)
+        model.create_name_on_disk_from_display_name()
+        if model.exists_on_disk:
+            n = 1
+
+            while model.exists_on_disk:
+                model.display_name = f"New Wineprefix - {n}"
+                model.create_name_on_disk_from_display_name()
+
+                n += 1
+
+        self._show_prefix_model(model)
 
     def _set_page(
         self,
