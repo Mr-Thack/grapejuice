@@ -9,6 +9,7 @@ from grapejuice_common.gtk.GtkPaginator import GtkPaginator
 from grapejuice_common.gtk.gtk_stuff import WindowBase, dialog
 from grapejuice_common.util.paginator import Paginator
 from grapejuice_common.wine.wine_functions import get_studio_wineprefix
+from grapejuice_common.wine.wineprefix import Wineprefix
 
 
 class WidgetStuff:
@@ -85,8 +86,11 @@ def flag_to_widget(flag: FastFlag, on_changed: callable = None) -> Union[None, W
 
 
 class FastFlagEditor(WindowBase):
-    def __init__(self, fast_flags: Union[Dict[str, any], None] = None):
+    _prefix: Wineprefix
+
+    def __init__(self, prefix: Wineprefix, fast_flags: Union[Dict[str, any], None] = None):
         super().__init__(variables.fast_flag_editor_glade(), self)
+        self._prefix = prefix
 
         studio_settings_path, player_settings_path = get_app_settings_paths()
 

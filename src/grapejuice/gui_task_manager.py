@@ -47,3 +47,15 @@ def run_task_once(
     once_task_tracker[task] = task_class
 
     background.tasks.add(task)
+
+
+def wait_for_task(task, after_finish):
+    from gi.repository import GObject
+
+    def poll():
+        if task.finished:
+            after_finish()
+
+        return not task.finished
+
+    GObject.timeout_add(100, poll)

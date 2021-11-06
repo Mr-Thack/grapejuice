@@ -20,8 +20,13 @@ class RunRobloxStudio(background.BackgroundTask):
 
 
 class ExtractFastFlags(background.BackgroundTask):
-    def __init__(self, **kwargs):
+    _prefix: Wineprefix
+
+    def __init__(self, prefix: Wineprefix, **kwargs):
         super().__init__("Extracting Fast Flags", **kwargs)
+
+        self._prefix = prefix
+        # TODO: Run on this prefix
 
     def work(self) -> None:
         from grapejuice_common.ipc.dbus_client import dbus_connection

@@ -3,8 +3,8 @@ from typing import Optional, List, Callable
 
 from gi.repository import Gtk, Gdk
 
-from grapejuice import gui_task_manager
-from grapejuice.tasks import InstallRoblox, OpenLogsDirectory, ShowDriveC
+from grapejuice import gui_task_manager, background
+from grapejuice.tasks import InstallRoblox, OpenLogsDirectory, ShowDriveC, ExtractFastFlags
 from grapejuice_common import variables
 from grapejuice_common.features.settings import current_settings
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
@@ -172,10 +172,23 @@ class PrefixNameHandler:
 def _open_fast_flags_for(prefix: Wineprefix):
     from grapejuice.gui.fast_flag_warning import FastFlagWarning
 
-    # TODO: Actually open fast flag editor
+    def show_fast_flag_window():
+        from grapejuice.gui.fast_flag_editor import FastFlagEditor
 
-    wnd = FastFlagWarning(print)
-    wnd.show()
+        fast_flag_editor = FastFlagEditor(prefix=prefix)
+        fast_flag_editor.window.show()
+
+    def warning_callback(confirmed: bool):
+        if not confirmed:
+            return
+
+        task = ExtractFastFlags(prefix)
+        background.tasks.add(task)
+
+        gui_task_manager.wait_for_task(task, show_fast_flag_window)
+
+    warning_window = FastFlagWarning(warning_callback)
+    warning_window.show()
 
 
 class MainWindow(GtkBase):
