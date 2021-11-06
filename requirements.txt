@@ -5,3 +5,4 @@ packaging
 wheel
 setuptools
 requests
+Unidecode

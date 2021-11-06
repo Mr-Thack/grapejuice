@@ -32,7 +32,15 @@ class WineprefixConfigurationModel:
         return self.base_directory.exists()
 
     def create_name_on_disk_from_display_name(self):
-        self.name_on_disk = re.sub(r"/[/]+", "_", self.display_name).strip()
+        from unidecode import unidecode
+
+        s = unidecode(self.display_name)  # Remove wacky non-ascii characters
+        s = s.strip()  # Remove surrounding whitespace
+        s = re.sub(r"\s+/\s+", "_", s)  # Replace slashes surrounded by whitespace by a single underscore
+        s = re.sub(r"[/ ]+", "_", s)  # Remove slashes and spaces
+        s = s.lower()
+
+        self.name_on_disk = s
 
 
 def from_json(json_object: Dict[str, any]):
