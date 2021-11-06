@@ -304,6 +304,8 @@ class MainWindow(GtkBase):
                     child.set_text(prefix.display_name)
 
     def _create_current_prefix(self):
+        self._prefix_name_handler.finish_editing()
+
         model = self._current_prefix_model
 
         model.create_name_on_disk_from_display_name()
