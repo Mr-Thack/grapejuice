@@ -37,7 +37,7 @@ class WineprefixConfigurationModel:
         s = unidecode(self.display_name)  # Remove wacky non-ascii characters
         s = s.strip()  # Remove surrounding whitespace
         s = re.sub(r"\s+/\s+", "_", s)  # Replace slashes surrounded by whitespace by a single underscore
-        s = re.sub(r"[/ ]+", "_", s)  # Remove slashes and spaces
+        s = re.sub(r"[/ \W]+", "_", s)
         s = s.lower()
 
         self.name_on_disk = s
