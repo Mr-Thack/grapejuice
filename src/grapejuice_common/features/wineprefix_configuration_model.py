@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Dict, List
 
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
@@ -18,6 +19,12 @@ class WineprefixConfigurationModel:
     @property
     def hints_as_enum(self) -> List[WineprefixHint]:
         return list(map(lambda x: WineprefixHint[x], self.hints))
+
+    @property
+    def base_directory(self) -> Path:
+        from grapejuice_common import variables
+
+        return variables.wineprefixes_directory() / self.name_on_disk
 
 
 def from_json(json_object: Dict[str, any]):
