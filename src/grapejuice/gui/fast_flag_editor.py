@@ -11,6 +11,8 @@ from grapejuice_common.util.paginator import Paginator
 from grapejuice_common.wine.wine_functions import get_studio_wineprefix
 from grapejuice_common.wine.wineprefix import Wineprefix
 
+# TODO: Make the fast flag editor prefix aware
+
 
 class WidgetStuff:
     def __init__(self, widget, get_value, set_value):
