@@ -1,7 +1,7 @@
 import logging
 import threading
 import traceback
-from typing import Union, Callable
+from typing import Union, Callable, Optional
 
 from grapejuice_common.util.event import Event
 
@@ -59,11 +59,7 @@ class Task:
             self._on_error_callback(self, e)
 
     def finish(self):
-        self.on_finished()
         self._finished = True
-
-        if self.collection is not None:
-            self.collection.remove(self)
 
     def work(self):
         pass
@@ -74,6 +70,8 @@ class Task:
 
 
 class BackgroundTask(threading.Thread, Task):
+    _error: Optional[Exception] = None
+
     def __init__(self, name="Untitled task", **kwargs):
         threading.Thread.__init__(self)
         Task.__init__(self, name, **kwargs)
@@ -83,9 +81,17 @@ class BackgroundTask(threading.Thread, Task):
             self.work()
 
         except Exception as e:
-            self.on_error(e)
+            self._error = e
 
         self.finish()
+
+    @property
+    def has_errored(self):
+        return self._error is not None
+
+    @property
+    def error(self) -> Exception:
+        return self._error
 
     def __repr__(self):
         return f"BackgroundTask: {self._name}"
@@ -105,8 +111,23 @@ class TaskCollection:
         self.tasks_changed = Event()
 
     def add(self, task: BackgroundTask):
+        from gi.repository import GObject
+
         task.collection = self
         self._tasks.append(task)
+
+        def poll():
+            if task.has_errored:
+                task.on_error(task.error)
+
+            elif task.finished:
+                task.on_finished()
+                self.remove(task)
+
+            return not task.finished
+
+        GObject.timeout_add(100, poll)
+
         task.start()
 
         self.task_added(task)
