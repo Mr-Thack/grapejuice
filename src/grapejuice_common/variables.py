@@ -200,15 +200,8 @@ def tmp_path():
     return ensure_dir(path_string)
 
 
-def wine_binary(arch=""):
-    from grapejuice_common.features.settings import current_settings
-    from grapejuice_common.features import settings
-
-    custom_wine_binary = (current_settings.get(settings.k_wine_binary) or "").strip()
-    if custom_wine_binary and not os.path.exists(custom_wine_binary):
-        LOG.error(f"!! Custom wine binary set to {custom_wine_binary}, but it does not exist !!")
-
-    path_search = [custom_wine_binary] if custom_wine_binary else []
+def system_wine_binary(arch=""):
+    path_search = []
 
     if "PATH" in os.environ:
         for spec in os.environ["PATH"].split(":"):
@@ -225,10 +218,6 @@ def wine_binary(arch=""):
             return p
 
     raise NoWineError()
-
-
-def wine_binary_64():
-    return wine_binary("64")
 
 
 def required_wine_version():

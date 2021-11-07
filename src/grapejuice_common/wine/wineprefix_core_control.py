@@ -187,6 +187,29 @@ class WineprefixCoreControl:
         self._paths = paths
         self._configuration = configuration
 
+    def wine_binary(self, arch=""):
+        wine_home_string = self._configuration.wine_home.strip()
+
+        if wine_home_string.startswith(f"~{os.path.sep}"):
+            wine_home = Path(wine_home_string).expanduser()
+
+        else:
+            wine_home = Path(wine_home_string)
+
+        # TODO: Replace assert statements with 'proper' errors
+
+        assert wine_home.is_absolute(), f"Wine home '{wine_home}' is not an absolute path"
+        assert wine_home.exists() and wine_home.is_dir(), f"Invalid wine_home: {wine_home}"
+
+        if wine_home:
+            wine_binary = wine_home / f"wine{arch}"
+            assert wine_binary.exists() and wine_binary.is_file(), f"Invalid wine binary: {wine_binary}"
+
+            return str(wine_binary)
+
+        else:
+            return variables.system_wine_binary(arch)
+
     def prepare_for_launch(self):
         user_env = self._configuration.env
         dll_overrides = list(filter(non_empty_string, self._configuration.dll_overrides.split(DLL_OVERRIDE_SEP)))
@@ -308,7 +331,7 @@ class WineprefixCoreControl:
 
         LOG.info(f"Resolved exe path to {exe_path_string}")
 
-        wine_binary = variables.wine_binary_64() if use_wine64 else variables.wine_binary()
+        wine_binary = self.wine_binary("64" if use_wine64 else "")
         command = [wine_binary, exe_path_string, *args]
 
         if current_settings.get(settings.k_no_daemon_mode):
