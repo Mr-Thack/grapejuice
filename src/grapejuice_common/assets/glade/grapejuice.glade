@@ -358,6 +358,8 @@ Author: BrinkerVII <brinkervii@gmail.com>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="halign">end</property>
+            <property name="margin-start">15</property>
+            <property name="margin-end">15</property>
             <property name="hexpand">True</property>
             <property name="spacing">5</property>
             <child>
