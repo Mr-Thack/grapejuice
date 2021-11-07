@@ -26,9 +26,8 @@ k_ignore_wine_version = "ignore_wine_version"
 
 def default_settings() -> Dict[str, any]:
     return {
-        k_version: CURRENT_SETTINGS_VERSION,
+        k_version: 0,
         k_show_fast_flag_warning: True,
-        k_wine_binary: "",
         k_no_daemon_mode: True,
         k_release_channel: "master",
         k_disable_updates: False,

@@ -1,6 +1,7 @@
 import logging
 import os
 import shutil
+from dataclasses import asdict
 from typing import Dict
 
 from grapejuice_common import variables
@@ -44,9 +45,18 @@ def upgrade_wineprefix(settings: Dict):
 
     new_player_prefix = create_player_prefix_model(settings)
     new_studio_prefix = create_studio_prefix_model(settings)
-    prefixes.extend([new_player_prefix, new_studio_prefix])
+    prefixes.extend(list(map(asdict, [new_player_prefix, new_studio_prefix])))
 
     settings[k_wineprefixes] = prefixes
+
+    settings_to_delete = ("env", "dll_overrides", "wine_binary", "wine_home", "enabled_tweaks")
+
+    for k in settings_to_delete:
+        try:
+            settings.pop(k)
+
+        except KeyError:
+            pass
 
     from grapejuice_common.features.wineprefix_migration import do_wineprefix_migration
 
