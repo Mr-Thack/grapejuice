@@ -28,49 +28,6 @@ Author: BrinkerVII <brinkervii@gmail.com>
   <!-- interface-description A Wine+Roblox Management Application -->
   <!-- interface-copyright 2021 -->
   <!-- interface-authors BrinkerVII <brinkervii@gmail.com> -->
-  <object class="GtkBox" id="cc_start_page">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">25</property>
-    <property name="margin-bottom">25</property>
-    <property name="orientation">vertical</property>
-    <child>
-      <object class="GtkImage">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="pixel-size">128</property>
-        <property name="icon-name">grapejuice</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="label" translatable="yes">Grapejuice</property>
-        <attributes>
-          <attribute name="font-desc" value="Sans 10"/>
-          <attribute name="style" value="normal"/>
-          <attribute name="weight" value="medium"/>
-          <attribute name="variant" value="normal"/>
-          <attribute name="stretch" value="normal"/>
-          <attribute name="scale" value="2"/>
-        </attributes>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-    <child>
-      <placeholder/>
-    </child>
-  </object>
   <object class="GtkListStore" id="demo_dxvk_list">
     <columns>
       <!-- column-name dxvk_version -->
@@ -182,6 +139,140 @@ Author: BrinkerVII <brinkervii@gmail.com>
     <property name="margin-bottom">10</property>
     <property name="icon-name">application-x-addon-symbolic</property>
     <property name="icon_size">3</property>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">system-run</property>
+    <property name="icon_size">6</property>
+  </object>
+  <object class="GtkBox" id="cc_start_page">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">25</property>
+    <property name="margin-bottom">25</property>
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkImage">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="pixel-size">128</property>
+        <property name="icon-name">grapejuice</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="label" translatable="yes">Grapejuice</property>
+        <attributes>
+          <attribute name="font-desc" value="Sans 10"/>
+          <attribute name="style" value="normal"/>
+          <attribute name="weight" value="medium"/>
+          <attribute name="variant" value="normal"/>
+          <attribute name="stretch" value="normal"/>
+          <attribute name="scale" value="2"/>
+        </attributes>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkFixed">
+        <property name="height-request">50</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="spacing">15</property>
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkButton">
+            <property name="label" translatable="yes">Shortcut 1</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="image">image3</property>
+            <property name="image-position">top</property>
+            <property name="always-show-image">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label" translatable="yes">Shortcut 2</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="image">image1</property>
+            <property name="image-position">top</property>
+            <property name="always-show-image">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label" translatable="yes">Shortcut 3</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="image">image2</property>
+            <property name="image-position">top</property>
+            <property name="always-show-image">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">3</property>
+      </packing>
+    </child>
+    <child>
+      <placeholder/>
+    </child>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">system-run</property>
+    <property name="icon_size">6</property>
+  </object>
+  <object class="GtkImage" id="image3">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">system-run</property>
+    <property name="icon_size">6</property>
   </object>
   <object class="GtkImage" id="install_roblox_icon">
     <property name="visible">True</property>

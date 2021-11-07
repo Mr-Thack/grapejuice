@@ -41,7 +41,7 @@ class GtkWineprefixRow(GtkListBoxRowWithIcon):
     _label = None
 
     def __init__(self, prefix: WineprefixConfigurationModel, *args, **kwargs):
-        icon_name = "user-home-symbolic"
+        icon_name = "preferences-desktop-screensaver-symbolic"
 
         if WineprefixHint.studio in prefix.hints_as_enum:
             icon_name = "grapejuice-roblox-studio"
