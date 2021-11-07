@@ -214,8 +214,10 @@ Author: BrinkerVII <brinkervii@gmail.com>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="margin-start">5</property>
-        <property name="margin-end">5</property>
+        <property name="margin-start">15</property>
+        <property name="margin-end">15</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
         <property name="orientation">vertical</property>
         <property name="spacing">10</property>
         <child>
