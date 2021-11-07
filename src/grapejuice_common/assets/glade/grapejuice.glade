@@ -217,6 +217,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
         <property name="margin-start">5</property>
         <property name="margin-end">5</property>
         <property name="orientation">vertical</property>
+        <property name="spacing">10</property>
         <child>
           <object class="GtkLabel" id="update_status_label">
             <property name="visible">True</property>
@@ -230,7 +231,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="update_status_info">
+          <object class="GtkLabel" id="update_info_label">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="label" translatable="yes">0.0.0 -&gt; 4.0.0</property>
@@ -242,13 +243,12 @@ Author: BrinkerVII <brinkervii@gmail.com>
           </packing>
         </child>
         <child>
-          <object class="GtkButton">
+          <object class="GtkButton" id="update_button">
             <property name="label" translatable="yes">Update now</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <property name="halign">center</property>
-            <property name="margin-top">10</property>
           </object>
           <packing>
             <property name="expand">False</property>

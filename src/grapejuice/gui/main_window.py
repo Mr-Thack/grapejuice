@@ -10,7 +10,7 @@ from grapejuice.tasks import InstallRoblox, OpenLogsDirectory, ShowDriveC, Extra
 from grapejuice_common import variables
 from grapejuice_common.features.settings import current_settings
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
-from grapejuice_common.gtk.gtk_base import GtkBase
+from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor
 from grapejuice_common.util.computed_field import ComputedField
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
@@ -208,6 +208,58 @@ def set_gtk_widgets_visibility(widgets, visible):
             w.hide()
 
 
+def set_label_text_and_hide_if_no_text(label, text):
+    if text.strip():
+        label.set_text(text)
+        label.show()
+
+    else:
+        label.set_text("")
+        label.hide()
+
+
+def _check_for_updates(widgets: WidgetAccessor):
+    from grapejuice_common.update_info_providers import guess_relevant_provider
+
+    update_provider = guess_relevant_provider()
+    can_update = update_provider.can_update()
+
+    # Hide the popover if Grapejuice cannot update itself
+    set_gtk_widgets_visibility([widgets.update_popover], can_update)
+
+    if not can_update:
+        return
+
+    class CheckForUpdates(background.BackgroundTask):
+        def __init__(self, **kwargs):
+            super().__init__("Checking for a newer version of Grapejuice", **kwargs)
+
+        def work(self) -> None:
+            show_button = False
+
+            # Calculate info
+            if update_provider.update_available():
+                show_button = True
+                update_status = "This version of Grapejuice is out of date."
+                update_info = f"{update_provider.local_version()} -> {update_provider.target_version()}"
+
+            else:
+                if update_provider.local_is_newer():
+                    update_status = "This version of Grapejuice is from the future"
+                    update_info = f"\n{update_provider.local_version()}"
+
+                else:
+                    update_status = "Grapejuice is up to date"
+                    update_info = str(update_provider.local_version())
+
+            # Update Interface
+            set_label_text_and_hide_if_no_text(widgets.update_status_label, update_status)
+            set_label_text_and_hide_if_no_text(widgets.update_info_label, update_info)
+            set_gtk_widgets_visibility([widgets.update_button], show_button)
+
+    background.tasks.add(CheckForUpdates())
+
+
 class MainWindow(GtkBase):
     _current_page = None
     _current_prefix_model: Optional[WineprefixConfigurationModel] = None
@@ -226,6 +278,8 @@ class MainWindow(GtkBase):
         self._current_prefix = ComputedField(
             lambda: None if self._current_prefix_model is None else Wineprefix(self._current_prefix_model)
         )
+
+        _check_for_updates(self.widgets)
 
     def _save_current_prefix(self):
         if self._current_prefix_model is not None:
