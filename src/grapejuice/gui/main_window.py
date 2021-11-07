@@ -1,5 +1,4 @@
 import shutil
-import uuid
 from typing import Optional, List, Callable
 
 from gi.repository import Gtk, Gdk
@@ -12,6 +11,7 @@ from grapejuice_common.features.settings import current_settings
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor
 from grapejuice_common.util.computed_field import ComputedField
+from grapejuice_common.wine.wine_functions import create_new_model_for_user
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
@@ -454,18 +454,8 @@ class MainWindow(GtkBase):
         )
 
     def _show_page_for_new_prefix(self):
-        model = WineprefixConfigurationModel(
-            str(uuid.uuid4()),
-            0,
-            "__new_wineprefix",
-            "New Wineprefix",
-            "",
-            "",
-            dict(),
-            list()
-        )
+        model = create_new_model_for_user(current_settings.as_dict())
 
-        model.create_name_on_disk_from_display_name()
         if model.exists_on_disk:
             n = 1
 

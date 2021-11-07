@@ -97,3 +97,20 @@ def create_studio_prefix_model(settings: Optional[Dict] = None):
         env=_env(settings),
         hints=[WineprefixHint.studio.value]
     )
+
+
+def create_new_model_for_user(settings: Optional[Dict] = None):
+    model = WineprefixConfigurationModel(
+        id=str(uuid.uuid4()),
+        priority=0,
+        name_on_disk=".",
+        display_name="New Wineprefix",
+        wine_home=_wine_home(settings),
+        dll_overrides=_dll_overrides(settings),
+        env=_env(settings),
+        hints=[]
+    )
+
+    model.create_name_on_disk_from_display_name()
+
+    return model
