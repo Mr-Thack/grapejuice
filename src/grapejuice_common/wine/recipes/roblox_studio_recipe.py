@@ -1,4 +1,4 @@
-from grapejuice_common.util.errors import RobloxExecutableNotFound
+from grapejuice_common.errors import RobloxExecutableNotFound
 from grapejuice_common.wine.recipes.common_indicators import roblox_is_installed
 from grapejuice_common.wine.recipes.recipe import Recipe
 from grapejuice_common.wine.wineprefix import Wineprefix

@@ -7,7 +7,7 @@ import subprocess
 import uuid
 from pathlib import Path
 
-from grapejuice_common.util.errors import NoWineError
+from grapejuice_common.errors import NoWineError
 
 HERE = Path(__file__).resolve().parent
 INSTANCE_ID = str(uuid.uuid4())

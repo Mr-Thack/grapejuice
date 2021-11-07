@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Union
 
 from grapejuice_common.util import download_file
-from grapejuice_common.util.errors import RobloxExecutableNotFound
+from grapejuice_common.errors import RobloxExecutableNotFound
 from grapejuice_common.wine.registry_file import RegistryFile
 from grapejuice_common.wine.wineprefix_core_control import WineprefixCoreControl, ProcessWrapper
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths
