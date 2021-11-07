@@ -232,9 +232,11 @@ class MainWindow(GtkBase):
             current_settings.save_prefix_model(self._current_prefix_model)
 
     def _connect_signals(self):
+        # General buttons
         self.widgets.main_window.connect("destroy", Gtk.main_quit)
         self.widgets.prefix_list.connect("row-selected", self._prefix_row_selected)
 
+        # Prefix pane
         self.widgets.edit_prefix_name_button.connect("clicked", self._edit_prefix_name)
         self.widgets.install_roblox_button.connect(
             "clicked",
@@ -262,6 +264,16 @@ class MainWindow(GtkBase):
             lambda _b: self._delete_current_prefix()
         )
 
+        # Dots menu
+        self.widgets.about_grapejuice_button.connect(
+            "clicked",
+            lambda _b: self._show_about_window()
+        )
+        self.widgets.show_documentation_button.connect(
+            "clicked",
+            lambda _b: self._show_grapejuice_documentation()
+        )
+
         def do_finish_editing_prefix_name(_handler):
             if self._current_prefix_model is not None:
                 self._current_prefix_model.display_name = self._prefix_name_handler.prefix_name
@@ -269,6 +281,22 @@ class MainWindow(GtkBase):
                 self._save_current_prefix()
 
         self._prefix_name_handler.on_finish_editing(do_finish_editing_prefix_name)
+
+    def _show_about_window(self):
+        self.widgets.dots_menu.popdown()
+
+        from grapejuice.gui.about_window import AboutWindow
+        wnd = AboutWindow()
+        wnd.window.run()
+
+        del wnd
+
+    def _show_grapejuice_documentation(self):
+        self.widgets.dots_menu.popdown()
+
+        from grapejuice_common.util import xdg_open
+
+        xdg_open(variables.git_wiki())
 
     def _show_start_page(self):
         self._set_page(self.widgets.cc_start_page)
