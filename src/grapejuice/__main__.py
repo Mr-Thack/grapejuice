@@ -28,7 +28,14 @@ def func_gui(_args):
 
 def func_player(args):
     def player_main():
-        dbus_connection().play_game(grapejuice_common.util.prepare_uri(args.uri))
+        from grapejuice_common.wine.wine_functions import get_player_wineprefix
+
+        prefix = get_player_wineprefix()
+
+        dbus_connection().play_game(
+            prefix.configuration.id,
+            grapejuice_common.util.prepare_uri(args.uri)
+        )
 
     gtk_boot(player_main, gtk_main=False)
 
@@ -38,7 +45,14 @@ def func_player(args):
 def func_app(*_):
     def player_main():
         import grapejuice_common.variables as v
-        dbus_connection().play_game(grapejuice_common.util.prepare_uri(v.roblox_app_experience_url()))
+        from grapejuice_common.wine.wine_functions import get_app_wineprefix
+
+        prefix = get_app_wineprefix()
+
+        dbus_connection().play_game(
+            prefix.configuration.id,
+            grapejuice_common.util.prepare_uri(v.roblox_app_experience_url())
+        )
 
     gtk_boot(player_main, gtk_main=False)
 
@@ -46,7 +60,11 @@ def func_app(*_):
 
 
 def func_studio(args):
+    from grapejuice_common.wine.wine_functions import get_studio_wineprefix
+
+    prefix = get_studio_wineprefix()
     uri = grapejuice_common.util.prepare_uri(args.uri)
+
     if uri:
         is_local = False
         if not uri.startswith("roblox-studio:"):
@@ -54,12 +72,13 @@ def func_studio(args):
             is_local = True
 
         if is_local:
-            dbus_connection().edit_local_game(uri)
+            dbus_connection().edit_local_game(prefix.configuration.id, uri)
+
         else:
-            dbus_connection().edit_cloud_game(uri)
+            dbus_connection().edit_cloud_game(prefix.configuration.id, uri)
 
     else:
-        dbus_connection().launch_studio()
+        dbus_connection().launch_studio(prefix.configuration.id)
 
 
 def func_install_roblox(_args):

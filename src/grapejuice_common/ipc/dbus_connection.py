@@ -67,10 +67,10 @@ class DBusConnection(IDBusConnection):
         if self.connected:
             LOG.debug("Connected to the Grapejuice daemon!")
 
-    def launch_studio(self):
-        return self.proxy.LaunchStudio()
+    def launch_studio(self, prefix_id: str):
+        return self.proxy.LaunchStudio(prefix_id)
 
-    def play_game(self, uri):
+    def play_game(self, prefix_id: str, uri: str):
         if uri:
             return self.proxy.PlayGame(uri)
 
@@ -79,14 +79,14 @@ class DBusConnection(IDBusConnection):
 
         return False
 
-    def edit_local_game(self, place_path):
+    def edit_local_game(self, prefix_id: str, place_path: str):
         return self.proxy.EditLocalGame(place_path)
 
-    def edit_cloud_game(self, uri):
+    def edit_cloud_game(self, prefix_id: str, uri: str):
         if uri:
             return self.proxy.EditCloudGame(uri)
 
-        return self.launch_studio()
+        return self.launch_studio(prefix_id)
 
     def _spawn_daemon(self):
         LOG.debug("Spawning Grapejuice daemon")
@@ -95,8 +95,8 @@ class DBusConnection(IDBusConnection):
     def version(self):
         return self.proxy.Version()
 
-    def extract_fast_flags(self):
-        self.proxy.ExtractFastFlags()
+    def extract_fast_flags(self, prefix_id: str):
+        self.proxy.ExtractFastFlags(prefix_id)
 
-    def install_roblox(self):
-        return self.proxy.InstallRoblox()
+    def install_roblox(self, prefix_id: str):
+        return self.proxy.InstallRoblox(prefix_id)

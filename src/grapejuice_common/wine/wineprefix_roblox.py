@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Union
 
 from grapejuice_common.util import download_file
+from grapejuice_common.util.errors import RobloxExecutableNotFound
 from grapejuice_common.wine.registry_file import RegistryFile
 from grapejuice_common.wine.wineprefix_core_control import WineprefixCoreControl, ProcessWrapper
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths
@@ -89,7 +90,7 @@ class WineprefixRoblox:
 
         LOG.warning(f"Failed to locate Roblox executable: {executable_name}")
 
-        return None
+        raise RobloxExecutableNotFound(executable_name)
 
     @property
     def roblox_studio_launcher_path(self) -> Union[Path, None]:
@@ -115,16 +116,22 @@ class WineprefixRoblox:
     def roblox_player_app_settings_path(self) -> Union[Path, None]:
         return _app_settings_path(self.roblox_player_launcher_path)
 
-    def run_roblox_studio(self, uri="", ide=False):
+    @property
+    def is_installed(self) -> bool:
+        try:
+            self.locate_roblox_executable("RobloxPlayerLauncher.exe")
+            return True
+
+        except RobloxExecutableNotFound:
+            return False
+
+    def run_roblox_studio(self, uri=""):
         launcher_path = self.roblox_studio_launcher_path
 
         if launcher_path is None:
             raise RuntimeError("Could not locate Roblox Studio launcher")
 
         run_args = [launcher_path]
-
-        if ide:
-            run_args.append("-ide")
 
         if uri:
             run_args.append(uri)

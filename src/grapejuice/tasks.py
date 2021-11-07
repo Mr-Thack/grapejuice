@@ -11,12 +11,16 @@ from grapejuice_common.wine.wineprefix import Wineprefix
 
 
 class RunRobloxStudio(background.BackgroundTask):
-    def __init__(self, **kwargs):
+    _prefix: Wineprefix
+
+    def __init__(self, prefix: Wineprefix, **kwargs):
         super().__init__("Launching Roblox Studio", **kwargs)
+
+        self._prefix = prefix
 
     def work(self) -> None:
         from grapejuice_common.ipc.dbus_client import dbus_connection
-        dbus_connection().launch_studio()
+        dbus_connection().launch_studio(self._prefix.configuration.id)
 
 
 class ExtractFastFlags(background.BackgroundTask):
@@ -26,12 +30,11 @@ class ExtractFastFlags(background.BackgroundTask):
         super().__init__("Extracting Fast Flags", **kwargs)
 
         self._prefix = prefix
-        # TODO: Run on this prefix
 
     def work(self) -> None:
         from grapejuice_common.ipc.dbus_client import dbus_connection
 
-        dbus_connection().extract_fast_flags()
+        dbus_connection().extract_fast_flags(self._prefix.configuration.id)
 
 
 class OpenLogsDirectory(background.BackgroundTask):

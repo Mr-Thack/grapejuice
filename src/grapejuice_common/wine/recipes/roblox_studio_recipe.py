@@ -1,3 +1,4 @@
+from grapejuice_common.util.errors import RobloxExecutableNotFound
 from grapejuice_common.wine.recipes.common_indicators import roblox_is_installed
 from grapejuice_common.wine.recipes.recipe import Recipe
 from grapejuice_common.wine.wineprefix import Wineprefix
@@ -5,11 +6,11 @@ from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 
 def roblox_studio_is_installed(prefix: Wineprefix):
-    path = prefix.roblox.roblox_studio_executable_path
-    if path is None:
-        return False
+    try:
+        return prefix.roblox.roblox_studio_executable_path is not None
 
-    return path.exists() and path.is_file()
+    except RobloxExecutableNotFound:
+        return False
 
 
 class RobloxStudioRecipe(Recipe):

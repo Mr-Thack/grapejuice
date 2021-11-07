@@ -195,5 +195,18 @@ class UserSettings:
         if did_update:
             self.save()
 
+    def remove_prefix_model(self, model: WineprefixConfigurationModel):
+        def keep_model(m: Dict):
+            return m["id"] != model.id
+
+        self._settings_object[k_wineprefixes] = list(
+            filter(
+                keep_model,
+                self._settings_object.get(k_wineprefixes, [])
+            )
+        )
+
+        self.save()
+
 
 current_settings = UserSettings()

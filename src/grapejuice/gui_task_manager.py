@@ -33,12 +33,17 @@ def run_task_once(
     def on_error(*args2):
         on_background_task_error(*args2)
 
+    super_on_finish = kwargs.get("on_finish_callback", None)
+
     def on_finish(finished_task):
         try:
             once_task_tracker.pop(finished_task)
 
         except KeyError:
             pass
+
+        if super_on_finish is not None:
+            super_on_finish(finished_task)
 
     kwargs["on_error_callback"] = on_error
     kwargs["on_finish_callback"] = on_finish

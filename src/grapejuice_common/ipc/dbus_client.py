@@ -1,9 +1,10 @@
 from grapejuice_common.features import settings
+from grapejuice_common.ipc.i_dbus_connection import IDBusConnection
 
 connection = None
 
 
-def dbus_connection():
+def dbus_connection() -> IDBusConnection:
     global connection
 
     if connection is None:

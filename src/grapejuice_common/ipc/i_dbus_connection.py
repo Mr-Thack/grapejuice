@@ -10,19 +10,19 @@ class IDBusConnection(ABC):
         return False
 
     @abstractmethod
-    def launch_studio(self):
+    def launch_studio(self, prefix_id: str):
         pass
 
     @abstractmethod
-    def play_game(self, uri):
+    def play_game(self, prefix_id: str, uri: str):
         pass
 
     @abstractmethod
-    def edit_local_game(self, place_path):
+    def edit_local_game(self, prefix_id: str, place_path: str):
         pass
 
     @abstractmethod
-    def edit_cloud_game(self, uri):
+    def edit_cloud_game(self, prefix_id: str, uri):
         pass
 
     @abstractmethod
@@ -30,9 +30,9 @@ class IDBusConnection(ABC):
         pass
 
     @abstractmethod
-    def extract_fast_flags(self):
+    def extract_fast_flags(self, prefix_id: str):
         pass
 
     @abstractmethod
-    def install_roblox(self):
+    def install_roblox(self, prefix_id: str):
         pass

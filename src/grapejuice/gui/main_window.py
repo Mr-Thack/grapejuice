@@ -1,9 +1,11 @@
+import shutil
 import uuid
 from typing import Optional, List, Callable
 
 from gi.repository import Gtk, Gdk
 
 from grapejuice import gui_task_manager, background
+from grapejuice.gui.yes_no_dialog import yes_no_dialog
 from grapejuice.tasks import InstallRoblox, OpenLogsDirectory, ShowDriveC, ExtractFastFlags
 from grapejuice_common import variables
 from grapejuice_common.features.settings import current_settings
@@ -249,6 +251,10 @@ class MainWindow(GtkBase):
             "clicked",
             lambda _b: self._create_current_prefix()
         )
+        self.widgets.delete_prefix_button.connect(
+            "clicked",
+            lambda _b: self._delete_current_prefix()
+        )
 
         def do_finish_editing_prefix_name(_handler):
             if self._current_prefix_model is not None:
@@ -303,20 +309,39 @@ class MainWindow(GtkBase):
                 if child.prefix_model.id == prefix.id:
                     child.set_text(prefix.display_name)
 
+    def _delete_current_prefix(self):
+        model = self._current_prefix_model
+
+        do_delete = yes_no_dialog(
+            "Delete Wineprefix",
+            f"Do you really want to delete the Wineprefix '{model.display_name}'?"
+        )
+
+        if do_delete:
+            current_settings.remove_prefix_model(model)
+            self._populate_prefix_list()
+            self._show_start_page()
+
+            shutil.rmtree(model.base_directory, ignore_errors=True)
+
     def _create_current_prefix(self):
         self._prefix_name_handler.finish_editing()
 
         model = self._current_prefix_model
 
         model.create_name_on_disk_from_display_name()
+        current_settings.save_prefix_model(model)
         prefix = Wineprefix(model)
 
-        def after_installation():
+        def after_installation(_task):
             self._populate_prefix_list()
             self._show_prefix_model(self._current_prefix_model)
 
-        current_settings.save_prefix_model(model)
-        prefix.roblox.install_roblox(post_install_function=after_installation)
+        gui_task_manager.run_task_once(
+            InstallRoblox,
+            prefix,
+            on_finish_callback=after_installation
+        )
 
     def _show_prefix_model(self, prefix: WineprefixConfigurationModel):
         self._current_prefix.clear_cached_value()
@@ -329,7 +354,8 @@ class MainWindow(GtkBase):
         set_gtk_widgets_visibility(
             [
                 self.widgets.prefix_page_sep_0,
-                self.widgets.prefix_action_buttons
+                self.widgets.prefix_action_buttons,
+                self.widgets.delete_prefix_button
             ],
             prefix_exists_on_disk
         )

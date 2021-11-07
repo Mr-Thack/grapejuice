@@ -1,4 +1,5 @@
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
+from grapejuice_common.util.errors import NoWineprefixConfiguration
 from grapejuice_common.wine.wineprefix_core_control import WineprefixCoreControl
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths
 from grapejuice_common.wine.wineprefix_roblox import WineprefixRoblox
@@ -9,6 +10,9 @@ class Wineprefix:
         self,
         configuration: WineprefixConfigurationModel
     ):
+        if configuration is None:
+            raise NoWineprefixConfiguration()
+
         self._configuration = configuration
 
         self._paths = WineprefixPaths(configuration.base_directory)
