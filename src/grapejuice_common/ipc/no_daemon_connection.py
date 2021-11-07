@@ -37,7 +37,7 @@ class NoDaemonModeConnection(IDBusConnection):
         _with_prefix_id(prefix_id, lambda prefix: prefix.roblox.run_roblox_studio(uri))
 
     def version(self):
-        from grapejuiced import __version__
+        from grapejuice import __version__
 
         return __version__
 
