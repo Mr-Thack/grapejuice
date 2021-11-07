@@ -1,5 +1,6 @@
 import json
 import logging
+from copy import deepcopy
 from dataclasses import asdict
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -212,6 +213,9 @@ class UserSettings:
         )
 
         self.save()
+
+    def as_dict(self) -> Dict:
+        return deepcopy(self._settings_object)
 
 
 current_settings = UserSettings()

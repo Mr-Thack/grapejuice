@@ -3,6 +3,7 @@ import uuid
 from pathlib import Path
 from typing import List, Optional, Dict
 
+from grapejuice_common.errors import WineprefixNotFoundUsingHints
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
@@ -24,7 +25,7 @@ def get_wineprefix(hints: List[WineprefixHint]):
                 configuration=WineprefixConfigurationModel(**prefix_configuration)
             )
 
-    raise RuntimeError(f"No prefix with hint requirements found: {hints}")
+    raise WineprefixNotFoundUsingHints(hints)
 
 
 OtherHints = Optional[List[WineprefixHint]]
@@ -44,16 +45,6 @@ def get_player_wineprefix(other_hints: OtherHints = None) -> Wineprefix:
 
 def get_app_wineprefix(other_hints: OtherHints = None) -> Wineprefix:
     return _get_wineprefix_with_other_hints(WineprefixHint.app, other_hints)
-
-
-def initialize_roblox_in_default_prefix():
-    from grapejuice_common.wine.recipes.roblox_player_recipe import RobloxPlayerRecipe
-
-    prefix = get_player_wineprefix()
-    prefix.core_control.create_prefix()
-
-    recipe = RobloxPlayerRecipe()
-    recipe.make_in(prefix)
 
 
 def find_wineprefix(prefix_id: str) -> Wineprefix:

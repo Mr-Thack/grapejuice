@@ -81,10 +81,59 @@ def func_studio(args):
         dbus_connection().launch_studio(prefix.configuration.id)
 
 
-def func_install_roblox(_args):
-    from grapejuice_common.wine.wine_functions import initialize_roblox_in_default_prefix
+def func_first_time_setup(_args):
+    from grapejuice_common.features.settings import current_settings
+    from grapejuice_common.errors import WineprefixNotFoundUsingHints
+    from grapejuice_common.wine.wineprefix import Wineprefix
+    from grapejuice_common.wine.recipes.roblox_player_recipe import RobloxPlayerRecipe
+    from grapejuice_common.wine.wine_functions import \
+        get_player_wineprefix, \
+        get_studio_wineprefix, \
+        create_player_prefix_model, \
+        create_studio_prefix_model
 
-    initialize_roblox_in_default_prefix()
+    log = logging.getLogger("first_time_setup")
+
+    log.info("Retrieving settings as dict")
+    settings_dict = current_settings.as_dict()
+
+    log.info("Getting player Wineprefix")
+    try:
+        player_prefix = get_player_wineprefix()
+
+    except WineprefixNotFoundUsingHints:
+        log.info("Creating player Wineprefix")
+
+        player_prefix_model = create_player_prefix_model(settings_dict)
+
+        log.info("Saving player wineprefix to settings")
+        current_settings.save_prefix_model(player_prefix_model)
+        settings_dict = current_settings.as_dict()
+
+        player_prefix = Wineprefix(player_prefix_model)
+
+    log.info("Starting Roblox Player recipe")
+    player_recipe = RobloxPlayerRecipe()
+    if not player_recipe.exists_in(player_prefix):
+        log.info("Roblox is not installed!")
+        player_recipe.make_in(player_prefix)
+
+    log.info("Getting studio Wineprefix")
+    try:
+        studio_prefix = get_studio_wineprefix()
+
+    except WineprefixNotFoundUsingHints:
+        log.info("Creating studio wineprefix")
+        studio_prefix_model = create_studio_prefix_model(settings_dict)
+
+        log.info("Saving studio Wineprefix to settings")
+        current_settings.save_prefix_model(studio_prefix_model)
+
+        studio_prefix = Wineprefix(studio_prefix_model)
+
+    assert studio_prefix, "Studio Wineprefix was not created?!"
+
+    log.info("Completed first time setup!")
 
 
 def func_uninstall_grapejuice(*_):
@@ -160,9 +209,8 @@ def main(in_args=None):
 
     parser_studio.set_defaults(func=func_studio)
 
-    parser_install_roblox = subparsers.add_parser("install-roblox")
-    parser_install_roblox.add_argument("--only-once", action="store_true")
-    parser_install_roblox.set_defaults(func=func_install_roblox)
+    parser_install_roblox = subparsers.add_parser("first-time-setup")
+    parser_install_roblox.set_defaults(func=func_first_time_setup)
 
     if update_info_provider.can_update():
         parser_uninstall_grapejuice = subparsers.add_parser("uninstall")
