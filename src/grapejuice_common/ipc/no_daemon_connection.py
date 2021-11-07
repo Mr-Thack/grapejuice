@@ -45,4 +45,6 @@ class NoDaemonModeConnection(IDBusConnection):
         _with_prefix_id(prefix_id, lambda prefix: prefix.roblox.extract_fast_flags())
 
     def install_roblox(self, prefix_id: str):
-        _with_prefix_id(prefix_id, lambda prefix: prefix.roblox.install_roblox())
+        from grapejuice_common.wine.wine_functions import find_wineprefix
+
+        find_wineprefix(prefix_id).roblox.install_roblox()
