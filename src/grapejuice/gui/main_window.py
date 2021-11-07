@@ -119,6 +119,9 @@ class PrefixNameHandler:
         if key == "Return":
             self.finish_editing()
 
+        elif key == "Escape":
+            self.cancel_editing()
+
     def on_finish_editing(self, callback: Callable[["PrefixNameHandler"], None]):
         self._on_finish_editing_callbacks.append(callback)
 
@@ -161,6 +164,9 @@ class PrefixNameHandler:
         self._entry.set_text(self._prefix_name)
         self._set_active_widget(self._entry)
         self._entry.grab_focus()
+
+    def cancel_editing(self):
+        self.finish_editing(use_entry_value=False)
 
     @property
     def is_editing(self):
