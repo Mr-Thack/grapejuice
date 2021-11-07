@@ -35,31 +35,25 @@ def undo_migration_one(_settings: Dict):
 
 @register_migration(1, 2)
 def upgrade_wineprefix(settings: Dict):
-    if len(settings[k_wineprefixes]) <= 0:
+    from grapejuice_common.wine.wine_functions import create_player_prefix_model, create_studio_prefix_model
+
+    prefixes = settings.get(k_wineprefixes, [])
+
+    if len(prefixes) > 0:
         return
 
-    if settings.get("env", None) and len(settings.get("env")) > 0:
-        settings[k_wineprefixes][0]["env"] = {
-            **settings.get("env"),
-            **settings[k_wineprefixes][0].get("env", dict())
-        }
+    new_player_prefix = create_player_prefix_model(settings)
+    new_studio_prefix = create_studio_prefix_model(settings)
+    prefixes.extend([new_player_prefix, new_studio_prefix])
 
-        settings.pop("env")
+    settings[k_wineprefixes] = prefixes
 
-    original_prefix_path = variables.local_share_grapejuice() / "wineprefix"
-    new_prefix_path = variables.wineprefixes_directory() / settings[k_wineprefixes][0]["name_on_disk"]
+    from grapejuice_common.features.wineprefix_migration import do_wineprefix_migration
 
-    # Try to not destroy any prefixes
-    if original_prefix_path.exists() and not new_prefix_path.exists():
-        new_prefix_path.parent.mkdir(parents=True, exist_ok=True)
-
-        shutil.move(original_prefix_path, new_prefix_path)
-
-        # Legacy tool compatability
-        os.symlink(
-            new_prefix_path,
-            original_prefix_path
-        )
+    do_wineprefix_migration(
+        legacy_wineprefix_path=variables.local_share_grapejuice() / "wineprefix",
+        new_name_on_disk=new_player_prefix.name_on_disk
+    )
 
 
 @register_migration(2, 1)

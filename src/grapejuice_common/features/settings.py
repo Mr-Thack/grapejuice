@@ -1,6 +1,5 @@
 import json
 import logging
-import uuid
 from dataclasses import asdict
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -8,7 +7,6 @@ from typing import Dict, List, Optional
 from grapejuice_common import variables
 from grapejuice_common.features import wineprefix_configuration_model
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
-from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 LOG = logging.getLogger(__name__)
 
@@ -35,19 +33,7 @@ def default_settings() -> Dict[str, any]:
         k_release_channel: "master",
         k_disable_updates: False,
         k_ignore_wine_version: False,
-        k_wineprefixes: [{
-            "id": str(uuid.uuid4()),
-            "priority": 0,
-            "name_on_disk": "default",
-            "display_name": "Default",
-            "wine_home": "",
-            k_dll_overrides: "ucrtbase=n,b;api-ms-win-crt-private-l1-1-0=n,b",
-            "env": {},
-            "hints": [
-                WineprefixHint.studio.value,
-                WineprefixHint.player.value
-            ]
-        }]
+        k_wineprefixes: []
     }
 
 
