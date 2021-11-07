@@ -22,6 +22,7 @@ k_disable_updates = "disable_updates"
 k_wineprefixes = "wineprefixes"
 k_enabled_tweaks = "enabled_tweaks"
 k_ignore_wine_version = "ignore_wine_version"
+k_unsupported_settings = "unsupported_settings"
 
 
 def default_settings() -> Dict[str, any]:
@@ -32,7 +33,8 @@ def default_settings() -> Dict[str, any]:
         k_release_channel: "master",
         k_disable_updates: False,
         k_ignore_wine_version: False,
-        k_wineprefixes: []
+        k_wineprefixes: [],
+        k_unsupported_settings: dict()
     }
 
 
@@ -44,7 +46,7 @@ class UserSettings:
         self._location = file_location
         self.load()
 
-    def perform_migrations(self, desired_migration_version: int = CURRENT_SETTINGS_VERSION):
+    def _perform_migrations(self, desired_migration_version: int = CURRENT_SETTINGS_VERSION):
         if self.version == desired_migration_version:
             LOG.debug(f"Settings file is up to date at version {self.version}")
             return
@@ -110,15 +112,17 @@ class UserSettings:
         return value
 
     def load(self):
+        save_settings = False
+
         if self._location.exists():
             LOG.debug(f"Loading settings from '{self._location}'")
 
             try:
-                save_settings = False
-
                 with self._location.open("r") as fp:
                     self._settings_object = json.load(fp)
 
+                    # Make sure all the default settings are present
+                    # Using a for loop because magic settings shouldn't be touched
                     for k, v in default_settings().items():
                         # Do not touch magic variables here
                         if k.startswith("__") and k.endswith("__"):
@@ -128,29 +132,45 @@ class UserSettings:
                             self._settings_object[k] = v
                             save_settings = True
 
-                if save_settings:
-                    self.save()
-
             except json.JSONDecodeError as e:
                 LOG.error(e)
+
                 self._settings_object = default_settings()
-                self.save()
+                save_settings = True
 
         else:
-            LOG.debug("There is no settings file present, going to save one")
+            LOG.info("There is no settings file present, going to save one")
+            save_settings = True
 
+        self._perform_migrations()
+
+        if save_settings:
+            LOG.info("Saving settings after load, because something was wrong.")
             self.save()
-
-        self.perform_migrations()
-
-        self._settings_object[k_wineprefixes] = self.raw_wineprefixes_sorted
 
     def save(self):
         LOG.debug(f"Saving settings file to '{self._location}'")
 
+        # Sort wineprefixes before saving so the file order matches the UI
+        self._settings_object[k_wineprefixes] = self.raw_wineprefixes_sorted
+
+        # Store in value so its not called twice
+        defaults = default_settings()
+
+        # Preserve unsupported settings
+        unsupported_setting_keys = set()
+
+        for k, _ in self._settings_object.items():
+            if k not in defaults:
+                unsupported_setting_keys.add(k)
+
+        for k in unsupported_setting_keys:
+            self._settings_object[k_unsupported_settings][k] = self._settings_object.pop(k)
+
+        # Perform actual save
         with self._location.open("w+") as fp:
             self._settings_object = {
-                **default_settings(),
+                **defaults,
                 **(self._settings_object or {})
             }
 
