@@ -4,7 +4,7 @@ import sys
 from typing import Callable
 
 import grapejuice_common.util
-from grapejuice_common.gtk.gtk_stuff import gtk_boot
+from grapejuice_common.gtk.gtk_util import gtk_boot
 from grapejuice_common.ipc.dbus_client import dbus_connection
 from grapejuice_common.logs import log_config
 from grapejuice_common.logs.log_vacuum import vacuum_logs
@@ -15,7 +15,7 @@ def main_gui():
         from grapejuice_common.logs import self_test
         self_test.post.run()
 
-        from grapejuice.gui.main_window import MainWindow
+        from grapejuice.windows.main_window import MainWindow
         window = MainWindow()
         window.show()
 

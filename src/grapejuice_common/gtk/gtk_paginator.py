@@ -1,10 +1,14 @@
-from grapejuice_common.gtk.grapejuice_component import GrapejuiceComponent
+from grapejuice_common import variables
+from grapejuice_common.gtk.gtk_base import GtkBase
 from grapejuice_common.util.paginator import Paginator
 
 
-class GtkPaginator(GrapejuiceComponent):
+class GtkPaginator(GtkBase):
     def __init__(self, paginator: Paginator):
-        super().__init__()
+        super().__init__(
+            glade_path=variables.grapejuice_components_glade(),
+            root_widget_name="paginator"
+        )
         self._paginator = paginator
 
         def go_back(*_):
@@ -37,6 +41,3 @@ class GtkPaginator(GrapejuiceComponent):
     @property
     def _button_next(self):
         return self._builder.get_object("paginator_next")
-
-    def get_root_widget(self):
-        return self._builder.get_object("paginator")

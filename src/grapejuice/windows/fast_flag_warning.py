@@ -1,12 +1,16 @@
 from grapejuice_common import variables
 from grapejuice_common.features import settings
 from grapejuice_common.features.settings import current_settings
-from grapejuice_common.gtk.gtk_stuff import WindowBase
+from grapejuice_common.gtk.gtk_base import GtkBase
 
 
-class FastFlagWarning(WindowBase):
+class FastFlagWarning(GtkBase):
     def __init__(self, callback):
-        super().__init__(variables.fast_flag_warning_glade(), self)
+        super().__init__(
+            glade_path=variables.fast_flag_warning_glade(),
+            handler_instance=self,
+            root_widget_name="fast_flag_warning"
+        )
 
         self._do_continue = False
         self._callback = callback
@@ -16,15 +20,15 @@ class FastFlagWarning(WindowBase):
 
     @property
     def window(self):
-        return self.builder.get_object("fast_flag_warning")
+        return self.root_widget
 
     @property
     def devforum_link(self):
-        return self.builder.get_object("devforum_link")
+        return self.widgets.devforum_link
 
     @property
     def warn_check(self):
-        return self.builder.get_object("warn_check")
+        return self.widgets.warn_check
 
     def destroy(self):
         self.window.destroy()
@@ -33,7 +37,8 @@ class FastFlagWarning(WindowBase):
         if self._do_continue:
             current_settings.set(
                 settings.k_show_fast_flag_warning,
-                self.warn_check.get_active(), save=True
+                self.warn_check.get_active(),
+                save=True
             )
 
         self._callback(self._do_continue)

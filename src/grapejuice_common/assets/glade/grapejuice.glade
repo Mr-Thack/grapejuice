@@ -61,16 +61,14 @@ Author: BrinkerVII <brinkervii@gmail.com>
         <property name="orientation">vertical</property>
         <property name="spacing">5</property>
         <child>
-          <object class="GtkButton" id="settings_button">
-            <property name="label" translatable="yes">Settings</property>
+          <object class="GtkModelButton" id="settings_button">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="hexpand">True</property>
-            <property name="relief">none</property>
+            <property name="text" translatable="yes">Settings</property>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
@@ -87,31 +85,27 @@ Author: BrinkerVII <brinkervii@gmail.com>
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="about_grapejuice_button">
-            <property name="label" translatable="yes">About Grapejuice</property>
+          <object class="GtkModelButton" id="about_grapejuice_button">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="hexpand">True</property>
-            <property name="relief">none</property>
+            <property name="text" translatable="yes">About Grapejuice</property>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="show_documentation_button">
-            <property name="label" translatable="yes">Documentation</property>
+          <object class="GtkModelButton" id="show_documentation_button">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="hexpand">True</property>
-            <property name="relief">none</property>
+            <property name="text" translatable="yes">Documentation</property>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">3</property>
           </packing>
@@ -141,6 +135,18 @@ Author: BrinkerVII <brinkervii@gmail.com>
     <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">system-run</property>
+    <property name="icon_size">6</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">system-run</property>
+    <property name="icon_size">6</property>
+  </object>
+  <object class="GtkImage" id="image3">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">system-run</property>
@@ -261,18 +267,6 @@ Author: BrinkerVII <brinkervii@gmail.com>
     <child>
       <placeholder/>
     </child>
-  </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">system-run</property>
-    <property name="icon_size">6</property>
-  </object>
-  <object class="GtkImage" id="image3">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">system-run</property>
-    <property name="icon_size">6</property>
   </object>
   <object class="GtkImage" id="install_roblox_icon">
     <property name="visible">True</property>

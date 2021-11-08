@@ -28,23 +28,20 @@ def dialog(dialog_text):
     gtk_dialog.destroy()
 
 
-class WindowBase:
-    def __init__(self, glade_path, handlers=None):
-        self._glade_path = glade_path
-        self._handlers = handlers
+def set_gtk_widgets_visibility(widgets, visible):
+    for w in widgets:
+        if visible:
+            w.show()
 
-        self._build()
+        else:
+            w.hide()
 
-    def _create_builder(self):
-        from gi.repository import Gtk
 
-        builder = Gtk.Builder()
-        builder.add_from_file(self._glade_path)
+def set_label_text_and_hide_if_no_text(label, text):
+    if text.strip():
+        label.set_text(text)
+        label.show()
 
-        return builder
-
-    def _build(self):
-        self.builder = self._create_builder()
-
-        if self._handlers:
-            self.builder.connect_signals(self._handlers)
+    else:
+        label.set_text("")
+        label.hide()

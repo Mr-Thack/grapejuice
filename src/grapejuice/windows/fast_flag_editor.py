@@ -5,11 +5,13 @@ from gi.repository import Gtk
 
 from grapejuice_common import variables
 from grapejuice_common.features.fast_flags import FastFlagList, FastFlag
-from grapejuice_common.gtk.GtkPaginator import GtkPaginator
-from grapejuice_common.gtk.gtk_stuff import WindowBase, dialog
+from grapejuice_common.gtk.gtk_base import GtkBase
+from grapejuice_common.gtk.gtk_paginator import GtkPaginator
+from grapejuice_common.gtk.gtk_util import dialog
 from grapejuice_common.util.paginator import Paginator
 from grapejuice_common.wine.wine_functions import get_studio_wineprefix
 from grapejuice_common.wine.wineprefix import Wineprefix
+
 
 # TODO: Make the fast flag editor prefix aware
 
@@ -87,11 +89,16 @@ def flag_to_widget(flag: FastFlag, on_changed: callable = None) -> Union[None, W
     return WidgetStuff(widget, get_value, set_value)
 
 
-class FastFlagEditor(WindowBase):
+class FastFlagEditor(GtkBase):
     _prefix: Wineprefix
 
     def __init__(self, prefix: Wineprefix, fast_flags: Union[Dict[str, any], None] = None):
-        super().__init__(variables.fast_flag_editor_glade(), self)
+        super().__init__(
+            glade_path=variables.fast_flag_editor_glade(),
+            handler_instance=self,
+            root_widget_name="fast_flag_editor"
+        )
+
         self._prefix = prefix
 
         studio_settings_path, player_settings_path = get_app_settings_paths()
@@ -125,7 +132,7 @@ class FastFlagEditor(WindowBase):
 
         self._paginator = Paginator(self._fast_flags, 50)
         self._gtk_paginator = GtkPaginator(self._paginator)
-        self.gtk_pager_box.add(self._gtk_paginator.get_root_widget())
+        self.gtk_pager_box.add(self._gtk_paginator.root_widget)
 
         self._flag_refs = dict()
         self._rows = dict()
@@ -176,23 +183,23 @@ class FastFlagEditor(WindowBase):
 
     @property
     def window(self):
-        return self.builder.get_object("fast_flag_editor")
+        return self.widgets.fast_flag_editor
 
     @property
     def gtk_fast_flag_list(self):
-        return self.builder.get_object("fast_flag_list")
+        return self.widgets.fast_flag_list
 
     @property
     def gtk_pager_box(self):
-        return self.builder.get_object("paginator_box")
+        return self.widgets.paginator_box
 
     @property
     def gtk_header(self):
-        return self.builder.get_object("fast_flag_editor_header")
+        return self.widgets.fast_flag_editor_header
 
     @property
     def fast_flag_scroll(self):
-        return self.builder.get_object("fast_flag_scroll")
+        return self.widgets.fast_flag_scroll
 
     def new_row(self, flag: FastFlag):
         builder = self._create_builder()

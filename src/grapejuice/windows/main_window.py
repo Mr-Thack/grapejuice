@@ -4,94 +4,24 @@ from typing import Optional, List, Callable
 from gi.repository import Gtk, Gdk
 
 from grapejuice import gui_task_manager, background
-from grapejuice.gui.yes_no_dialog import yes_no_dialog
-from grapejuice.tasks import InstallRoblox, OpenLogsDirectory, ShowDriveC, ExtractFastFlags
+from grapejuice.components.main_window_components import \
+    GrapeStartUsingGrapejuiceRow, \
+    GrapeWineprefixRow, \
+    GtkAddWineprefixRow
+from grapejuice.tasks import \
+    InstallRoblox, \
+    OpenLogsDirectory, \
+    ShowDriveC, \
+    ExtractFastFlags
 from grapejuice_common import variables
 from grapejuice_common.features.settings import current_settings
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor
+from grapejuice_common.gtk.gtk_util import set_gtk_widgets_visibility, set_label_text_and_hide_if_no_text
+from grapejuice_common.gtk.yes_no_dialog import yes_no_dialog
 from grapejuice_common.util.computed_field import ComputedField
 from grapejuice_common.wine.wine_functions import create_new_model_for_user
 from grapejuice_common.wine.wineprefix import Wineprefix
-from grapejuice_common.wine.wineprefix_hints import WineprefixHint
-
-
-class GtkListBoxRowWithIcon(Gtk.ListBoxRow):
-    box: Gtk.Box
-
-    def __init__(self, *args, icon_name: str = "security-low", **kwargs):
-        super().__init__(*args, **kwargs)
-
-        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        box.set_margin_top(5)
-        box.set_margin_bottom(5)
-        box.set_margin_start(10)
-        box.set_margin_end(10)
-
-        image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.BUTTON)
-        image.set_margin_right(10)
-        box.add(image)
-
-        self.box = box
-        self.add(box)
-
-
-class GtkWineprefixRow(GtkListBoxRowWithIcon):
-    _prefix_model: WineprefixConfigurationModel = None
-    _label = None
-
-    def __init__(self, prefix: WineprefixConfigurationModel, *args, **kwargs):
-        icon_name = "preferences-desktop-screensaver-symbolic"
-
-        if WineprefixHint.studio in prefix.hints_as_enum:
-            icon_name = "grapejuice-roblox-studio"
-
-        elif WineprefixHint.player in prefix.hints_as_enum:
-            icon_name = "grapejuice-roblox-player"
-
-        super().__init__(*args, icon_name=icon_name, **kwargs)
-
-        self._prefix_model = prefix
-
-        label = Gtk.Label()
-        label.set_text(prefix.display_name)
-        self._label = label
-
-        self.box.add(label)
-
-    @property
-    def prefix_model(self) -> WineprefixConfigurationModel:
-        return self._prefix_model
-
-    def set_text(self, text: str):
-        self._label.set_text(text)
-
-
-class GtkStartUsingGrapejuiceRow(GtkListBoxRowWithIcon):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, icon_name="user-home-symbolic", **kwargs)
-
-        label = Gtk.Label()
-        label.set_text("Start")
-
-        self.box.add(label)
-
-
-class GtkAddWineprefixRow(Gtk.Box):
-    def __init__(self, *args, **kwargs):
-        super().__init__(
-            *args,
-            orientation=Gtk.Orientation.HORIZONTAL,
-            **kwargs
-        )
-
-        self.set_margin_top(5)
-        self.set_margin_bottom(5)
-        self.set_halign(Gtk.Align.CENTER)
-
-        image = Gtk.Image.new_from_icon_name("list-add-symbolic", Gtk.IconSize.BUTTON)
-
-        self.add(image)
 
 
 class PrefixNameHandler:
@@ -178,10 +108,10 @@ class PrefixNameHandler:
 
 
 def _open_fast_flags_for(prefix: Wineprefix):
-    from grapejuice.gui.fast_flag_warning import FastFlagWarning
+    from grapejuice.windows.fast_flag_warning import FastFlagWarning
 
     def show_fast_flag_window():
-        from grapejuice.gui.fast_flag_editor import FastFlagEditor
+        from grapejuice.windows.fast_flag_editor import FastFlagEditor
 
         fast_flag_editor = FastFlagEditor(prefix=prefix)
         fast_flag_editor.window.show()
@@ -197,25 +127,6 @@ def _open_fast_flags_for(prefix: Wineprefix):
 
     warning_window = FastFlagWarning(warning_callback)
     warning_window.show()
-
-
-def set_gtk_widgets_visibility(widgets, visible):
-    for w in widgets:
-        if visible:
-            w.show()
-
-        else:
-            w.hide()
-
-
-def set_label_text_and_hide_if_no_text(label, text):
-    if text.strip():
-        label.set_text(text)
-        label.show()
-
-    else:
-        label.set_text("")
-        label.hide()
 
 
 def _check_for_updates(widgets: WidgetAccessor):
@@ -339,9 +250,9 @@ class MainWindow(GtkBase):
     def _show_about_window(self):
         self.widgets.dots_menu.popdown()
 
-        from grapejuice.gui.about_window import AboutWindow
+        from grapejuice.windows.about_window import AboutWindow
         wnd = AboutWindow()
-        wnd.window.run()
+        wnd.run()
 
         del wnd
 
@@ -363,10 +274,10 @@ class MainWindow(GtkBase):
             self._prefix_name_handler.activate_entry()
 
     def _prefix_row_selected(self, _prefix_list, prefix_row):
-        if isinstance(prefix_row, GtkWineprefixRow):
+        if isinstance(prefix_row, GrapeWineprefixRow):
             self._show_prefix_model(prefix_row.prefix_model)
 
-        elif isinstance(prefix_row, GtkStartUsingGrapejuiceRow):
+        elif isinstance(prefix_row, GrapeStartUsingGrapejuiceRow):
             self._show_start_page()
 
         elif isinstance(prefix_row, Gtk.ListBoxRow):
@@ -379,11 +290,11 @@ class MainWindow(GtkBase):
             listbox.remove(child)
             child.destroy()
 
-        start_row = GtkStartUsingGrapejuiceRow()
+        start_row = GrapeStartUsingGrapejuiceRow()
         listbox.add(start_row)
 
         for prefix in current_settings.parsed_wineprefixes_sorted:
-            row = GtkWineprefixRow(prefix)
+            row = GrapeWineprefixRow(prefix)
             listbox.add(row)
 
         add_prefix_row = GtkAddWineprefixRow()
@@ -393,7 +304,7 @@ class MainWindow(GtkBase):
 
     def _update_prefix_in_prefix_list(self, prefix: WineprefixConfigurationModel):
         for child in self.widgets.prefix_list.get_children():
-            if isinstance(child, GtkWineprefixRow):
+            if isinstance(child, GrapeWineprefixRow):
                 if child.prefix_model.id == prefix.id:
                     child.set_text(prefix.display_name)
 

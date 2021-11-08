@@ -2,7 +2,7 @@ from typing import Optional
 
 from grapejuice import background
 from grapejuice.background import BackgroundTask
-from grapejuice_common.gtk.gtk_stuff import dialog
+from grapejuice_common.gtk.gtk_util import dialog
 from grapejuice_common.util.event import Event
 
 once_task_tracker = dict()
