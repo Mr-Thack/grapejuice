@@ -83,7 +83,8 @@ disable=print-statement,
         use-list-literal,
         unspecified-encoding,
         unneeded-not,
-        fixme
+        fixme,
+        no-member
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
