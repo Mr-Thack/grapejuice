@@ -12,9 +12,6 @@ from grapejuice_common.logs.log_vacuum import vacuum_logs
 
 def main_gui():
     def make_main_window():
-        from grapejuice_common.logs import self_test
-        self_test.post.run()
-
         from grapejuice.windows.main_window import MainWindow
         window = MainWindow()
         window.show()

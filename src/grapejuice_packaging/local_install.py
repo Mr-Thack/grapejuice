@@ -7,7 +7,7 @@ from pathlib import Path
 from setuptools import Command
 
 import grapejuice_common.variables as v
-from grapejuice_common.util.task_sequence import TaskSequence
+from grapejuice_packaging.util.task_sequence import TaskSequence
 
 PYTHON_INTERPRETER = sys.executable
 

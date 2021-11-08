@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 from grapejuice_common.ipc.pid_file import PIDFile, daemon_pid_file
-from grapejuice_common.logs import self_test, log_config
+from grapejuice_common.logs import log_config
 
 
 def spawn(pid_file: PIDFile):
@@ -46,8 +46,6 @@ def func_daemon(args):
     if pid_file.is_running():
         print("> Another daemon is already running, quitting...")
         return
-
-    self_test.post.run()
 
     spawn(pid_file)
 
