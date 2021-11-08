@@ -84,9 +84,6 @@ class BackgroundTaskHelper:
     def _update(self):
         any_tasks_running = background.tasks.count > 0
 
-        set_gtk_widgets_visibility([self._widgets.background_task_menu], any_tasks_running)
-        set_gtk_widgets_visibility([self._widgets.background_task_error_indicator], self._have_errors)
-
         def on_no_primary_task():
             self._stack.set_visible_child(self._widgets.background_task_status_label_none)
             self._task_visible_on_label = None
@@ -111,10 +108,13 @@ class BackgroundTaskHelper:
 
                     self._task_visible_on_label = primary_task
 
-            spinner = self._widgets.background_task_spinner.start()
+            self._widgets.background_task_spinner.start()
 
         else:
             on_no_primary_task()
+
+        set_gtk_widgets_visibility([self._widgets.background_task_menu], any_tasks_running)
+        set_gtk_widgets_visibility([self._widgets.background_task_error_indicator], self._have_errors)
 
     @property
     def _stack(self):

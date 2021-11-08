@@ -35,7 +35,7 @@ def dialog(dialog_text):
 def set_gtk_widgets_visibility(widgets, visible):
     for w in widgets:
         if visible:
-            w.show()
+            w.show_all()
 
         else:
             w.hide()
