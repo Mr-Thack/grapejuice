@@ -1,4 +1,5 @@
 import shutil
+import time
 from typing import Optional
 
 from gi.repository import Gtk
@@ -49,14 +50,22 @@ def _open_fast_flags_for(prefix: Wineprefix):
     warning_window.show()
 
 
-def _check_for_updates(widgets: WidgetAccessor):
+def _check_for_updates(
+    widgets: WidgetAccessor,
+    time_to_be_wasted: Optional[int] = None,
+    pop_down_dots_menu: Optional[bool] = False
+):
     from grapejuice_common.update_info_providers import guess_relevant_provider
 
     update_provider = guess_relevant_provider()
     can_update = update_provider.can_update()
 
     # Hide the popover if Grapejuice cannot update itself
-    set_gtk_widgets_visibility([widgets.update_popover], can_update)
+    if not can_update:
+        widgets.update_popover.hide()
+
+    if pop_down_dots_menu:
+        widgets.dots_menu.popdown()
 
     if not can_update:
         return
@@ -84,6 +93,10 @@ def _check_for_updates(widgets: WidgetAccessor):
                 else:
                     update_status = "Grapejuice is up to date"
                     update_info = str(update_provider.local_version())
+
+            # Make it feel like its working
+            if time_to_be_wasted is not None:
+                time.sleep(time_to_be_wasted)
 
             # Update Interface
             set_label_text_and_hide_if_no_text(widgets.update_status_label, update_status)
@@ -191,6 +204,10 @@ class MainWindow(GtkBase):
         self.widgets.show_documentation_button.connect(
             "clicked",
             lambda _b: self._show_grapejuice_documentation()
+        )
+        self.widgets.check_for_updates_button.connect(
+            "clicked",
+            lambda _b: _check_for_updates(self.widgets, time_to_be_wasted=2, pop_down_dots_menu=True)
         )
 
         def do_finish_editing_prefix_name(_handler):
