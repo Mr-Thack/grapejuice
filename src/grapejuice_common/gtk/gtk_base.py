@@ -46,13 +46,16 @@ class GtkBase:
         glade_path: Optional[Path] = None,
         handler_class: Optional[Type[HandlerType]] = None,
         handler_instance: Optional[HandlerType] = None,
-        root_widget_name: Optional[str] = None
+        root_widget_name: Optional[str] = None,
     ):
+        # Configure fields
         self._handlers = []
 
         self._glade_path = glade_path
         self._builder = self._create_builder()
+        self._root_widget_name = root_widget_name
 
+        # Load ui files
         if self._builder is None:
             self._widgets = NullWidgetAccessor()
 
@@ -68,12 +71,10 @@ class GtkBase:
 
             self._widgets = WidgetAccessor(self._builder)
 
-        self._root_widget_name = root_widget_name
-
     def _create_builder(self) -> Optional[Gtk.Builder]:
         if self._glade_path is not None:
             builder = Gtk.Builder()
-            builder.add_from_file(self._glade_path)
+            builder.add_from_file(str(self._glade_path))
 
             return builder
 

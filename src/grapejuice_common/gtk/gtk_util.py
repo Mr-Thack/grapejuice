@@ -9,6 +9,10 @@ def gtk_boot(main_function, *args, gtk_main=True, **kwargs):
     gi.require_version("Gtk", "3.0")
     from gi.repository import Gtk
 
+    from grapejuice_common.gtk.gtk_styling import load_style_from_path
+    from grapejuice_common import variables
+    load_style_from_path(variables.global_css())
+
     main_function(*args, **kwargs)
 
     if gtk_main:
@@ -45,3 +49,10 @@ def set_label_text_and_hide_if_no_text(label, text):
     else:
         label.set_text("")
         label.hide()
+
+
+def set_style_class_conditionally(widgets, style_class, condition):
+    for w in widgets:
+        style_context = w.get_style_context()
+        method = style_context.add_class if condition else style_context.remove_class
+        method(style_class)

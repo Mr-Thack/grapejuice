@@ -17,7 +17,8 @@ from grapejuice_common import variables
 from grapejuice_common.features.settings import current_settings
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor
-from grapejuice_common.gtk.gtk_util import set_gtk_widgets_visibility, set_label_text_and_hide_if_no_text
+from grapejuice_common.gtk.gtk_util import set_gtk_widgets_visibility, set_label_text_and_hide_if_no_text, \
+    set_style_class_conditionally
 from grapejuice_common.gtk.yes_no_dialog import yes_no_dialog
 from grapejuice_common.util.computed_field import ComputedField
 from grapejuice_common.wine.wine_functions import create_new_model_for_user
@@ -149,7 +150,9 @@ def _check_for_updates(widgets: WidgetAccessor):
             show_button = False
 
             # Calculate info
-            if update_provider.update_available():
+            update_available = update_provider.update_available()
+
+            if update_available:
                 show_button = True
                 update_status = "This version of Grapejuice is out of date."
                 update_info = f"{update_provider.local_version()} -> {update_provider.target_version()}"
@@ -167,6 +170,11 @@ def _check_for_updates(widgets: WidgetAccessor):
             set_label_text_and_hide_if_no_text(widgets.update_status_label, update_status)
             set_label_text_and_hide_if_no_text(widgets.update_info_label, update_info)
             set_gtk_widgets_visibility([widgets.update_button], show_button)
+            set_style_class_conditionally(
+                [widgets.update_menu_button_image],
+                "update-available-highlight",
+                update_available
+            )
 
     background.tasks.add(CheckForUpdates())
 

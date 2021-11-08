@@ -82,6 +82,10 @@ def grapejuice_glade():
     return os.path.join(glade_dir(), "grapejuice.glade")
 
 
+def global_css() -> Path:
+    return Path(glade_dir()) / "global.css"
+
+
 def about_glade():
     return os.path.join(glade_dir(), "about.glade")
 
