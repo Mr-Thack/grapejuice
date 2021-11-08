@@ -558,7 +558,6 @@ Author: BrinkerVII <brinkervii@gmail.com>
                   <object class="GtkSpinner" id="background_task_spinner">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="active">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>

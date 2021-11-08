@@ -90,6 +90,7 @@ class BackgroundTaskHelper:
         def on_no_primary_task():
             self._stack.set_visible_child(self._widgets.background_task_status_label_none)
             self._task_visible_on_label = None
+            self._widgets.background_task_spinner.stop()
 
         if any_tasks_running:
             self._widgets.background_task_popover_status_label.set_text(
@@ -109,6 +110,8 @@ class BackgroundTaskHelper:
                     self._stack.set_visible_child(stack_label)
 
                     self._task_visible_on_label = primary_task
+
+            spinner = self._widgets.background_task_spinner.start()
 
         else:
             on_no_primary_task()
