@@ -3,12 +3,8 @@ from typing import Optional
 from grapejuice import background
 from grapejuice.background import BackgroundTask
 from grapejuice_common.gtk.gtk_util import dialog
-from grapejuice_common.util.event import Event
 
 once_task_tracker = dict()
-on_background_task_error = Event()
-on_background_errors_shown = Event()
-background_task_errors = []
 
 
 def _generic_already_running():
@@ -30,9 +26,6 @@ def run_task_once(
 
         return
 
-    def on_error(*args2):
-        on_background_task_error(*args2)
-
     super_on_finish = kwargs.get("on_finish_callback", None)
 
     def on_finish(finished_task):
@@ -45,7 +38,6 @@ def run_task_once(
         if super_on_finish is not None:
             super_on_finish(finished_task)
 
-    kwargs["on_error_callback"] = on_error
     kwargs["on_finish_callback"] = on_finish
 
     task: BackgroundTask = task_class(*args, **kwargs)

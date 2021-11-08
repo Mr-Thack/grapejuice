@@ -1,13 +1,15 @@
 import shutil
-from typing import Optional, List, Callable
+from typing import Optional
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
 from grapejuice import gui_task_manager, background
 from grapejuice.components.main_window_components import \
     GrapeStartUsingGrapejuiceRow, \
     GrapeWineprefixRow, \
     GtkAddWineprefixRow
+from grapejuice.helpers.background_task_helper import BackgroundTaskHelper
+from grapejuice.helpers.prefix_name_handler import PrefixNameHandler
 from grapejuice.tasks import \
     InstallRoblox, \
     OpenLogsDirectory, \
@@ -23,89 +25,6 @@ from grapejuice_common.gtk.yes_no_dialog import yes_no_dialog
 from grapejuice_common.util.computed_field import ComputedField
 from grapejuice_common.wine.wine_functions import create_new_model_for_user
 from grapejuice_common.wine.wineprefix import Wineprefix
-
-
-class PrefixNameHandler:
-    _wrapper = None
-    _active_widget = None
-    _prefix_name: str = ""
-    _on_finish_editing_callbacks: List[Callable[["PrefixNameHandler"], None]]
-
-    def __init__(self, prefix_name_wrapper):
-        self._on_finish_editing_callbacks = []
-        self._wrapper = prefix_name_wrapper
-
-        label = Gtk.Label()
-        label.set_text("__invalid__")
-        self._label = label
-
-        entry = Gtk.Entry()
-        entry.connect("key-press-event", self._on_key_press)
-
-        self._entry = entry
-
-    def _on_key_press(self, _entry, event):
-        key = Gdk.keyval_name(event.keyval)
-
-        if key == "Return":
-            self.finish_editing()
-
-        elif key == "Escape":
-            self.cancel_editing()
-
-    def on_finish_editing(self, callback: Callable[["PrefixNameHandler"], None]):
-        self._on_finish_editing_callbacks.append(callback)
-
-    def finish_editing(self, use_entry_value: bool = True):
-        self._set_active_widget(self._label)
-
-        new_name = self._entry.get_text().strip()
-        if not new_name:
-            # Cannot use empty names
-            use_entry_value = False
-
-        if new_name == self.prefix_name:
-            # No need to update
-            use_entry_value = False
-
-        if use_entry_value:
-            self._prefix_name = new_name
-            self._label.set_text(new_name)
-
-            for cb in self._on_finish_editing_callbacks:
-                cb(self)
-
-    def _clear_active_widget(self):
-        if self._active_widget is not None:
-            self._wrapper.remove(self._active_widget)
-            self._active_widget = None
-
-    def _set_active_widget(self, widget):
-        self._clear_active_widget()
-        self._wrapper.add(widget)
-        self._active_widget = widget
-        widget.show()
-
-    def set_prefix_name(self, name: str):
-        self._set_active_widget(self._label)
-        self._label.set_text(name)
-        self._prefix_name = name
-
-    def activate_entry(self):
-        self._entry.set_text(self._prefix_name)
-        self._set_active_widget(self._entry)
-        self._entry.grab_focus()
-
-    def cancel_editing(self):
-        self.finish_editing(use_entry_value=False)
-
-    @property
-    def is_editing(self):
-        return self._active_widget is self._entry
-
-    @property
-    def prefix_name(self) -> str:
-        return self._prefix_name
 
 
 def _open_fast_flags_for(prefix: Wineprefix):
@@ -183,12 +102,14 @@ class MainWindow(GtkBase):
     _current_page = None
     _current_prefix_model: Optional[WineprefixConfigurationModel] = None
     _prefix_name_handler: PrefixNameHandler
+    _background_task_helper: BackgroundTaskHelper
     _current_prefix: ComputedField[Wineprefix]
 
     def __init__(self):
         super().__init__(glade_path=variables.grapejuice_glade())
 
         self._prefix_name_handler = PrefixNameHandler(self.widgets.prefix_name_wrapper)
+        self._background_task_helper = BackgroundTaskHelper(self.widgets)
 
         self._connect_signals()
         self._populate_prefix_list()
@@ -200,13 +121,38 @@ class MainWindow(GtkBase):
 
         _check_for_updates(self.widgets)
 
+        # TODO: Remove task indicator tester
+        # class TaskCounter:
+        #     n = 1
+        #
+        # def add_test_task():
+        #     from grapejuice.background import BackgroundTask
+        #
+        #     class TestTask(BackgroundTask):
+        #         def __init__(self):
+        #             super().__init__(f"This test task {TaskCounter.n}")
+        #             TaskCounter.n += 1
+        #
+        #         def work(self):
+        #             import time
+        #
+        #             time.sleep(2)
+        #             self.finish()
+        #
+        #     background.tasks.add(TestTask())
+        #
+        #     return True
+        #
+        # from gi.repository import GObject
+        # GObject.timeout_add(1200, add_test_task)
+
     def _save_current_prefix(self):
         if self._current_prefix_model is not None:
             current_settings.save_prefix_model(self._current_prefix_model)
 
     def _connect_signals(self):
         # General buttons
-        self.widgets.main_window.connect("destroy", Gtk.main_quit)
+        self.widgets.main_window.connect("destroy", self._on_destroy)
         self.widgets.prefix_list.connect("row-selected", self._prefix_row_selected)
 
         # Prefix pane
@@ -405,6 +351,11 @@ class MainWindow(GtkBase):
 
         if clear_current_prefix:
             self._current_prefix_model = None
+
+    def _on_destroy(self, *_):
+        self._background_task_helper.destroy()
+
+        Gtk.main_quit()
 
     def show(self):
         self.widgets.main_window.show()

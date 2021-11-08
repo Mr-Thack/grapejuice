@@ -109,6 +109,7 @@ class TaskCollection:
         self.task_added = Event()
         self.task_removed = Event()
         self.tasks_changed = Event()
+        self.task_errored = Event()
 
     def add(self, task: BackgroundTask):
         from gi.repository import GObject
@@ -119,8 +120,9 @@ class TaskCollection:
         def poll():
             if task.has_errored:
                 task.on_error(task.error)
+                self.task_errored(task)
 
-            elif task.finished:
+            if task.finished:
                 task.on_finished()
                 self.remove(task)
 
@@ -143,6 +145,13 @@ class TaskCollection:
     @property
     def count(self):
         return len(self._tasks)
+
+    @property
+    def primary_task(self) -> Optional[BackgroundTask]:
+        if len(self._tasks) > 0:
+            return self._tasks[0]
+
+        return None
 
 
 tasks = TaskCollection()
