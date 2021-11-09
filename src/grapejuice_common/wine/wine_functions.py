@@ -82,7 +82,7 @@ def create_player_prefix_model(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[WineprefixHint.player.value]
+        hints=[WineprefixHint.player.value, WineprefixHint.app.value]
     )
 
 
