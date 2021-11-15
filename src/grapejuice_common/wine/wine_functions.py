@@ -65,9 +65,9 @@ def _wine_home(settings) -> str:
         return settings.get("wine_home")
 
     if "wine_binary" in settings:
-        return str(Path(settings["wine_binary"]).resolve().parent)
+        return str(Path(settings["wine_binary"]).resolve().parent.parent)
 
-    return "/usr/bin"
+    return "/usr"
 
 
 def create_player_prefix_model(settings: Optional[Dict] = None):
