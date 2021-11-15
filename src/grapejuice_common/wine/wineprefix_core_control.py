@@ -188,13 +188,18 @@ class WineprefixCoreControl:
         self._configuration = configuration
 
     def wine_binary(self, arch=""):
+        LOG.info(f"Resolving wine binary for prefix {self._paths.base_directory}")
+
         wine_home_string = self._configuration.wine_home.strip()
+        LOG.info(f"Wine home string: {wine_home_string}")
 
         if wine_home_string.startswith(f"~{os.path.sep}"):
             wine_home = Path(wine_home_string).expanduser()
 
         else:
             wine_home = Path(wine_home_string)
+
+        LOG.info(f"Wine home is {wine_home}")
 
         # TODO: Replace assert statements with 'proper' errors
 
@@ -203,6 +208,8 @@ class WineprefixCoreControl:
 
         if wine_home:
             wine_binary = wine_home / "bin" / f"wine{arch}"
+            LOG.info(f"Resolved wine binary path: {wine_binary}")
+
             assert wine_binary.exists() and wine_binary.is_file(), f"Invalid wine binary: {wine_binary}"
 
             return str(wine_binary)
