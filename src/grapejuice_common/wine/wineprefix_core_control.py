@@ -202,7 +202,7 @@ class WineprefixCoreControl:
         assert wine_home.exists() and wine_home.is_dir(), f"Invalid wine_home: {wine_home}"
 
         if wine_home:
-            wine_binary = wine_home / f"wine{arch}"
+            wine_binary = wine_home / "bin" / f"wine{arch}"
             assert wine_binary.exists() and wine_binary.is_file(), f"Invalid wine binary: {wine_binary}"
 
             return str(wine_binary)
