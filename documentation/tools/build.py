@@ -13,6 +13,8 @@ import yaml
 from bs4 import BeautifulSoup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+path_prefix = os.environ.get("BLOG_PATH_PREFIX", "")
+
 
 class Environments:
     dev = "dev"
@@ -278,6 +280,20 @@ def process_html_file(
             )
 
     soup = BeautifulSoup(content, "html5lib")
+
+    if path_prefix:
+
+        def prefix_attr(attrs, attr):
+            v = attrs.get(attr)
+            if v and v.startswith("/"):
+                attrs[attr] = path_prefix + v.rstrip("/")
+
+        for href_tag in soup.find_all(href=True):
+            prefix_attr(href_tag, "href")
+
+        for src_tag in soup.find_all(src=True):
+            prefix_attr(src_tag, "src")
+
     content = soup.prettify()
 
     # Emit

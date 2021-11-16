@@ -5,7 +5,7 @@ venv:
 	bash -c 'source ./venv/bin/activate && pip install -r ./tools/requirements.txt'
 
 dist: venv
-	bash -c "source ./venv/bin/activate && BLOG_ENV=dist python3 ./tools/build.py"
+	bash -c "source ./venv/bin/activate && BLOG_ENV=dist BLOG_PATH_PREFIX=/grapejuice python3 ./tools/build.py"
 
 serve: venv
 	( \
