@@ -9,6 +9,7 @@ Python*
 
 **/build/
 **/dist/
+public/
 **/*.egg-info
 experiments
 **/.ipynb_checkpoints

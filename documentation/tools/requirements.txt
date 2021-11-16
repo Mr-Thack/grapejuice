@@ -1,0 +1,11 @@
+libsass
+flask
+watchdog
+python-magic
+jinja2
+black
+markdown
+pyyaml
+beautifulsoup4
+html5lib
+lxml

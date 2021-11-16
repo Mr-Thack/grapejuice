@@ -54,11 +54,10 @@ pages:
             - public
     script:
         - pushd ./documentation
-        - npm install
-        - npm run build
+        - make dist
         - popd
         - mkdir public
-        - cp -frax ./documentation/public/* ./public
+        - cp -frax ./documentation/dist/* ./public
         - bash ./ci_scripts/update_repositories.sh
         - ls -hal public
     only:

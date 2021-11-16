@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Grapejuice - {% block title %}{% endblock %}</title>
+
+    <link rel="icon" href="/images/favicon/favicon.png" sizes="16x16" type="image/png" />
+    <link rel="icon" href="/images/favicon/favicon.ico" sizes="32x32 48x48" type="image/vnd.microsoft.icon" />
+    <link rel="icon" href="/images/favicon/favicon-128x128.png" sizes="128x128" type="image/png" />
+
+    <link rel="stylesheet" href="/styles/global.scss" />
+    {% block head %} {% endblock %}
+</head>
+
+<body>
+    {%include "components/_navigation.html" %}
+
+    <main>
+        {% block main %} {% endblock %}
+    </main>
+
+    <script>
+        document.querySelectorAll(`a[href="${window.location.pathname}"]`).forEach(e => e.className += " active");
+    </script>
+
+    <script src="/scripts/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
