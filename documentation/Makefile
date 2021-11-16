@@ -5,15 +5,12 @@ venv:
 	bash -c 'source ./venv/bin/activate && pip install -r ./tools/requirements.txt'
 
 dist: venv
-	( \
-       source ./venv/bin/activate; \
-       BLOG_ENV=dist python ./tools/build.py \
-    )
+	bash -c "source ./venv/bin/activate && BLOG_ENV=dist python3 ./tools/build.py"
 
 serve: venv
 	( \
        source ./venv/bin/activate; \
-       python ./tools/serve.py \
+       python3 ./tools/serve.py \
     )
 
 .PHONY: serve dist
