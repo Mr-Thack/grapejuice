@@ -11,5 +11,5 @@ class RobloxPlayerRecipe(Recipe):
             hint=WineprefixHint.player
         )
 
-    def make_in(self, prefix: Wineprefix):
+    def _make_in(self, prefix: Wineprefix):
         prefix.roblox.install_roblox()

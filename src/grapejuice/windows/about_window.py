@@ -1,12 +1,12 @@
 from grapejuice import __version__ as grapejuice_version
-from grapejuice_common import variables
+from grapejuice_common import paths
 from grapejuice_common.gtk.gtk_base import GtkBase
 
 
 class AboutWindow(GtkBase):
     def __init__(self):
         super().__init__(
-            glade_path=variables.about_glade(),
+            glade_path=paths.about_glade(),
             handler_instance=self
         )
 

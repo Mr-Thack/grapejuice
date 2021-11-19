@@ -3,7 +3,7 @@ from typing import Union, Dict
 
 from gi.repository import Gtk
 
-from grapejuice_common import variables
+from grapejuice_common import variables, paths
 from grapejuice_common.features.fast_flags import FastFlagList, FastFlag
 from grapejuice_common.gtk.gtk_base import GtkBase
 from grapejuice_common.gtk.gtk_paginator import GtkPaginator
@@ -94,7 +94,7 @@ class FastFlagEditor(GtkBase):
 
     def __init__(self, prefix: Wineprefix, fast_flags: Union[Dict[str, any], None] = None):
         super().__init__(
-            glade_path=variables.fast_flag_editor_glade(),
+            glade_path=paths.fast_flag_editor_glade(),
             handler_instance=self,
             root_widget_name="fast_flag_editor"
         )

@@ -10,10 +10,10 @@ from pathlib import Path
 from string import Template
 
 import grapejuice.__about__ as about
-import grapejuice_common.variables as v
 import grapejuice_packaging.packaging_resources as res
-from grapejuice_packaging.util.task_sequence import TaskSequence
+from grapejuice_common import paths
 from grapejuice_packaging.builders.package_builder import PackageBuilder
+from grapejuice_packaging.util.task_sequence import TaskSequence
 
 LOG = logging.getLogger(__name__)
 
@@ -65,7 +65,7 @@ def _build_package(configuration: LinuxPackageConfiguration):
         log.info(f"Using mime packages directory: {mime_packages}")
         os.makedirs(mime_packages, exist_ok=True)
 
-        for file in Path(v.mime_xml_assets_dir()).glob("*.xml"):
+        for file in paths.mime_xml_assets_directory().glob("*.xml"):
             shutil.copyfile(str(file.absolute()), mime_packages.joinpath(file.name))
 
     @build.task("Copy icons")
@@ -73,7 +73,7 @@ def _build_package(configuration: LinuxPackageConfiguration):
         icons = Path(root, configuration.level_1_directory, "share", "icons")
         log.info(f"Using icons directory: {icons}")
 
-        shutil.copytree(v.icons_assets_dir(), icons)
+        shutil.copytree(paths.icons_assets_directory(), icons)
 
     @build.task("Copy desktop entries")
     def copy_desktop_files(log):
@@ -92,7 +92,7 @@ def _build_package(configuration: LinuxPackageConfiguration):
             "STUDIO_ICON": "grapejuice-roblox-studio"
         }
 
-        for file in Path(v.desktop_assets_dir()).glob("*.desktop"):
+        for file in paths.desktop_assets_directory().glob("*.desktop"):
             with file.open("r") as fp:
                 template = Template(fp.read())
                 finished_desktop_entry = template.substitute(desktop_variables)

@@ -35,5 +35,8 @@ class Recipe(ABC):
     def hint(self) -> Union[WineprefixHint, None]:
         return self._hint
 
+    def _make_in(self, prefix: Wineprefix):
+        raise NotImplementedError()
+
     def make_in(self, prefix: Wineprefix):
-        pass
+        self._make_in(prefix)

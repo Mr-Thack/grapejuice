@@ -23,9 +23,9 @@ class WineprefixConfigurationModel:
 
     @property
     def base_directory(self) -> Path:
-        from grapejuice_common import variables
+        from grapejuice_common import paths
 
-        return variables.wineprefixes_directory() / self.name_on_disk
+        return paths.wineprefixes_directory() / self.name_on_disk
 
     @property
     def exists_on_disk(self):

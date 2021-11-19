@@ -30,7 +30,7 @@ class IDBusConnection(ABC):
         pass
 
     @abstractmethod
-    def extract_fast_flags(self, prefix_id: str):
+    def extract_fast_flags(self):
         pass
 
     @abstractmethod

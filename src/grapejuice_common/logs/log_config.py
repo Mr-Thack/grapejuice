@@ -7,11 +7,11 @@ from logging import LogRecord
 from pathlib import Path
 from typing import IO, Union, Optional
 
-from grapejuice_common import variables
+from grapejuice_common import paths
 
 
 def _strip_pii(s: str):
-    s = s.replace(str(variables.home()), "~")
+    s = s.replace(str(paths.home()), "~")
 
     if getpass.getuser().lower() != "root":
         s = s.replace(getpass.getuser(), "[REDACTED]")
@@ -38,7 +38,7 @@ class GrapejuiceLogFormatter(logging.Formatter):
 
 class LoggerConfiguration:
     _output_stream: IO = sys.stderr
-    _output_file: Union[str, Path] = None
+    _output_file: Union[Path] = None
     _formatter: logging.Formatter = None
     _environment_key: Union[str, None] = "LOG_LEVEL"
     _log_level_override: Union[str, None] = None
@@ -66,15 +66,13 @@ class LoggerConfiguration:
         return self._output_file is not None
 
     @property
-    def output_file(self) -> str:
+    def output_file(self) -> Path:
         return self._output_file
 
     @output_file.setter
-    def output_file(self, path: str):
+    def output_file(self, path: Path):
         self._output_file = path
-
-        parent_file = os.path.dirname(path)
-        os.makedirs(parent_file, exist_ok=True)
+        path.parent.mkdir(parents=True, exist_ok=True)
 
     @property
     def formatter(self) -> logging.Formatter:
@@ -101,8 +99,7 @@ def configure_logging(app_name: str = None, configuration: LoggerConfiguration =
         configuration = LoggerConfiguration(app_name)
 
         datetime_now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        configuration.output_file = \
-            os.path.join(variables.logging_directory(), f"{datetime_now}_{configuration.app_name}.log")
+        configuration.output_file = paths.logging_directory() / f"{datetime_now}_{configuration.app_name}.log"
 
     root_logger = logging.getLogger()
 

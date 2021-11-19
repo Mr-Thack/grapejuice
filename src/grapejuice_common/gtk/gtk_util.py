@@ -1,5 +1,7 @@
 import sys
 
+from grapejuice_common import paths
+
 
 def gtk_boot(main_function, *args, gtk_main=True, **kwargs):
     assert callable(main_function)
@@ -10,8 +12,7 @@ def gtk_boot(main_function, *args, gtk_main=True, **kwargs):
     from gi.repository import Gtk
 
     from grapejuice_common.gtk.gtk_styling import load_style_from_path
-    from grapejuice_common import variables
-    load_style_from_path(variables.global_css())
+    load_style_from_path(paths.global_css())
 
     main_function(*args, **kwargs)
 

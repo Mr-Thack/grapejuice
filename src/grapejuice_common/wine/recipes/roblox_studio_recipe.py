@@ -20,7 +20,7 @@ class RobloxStudioRecipe(Recipe):
             hint=WineprefixHint.studio
         )
 
-    def make_in(self, prefix: Wineprefix):
+    def _make_in(self, prefix: Wineprefix):
         if roblox_is_installed(prefix):
             prefix.roblox.run_roblox_studio()
 

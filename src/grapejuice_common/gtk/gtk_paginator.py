@@ -1,4 +1,4 @@
-from grapejuice_common import variables
+from grapejuice_common import paths
 from grapejuice_common.gtk.gtk_base import GtkBase
 from grapejuice_common.util.paginator import Paginator
 
@@ -6,7 +6,7 @@ from grapejuice_common.util.paginator import Paginator
 class GtkPaginator(GtkBase):
     def __init__(self, paginator: Paginator):
         super().__init__(
-            glade_path=variables.grapejuice_components_glade(),
+            glade_path=paths.grapejuice_components_glade(),
             root_widget_name="paginator"
         )
         self._paginator = paginator

@@ -54,11 +54,11 @@ class DBusService(dbus.service.Object):
 
     @dbus.service.method(
         dbus_interface=bus_name,
-        in_signature="s",
+        in_signature="",
         out_signature=""
     )
-    def ExtractFastFlags(self, prefix_id: str):
-        self._dry_connection.extract_fast_flags(prefix_id)
+    def ExtractFastFlags(self):
+        self._dry_connection.extract_fast_flags()
 
     @dbus.service.method(
         dbus_interface=bus_name,

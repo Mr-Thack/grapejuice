@@ -1,4 +1,4 @@
-from grapejuice_common import variables
+from grapejuice_common import paths
 from grapejuice_common.features import settings
 from grapejuice_common.features.settings import current_settings
 from grapejuice_common.gtk.gtk_base import GtkBase
@@ -7,7 +7,7 @@ from grapejuice_common.gtk.gtk_base import GtkBase
 class FastFlagWarning(GtkBase):
     def __init__(self, callback):
         super().__init__(
-            glade_path=variables.fast_flag_warning_glade(),
+            glade_path=paths.fast_flag_warning_glade(),
             handler_instance=self,
             root_widget_name="fast_flag_warning"
         )

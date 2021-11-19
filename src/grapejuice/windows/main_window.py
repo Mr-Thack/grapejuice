@@ -16,7 +16,7 @@ from grapejuice.tasks import \
     OpenLogsDirectory, \
     ShowDriveC, \
     ExtractFastFlags
-from grapejuice_common import variables
+from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor
@@ -119,7 +119,7 @@ class MainWindow(GtkBase):
     _current_prefix: ComputedField[Wineprefix]
 
     def __init__(self):
-        super().__init__(glade_path=variables.grapejuice_glade())
+        super().__init__(glade_path=paths.grapejuice_glade())
 
         self._prefix_name_handler = PrefixNameHandler(self.widgets.prefix_name_wrapper)
         self._background_task_helper = BackgroundTaskHelper(self.widgets)

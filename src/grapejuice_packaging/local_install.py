@@ -6,7 +6,7 @@ from pathlib import Path
 
 from setuptools import Command
 
-import grapejuice_common.variables as v
+from grapejuice_common import paths
 from grapejuice_packaging.util.task_sequence import TaskSequence
 
 PYTHON_INTERPRETER = sys.executable
@@ -52,7 +52,7 @@ def _do_install(*_):
             log.info(f"Installing supplemental package {file}")
 
             with tarfile.open(file) as tar:
-                tar.extractall(v.home())
+                tar.extractall(paths.home())
 
     @install.task("Install Grapejuice package")
     def install_package(log):
@@ -88,7 +88,7 @@ def _do_install(*_):
 
     @install.task("Updating desktop database")
     def update_desktop_database(log):
-        path = (v.home() / ".local" / "share" / "applications").resolve()
+        path = (paths.home() / ".local" / "share" / "applications").resolve()
         log.info(f"Updating desktop database: {path}")
 
         subprocess.check_call(["update-desktop-database", str(path)])
@@ -101,7 +101,7 @@ def _do_install(*_):
 
     @install.task("Updating MIME database")
     def update_mime_database(log):
-        path = (v.home() / ".local" / "share" / "mime").resolve()
+        path = (paths.home() / ".local" / "share" / "mime").resolve()
         log.info(f"Updating MIME database: {path}")
 
         subprocess.check_call(["update-mime-database", str(path)])

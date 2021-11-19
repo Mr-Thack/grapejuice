@@ -41,8 +41,17 @@ class NoDaemonModeConnection(IDBusConnection):
 
         return __version__
 
-    def extract_fast_flags(self, prefix_id: str):
-        _with_prefix_id(prefix_id, lambda prefix: prefix.roblox.extract_fast_flags())
+    def extract_fast_flags(self):
+        from grapejuice_common.wine.wine_functions import get_studio_wineprefix
+        from grapejuice_common.wine.recipes.roblox_studio_recipe import RobloxStudioRecipe
+
+        prefix = get_studio_wineprefix()
+        recipe = RobloxStudioRecipe()
+
+        if not recipe.exists_in(prefix):
+            recipe.make_in(prefix)
+
+        prefix.roblox.extract_fast_flags()
 
     def install_roblox(self, prefix_id: str):
         from grapejuice_common.wine.wine_functions import find_wineprefix

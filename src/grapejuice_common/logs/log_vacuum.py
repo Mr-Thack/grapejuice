@@ -5,18 +5,18 @@ from datetime import datetime
 from glob import glob
 from zipfile import ZipFile, ZIP_LZMA
 
-from grapejuice_common import variables
+from grapejuice_common import paths
 
 LOG = logging.getLogger(__name__)
 N_KEEP_LOGS = 10
 
 
 def log_files():
-    return glob(os.path.join(variables.logging_directory(), "*.log"))
+    return paths.logging_directory().glob("*.log")
 
 
 def archive_directory():
-    return os.path.join(variables.logging_directory(), "archive")
+    return paths.logging_directory() / "archive"
 
 
 def archive_files():

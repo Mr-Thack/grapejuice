@@ -1,11 +1,13 @@
 import logging
 import os
+import shutil
 import time
 from pathlib import Path
 from typing import Union
 
-from grapejuice_common.util import download_file
+from grapejuice_common import paths
 from grapejuice_common.errors import RobloxExecutableNotFound
+from grapejuice_common.util import download_file
 from grapejuice_common.wine.registry_file import RegistryFile
 from grapejuice_common.wine.wineprefix_core_control import WineprefixCoreControl, ProcessWrapper
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths
@@ -182,6 +184,9 @@ class WineprefixRoblox:
         while not fast_flags_present():
             time.sleep(0.1)
 
+        shutil.copy(fast_flag_path, paths.fast_flag_cache_location())
+
         if studio_process:
-            # TODO: Consider wineserver kill?
             studio_process.kill()
+            time.sleep(1)  # Give Roblox a chance
+            self._core_control.kill_wine_server()

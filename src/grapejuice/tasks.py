@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 from grapejuice import background
-from grapejuice_common import variables
+from grapejuice_common import paths
 from grapejuice_common.update_info_providers import UpdateInformationProvider
 from grapejuice_common.util import xdg_open
 from grapejuice_common.wine.wineprefix import Wineprefix
@@ -34,7 +34,7 @@ class ExtractFastFlags(background.BackgroundTask):
     def work(self) -> None:
         from grapejuice_common.ipc.dbus_client import dbus_connection
 
-        dbus_connection().extract_fast_flags(self._prefix.configuration.id)
+        dbus_connection().extract_fast_flags()
 
 
 class OpenLogsDirectory(background.BackgroundTask):
@@ -42,10 +42,10 @@ class OpenLogsDirectory(background.BackgroundTask):
         super().__init__("Opening logs directory", **kwargs)
 
     def work(self) -> None:
-        path = variables.logging_directory()
-        os.makedirs(path, exist_ok=True)
+        path = paths.logging_directory()
+        path.mkdir(parents=True, exist_ok=True)
 
-        subprocess.check_call(["xdg-open", path])
+        subprocess.check_call(["xdg-open", str(path)])
 
 
 class OpenConfigFile(background.BackgroundTask):
@@ -53,7 +53,7 @@ class OpenConfigFile(background.BackgroundTask):
         super().__init__("Opening config file", **kwargs)
 
     def work(self) -> None:
-        subprocess.check_call(["xdg-open", variables.grapejuice_user_settings()])
+        subprocess.check_call(["xdg-open", str(paths.grapejuice_user_settings())])
 
 
 class PerformUpdate(background.BackgroundTask):

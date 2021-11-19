@@ -12,7 +12,7 @@ from pathlib import Path
 import requests
 from packaging import version
 
-from grapejuice_common import variables
+from grapejuice_common import variables, paths
 from grapejuice_common.features import settings
 from grapejuice_common.logs.log_util import log_function
 
@@ -105,7 +105,7 @@ class SourceUpdateInformationProvider(UpdateInformationProvider):
     def do_update(self):
         from grapejuice_common.features.settings import current_settings
 
-        tmp_path = variables.tmp_path()
+        tmp_path = paths.temporary_directory()
         LOG.info(f"Temporary files path at: {tmp_path}")
         update_package_path = os.path.join(tmp_path, "update")
 
@@ -171,7 +171,7 @@ def guess_relevant_provider() -> UpdateInformationProvider:
     if stat.st_uid == 0 and stat.st_gid == 0:
         return SystemUpdateInformationProvider()
 
-    elif str(this_file).startswith(str(variables.home())):
+    elif str(this_file).startswith(str(paths.home())):
         return SourceUpdateInformationProvider()
 
     else:

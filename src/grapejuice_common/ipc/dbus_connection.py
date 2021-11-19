@@ -95,8 +95,8 @@ class DBusConnection(IDBusConnection):
     def version(self):
         return self.proxy.Version()
 
-    def extract_fast_flags(self, prefix_id: str):
-        self.proxy.ExtractFastFlags(prefix_id)
+    def extract_fast_flags(self):
+        self.proxy.ExtractFastFlags()
 
     def install_roblox(self, prefix_id: str):
         return self.proxy.InstallRoblox(prefix_id)

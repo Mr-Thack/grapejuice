@@ -2,11 +2,11 @@ import os
 import shutil
 from pathlib import Path
 
-from grapejuice_common import variables
+from grapejuice_common import paths
 
 
 def do_wineprefix_migration(legacy_wineprefix_path: Path, new_name_on_disk: str):
-    new_prefix_path = variables.wineprefixes_directory() / new_name_on_disk
+    new_prefix_path = paths.wineprefixes_directory() / new_name_on_disk
 
     # Try to not destroy any perfectly ok wineprefixes
     if (legacy_wineprefix_path.exists() and legacy_wineprefix_path.is_dir()) and not new_prefix_path.exists():

@@ -11,7 +11,7 @@ from pathlib import Path
 from string import Template
 from typing import Union, List
 
-from grapejuice_common import variables
+from grapejuice_common import variables, paths
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.logs.log_util import log_function
 from grapejuice_common.util.string_util import non_empty_string
@@ -110,7 +110,7 @@ def run_exe_no_daemon(
 ) -> Union[ProcessWrapper, None]:
     LOG.info("Running in no_daemon_mode")
 
-    log_dir = Path(variables.logging_directory())
+    log_dir = paths.logging_directory()
     os.makedirs(log_dir, exist_ok=True)
 
     LOG.info("Opening log fds")
@@ -180,15 +180,15 @@ def default_dll_overrides() -> List[str]:
 
 
 class WineprefixCoreControl:
-    _paths: WineprefixPaths
+    _prefix_paths: WineprefixPaths
     _configuration: WineprefixConfigurationModel
 
-    def __init__(self, paths: WineprefixPaths, configuration: WineprefixConfigurationModel):
-        self._paths = paths
+    def __init__(self, prefix_paths: WineprefixPaths, configuration: WineprefixConfigurationModel):
+        self._prefix_paths = prefix_paths
         self._configuration = configuration
 
-    def wine_binary(self, arch=""):
-        LOG.info(f"Resolving wine binary for prefix {self._paths.base_directory}")
+    def wine_binary(self, arch="") -> str:
+        LOG.info(f"Resolving wine binary for prefix {self._prefix_paths.base_directory}")
 
         wine_home_string = self._configuration.wine_home.strip()
         LOG.info(f"Wine home string: {wine_home_string}")
@@ -217,6 +217,12 @@ class WineprefixCoreControl:
         else:
             return variables.system_wine_binary(arch)
 
+    def wine_server(self) -> str:
+        path = Path(self.wine_binary()).parent / "wineserver"
+        assert path.exists(), f"Could not find wineserver at: {path}"
+
+        return str(path)
+
     def prepare_for_launch(self):
         user_env = self._configuration.env
         dll_overrides = list(filter(non_empty_string, self._configuration.dll_overrides.split(DLL_OVERRIDE_SEP)))
@@ -225,7 +231,7 @@ class WineprefixCoreControl:
         apply_env = {
             "WINEDLLOVERRIDES": DLL_OVERRIDE_SEP.join(dll_overrides),
             **user_env,
-            "WINEPREFIX": str(self._paths.base_directory),
+            "WINEPREFIX": str(self._prefix_paths.base_directory),
             "WINEARCH": "win64"
         }
 
@@ -242,8 +248,8 @@ class WineprefixCoreControl:
         for k, v in apply_env.items():
             os.environ[k] = v
 
-        if not os.path.exists(self._paths.base_directory):
-            self._paths.base_directory.mkdir(parents=True)
+        if not os.path.exists(self._prefix_paths.base_directory):
+            self._prefix_paths.base_directory.mkdir(parents=True)
 
     def load_registry_file(
         self,
@@ -256,7 +262,7 @@ class WineprefixCoreControl:
             self.prepare_for_launch()
 
         target_filename = str(int(time.time())) + ".reg"
-        target_path = self._paths.temp_directory / target_filename
+        target_path = self._prefix_paths.temp_directory / target_filename
         target_path.parent.mkdir(parents=True, exist_ok=True)
 
         shutil.copyfile(registry_file, target_path)
@@ -275,7 +281,7 @@ class WineprefixCoreControl:
         self.prepare_for_launch()
 
         target_filename = str(int(time.time())) + ".reg"
-        target_path = self._paths.temp_directory / target_filename
+        target_path = self._prefix_paths.temp_directory / target_filename
 
         with registry_file.open("r") as fp:
             template = Template(fp.read())
@@ -290,10 +296,10 @@ class WineprefixCoreControl:
         os.remove(target_path)
 
     def disable_mime_associations(self):
-        self.load_registry_file(variables.assets_dir() / "disable_mime_assoc.reg")
+        self.load_registry_file(paths.assets_directory() / "disable_mime_assoc.reg")
 
     def sandbox(self):
-        user_dir = self._paths.user_directory
+        user_dir = self._prefix_paths.user_directory
 
         if user_dir.exists() and user_dir.is_dir():
             for file in user_dir.glob("*"):
@@ -346,6 +352,11 @@ class WineprefixCoreControl:
 
         else:
             return run_exe_in_daemon(command, post_run_function=post_run_function)
+
+    def kill_wine_server(self):
+        self.prepare_for_launch()
+
+        subprocess.check_call([self.wine_server(), "-k"])
 
 
 atexit.register(close_fds)

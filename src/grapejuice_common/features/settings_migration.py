@@ -4,7 +4,7 @@ import shutil
 from dataclasses import asdict
 from typing import Dict
 
-from grapejuice_common import variables
+from grapejuice_common import paths
 from grapejuice_common.features.settings import k_wineprefixes
 
 migration_index = dict()
@@ -61,7 +61,7 @@ def upgrade_wineprefix(settings: Dict):
     from grapejuice_common.features.wineprefix_migration import do_wineprefix_migration
 
     do_wineprefix_migration(
-        legacy_wineprefix_path=variables.local_share_grapejuice() / "wineprefix",
+        legacy_wineprefix_path=paths.local_share_grapejuice() / "wineprefix",
         new_name_on_disk=new_player_prefix.name_on_disk
     )
 
@@ -73,8 +73,8 @@ def downgrade_wineprefix(settings: Dict):
 
     settings["env"] = settings[k_wineprefixes][0].get("env", dict())
 
-    original_prefix_path = variables.local_share_grapejuice() / "wineprefix"
-    new_prefix_path = variables.wineprefixes_directory() / settings[k_wineprefixes][0]["name_on_disk"]
+    original_prefix_path = paths.local_share_grapejuice() / "wineprefix"
+    new_prefix_path = paths.wineprefixes_directory() / settings[k_wineprefixes][0]["name_on_disk"]
 
     # Try to not destroy any prefixes
     if original_prefix_path.exists():
@@ -84,7 +84,7 @@ def downgrade_wineprefix(settings: Dict):
         else:
             n = 1
             while original_prefix_path.exists():
-                original_prefix_path = variables.local_share_grapejuice() / f"wineprefix ({n})"
+                original_prefix_path = paths.local_share_grapejuice() / f"wineprefix ({n})"
                 n += 1
 
     original_prefix_path.parent.mkdir(parents=True, exist_ok=True)

@@ -5,7 +5,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from grapejuice_common import variables
+from grapejuice_common import paths
 from grapejuice_common.features import wineprefix_configuration_model
 from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
 
@@ -43,7 +43,7 @@ class UserSettings:
     _settings_object: Dict[str, any] = None
     _location: Path = None
 
-    def __init__(self, file_location=variables.grapejuice_user_settings()):
+    def __init__(self, file_location=paths.grapejuice_user_settings()):
         self._location = file_location
         self.load()
 
