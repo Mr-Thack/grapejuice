@@ -152,3 +152,35 @@ def temporary_directory() -> Path:
     atexit.register(on_exit)
 
     return _ensure_directory(path)
+
+
+# TODO: Add method to extract this data
+path_resolve_record = dict()
+
+
+def _hack_path_functions():
+    from typing import get_type_hints
+
+    def wrap_function(path_name: str, f: callable):
+        def wrapper(*args, **kwargs):
+            path = f(*args, **kwargs)
+            path_resolve_record[path_name] = path
+
+            return path
+
+        return wrapper
+
+    for k in list(globals()):
+        v = globals()[k]
+
+        if callable(v) and k.strip("_").islower():
+            type_hints = get_type_hints(v)
+            if type_hints.get("return", None) is Path:
+                globals()[k] = wrap_function(k, v)
+
+
+try:
+    _hack_path_functions()
+
+except:
+    pass
