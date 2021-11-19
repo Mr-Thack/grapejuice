@@ -24,15 +24,15 @@ def _app_settings_path(executable_path: Path) -> Path:
 
 
 class WineprefixRoblox:
-    _paths: WineprefixPaths
+    _prefix_paths: WineprefixPaths
     _core_control: WineprefixCoreControl
 
-    def __init__(self, paths: WineprefixPaths, core_control: WineprefixCoreControl):
-        self._paths = paths
+    def __init__(self, prefix_paths: WineprefixPaths, core_control: WineprefixCoreControl):
+        self._prefix_paths = prefix_paths
         self._core_control = core_control
 
     def download_installer(self):
-        path = self._paths.installer_download_location
+        path = self._prefix_paths.installer_download_location
 
         if path.exists():
             LOG.debug(f"Removing old installer at {path}")
@@ -51,7 +51,7 @@ class WineprefixRoblox:
         )
 
     def is_logged_into_studio(self) -> bool:
-        with RegistryFile(self._paths.user_reg) as registry_file:
+        with RegistryFile(self._prefix_paths.user_reg) as registry_file:
             registry_file.load()
 
             roblox_com = registry_file.find_key(r"Software\\Roblox\\RobloxStudioBrowser\\roblox.com")
@@ -59,8 +59,8 @@ class WineprefixRoblox:
 
     def locate_roblox_executable_in_versions(self, executable_name: str) -> Union[Path, None]:
         search_locations = [
-            self._paths.roblox_appdata,
-            self._paths.roblox_program_files
+            self._prefix_paths.roblox_appdata,
+            self._prefix_paths.roblox_program_files
         ]
 
         for location in search_locations:
@@ -86,7 +86,7 @@ class WineprefixRoblox:
         if versioned_executable_path is not None:
             return versioned_executable_path
 
-        executable_path = self._paths.roblox_program_files / "Versions" / executable_name
+        executable_path = self._prefix_paths.roblox_program_files / "Versions" / executable_name
         if executable_path.exists():
             return executable_path
 
@@ -108,7 +108,7 @@ class WineprefixRoblox:
 
     @property
     def fast_flag_dump_path(self) -> Path:
-        return self._paths.roblox_appdata / "ClientSettings" / "StudioAppSettings.json"
+        return self._prefix_paths.roblox_appdata / "ClientSettings" / "StudioAppSettings.json"
 
     @property
     def roblox_studio_app_settings_path(self) -> Union[Path, None]:

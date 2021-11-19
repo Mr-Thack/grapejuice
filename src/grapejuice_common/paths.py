@@ -179,8 +179,4 @@ def _hack_path_functions():
                 globals()[k] = wrap_function(k, v)
 
 
-try:
-    _hack_path_functions()
-
-except:
-    pass
+_hack_path_functions()
