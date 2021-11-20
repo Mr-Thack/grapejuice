@@ -1,35 +1,15 @@
 import json
 import logging
 import os
-from typing import List, Iterable, Dict
-
-import requests
+from itertools import chain
+from pathlib import Path
+from typing import List, Dict, Optional, Iterable
 
 from grapejuice_common import variables
 
 LOG = logging.getLogger(__name__)
 
-
-class RobloxApplications:
-    studio_app = "StudioApp"
-    pc_desktop_client = "PCDesktopClient"
-
-
-def download_fast_flags(app: str):
-    response = requests.get(
-        "https://clientsettingscdn.roblox.com/v1/settings/application",
-        params={
-            "applicationName": app
-        }
-    )
-
-    try:
-        response.raise_for_status()
-        return response.json()["applicationSettings"]
-
-    except requests.HTTPError as e:
-        LOG.error(f"Could not get fast flags for applicaton {app}: {e}")
-        return {}
+FastFlagDictionary = Dict[str, any]
 
 
 def mangle_flags(flags: Dict[str, str]):
@@ -85,35 +65,43 @@ class FastFlag:
 
 
 class FastFlagList:
-    def __init__(self, initial_values: Iterable[FastFlag] = None):
-        if initial_values is None:
-            self._list: List[FastFlag] = list()
+    _list: List[FastFlag]
 
-        else:
-            self._list = list(initial_values)
+    def __init__(
+        self,
+        initial_flags: Optional[Iterable[FastFlag]] = None,
+        source_file: Optional[Path] = None,
+        source_dictionary: Optional[Dict] = None
+    ):
+        self._list = list() if initial_flags is None else list(initial_flags)
 
-    def clear(self):
-        self._list = list()
+        if source_file is not None:
+            self._flags_from_file(source_file)
 
-    def import_file(self, fast_flags_path):
-        with open(fast_flags_path, "r", encoding=variables.text_encoding()) as fp:
-            json_object = json.load(fp)
-            return self.import_dict(json_object)
+        if source_dictionary is not None:
+            self._flags_from_dictionary(source_dictionary)
 
-    def import_dict(self, fast_flags):
-        self._list = list(map(lambda t: FastFlag(*t), fast_flags.items()))
+    def _flags_from_file(self, file: Path):
+        with file.open("r", encoding=variables.text_encoding()) as fp:
+            self._flags_from_dictionary(json.load(fp))
+
+    def _flags_from_dictionary(self, flags):
+        self._list = list(
+            map(
+                lambda t: FastFlag(*t),
+                flags.items()
+            )
+        )
 
         self.sort()
-
-        return self
 
     def export_to_file(self, fast_flags_path):
         os.makedirs(os.path.dirname(fast_flags_path), exist_ok=True)
 
         with open(fast_flags_path, "w+", encoding=variables.text_encoding()) as fp:
-            json.dump(self.to_dict(), fp)
+            json.dump(self.as_dictionary, fp)
 
-    def overlay_flags(self, other_flags):
+    def overlay_flags(self, other_flags: "FastFlagList"):
         d = dict(zip(map(lambda f: f.name, self), self._list))
 
         for flag in filter(lambda f: f.name in d, other_flags):
@@ -121,10 +109,11 @@ class FastFlagList:
 
         self.sort()
 
-    def get_changed_flags(self):
-        return FastFlagList(initial_values=filter(lambda flag: flag.has_changed, self._list))
+    def get_changed_flags(self) -> "FastFlagList":
+        return FastFlagList(initial_flags=filter(lambda flag: flag.has_changed, self._list))
 
-    def to_dict(self):
+    @property
+    def as_dictionary(self) -> FastFlagDictionary:
         return dict(map(lambda flag: flag.to_tuple(), self))
 
     def reset_all_flags(self):
@@ -132,13 +121,22 @@ class FastFlagList:
             flag.reset()
 
     def sort(self):
-        changed_flags = list(filter(lambda f: f.has_changed, self._list))
-        unchanged_flags = list(filter(lambda f: not f.has_changed, self._list))
-
-        changed_flags.sort()
-        unchanged_flags.sort()
-
-        self._list = changed_flags + unchanged_flags
+        self._list = list(
+            chain(
+                sorted(
+                    filter(
+                        lambda f: f.has_changed,
+                        self._list
+                    )
+                ),
+                sorted(
+                    filter(
+                        lambda f: not f.has_changed,
+                        self._list
+                    )
+                )
+            )
+        )
 
     def __iter__(self):
         for flag in self._list:

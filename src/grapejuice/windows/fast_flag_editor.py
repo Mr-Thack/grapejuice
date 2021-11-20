@@ -1,10 +1,10 @@
 import os
-from typing import Union, Dict
+from typing import Union, Optional
 
 from gi.repository import Gtk
 
 from grapejuice_common import variables, paths
-from grapejuice_common.features.fast_flags import FastFlagList, FastFlag
+from grapejuice_common.features.fast_flags import FastFlagList, FastFlag, FastFlagDictionary
 from grapejuice_common.gtk.gtk_base import GtkBase
 from grapejuice_common.gtk.gtk_paginator import GtkPaginator
 from grapejuice_common.gtk.gtk_util import dialog
@@ -13,7 +13,8 @@ from grapejuice_common.wine.wine_functions import get_studio_wineprefix
 from grapejuice_common.wine.wineprefix import Wineprefix
 
 
-# TODO: Make the fast flag editor prefix aware
+def _app_settings_paths(prefix: Wineprefix):
+    return prefix.roblox.roblox_studio_app_settings_path, prefix.roblox.roblox_player_app_settings_path
 
 
 class WidgetStuff:
@@ -23,12 +24,6 @@ class WidgetStuff:
         self.set_value = set_value
         self.icon_changes: Union[None, Gtk.Image] = None
         self.reset_button: Union[None, Gtk.Button] = None
-
-
-def get_app_settings_paths():
-    prefix = get_studio_wineprefix()
-
-    return prefix.roblox.roblox_studio_app_settings_path, prefix.roblox.roblox_player_app_settings_path
 
 
 def flag_to_widget(flag: FastFlag, on_changed: callable = None) -> Union[None, WidgetStuff]:
@@ -92,7 +87,7 @@ def flag_to_widget(flag: FastFlag, on_changed: callable = None) -> Union[None, W
 class FastFlagEditor(GtkBase):
     _prefix: Wineprefix
 
-    def __init__(self, prefix: Wineprefix, fast_flags: Union[Dict[str, any], None] = None):
+    def __init__(self, prefix: Wineprefix, fast_flags: Optional[FastFlagDictionary] = None):
         super().__init__(
             glade_path=paths.fast_flag_editor_glade(),
             handler_instance=self,
@@ -101,18 +96,22 @@ class FastFlagEditor(GtkBase):
 
         self._prefix = prefix
 
-        studio_settings_path, player_settings_path = get_app_settings_paths()
-
         if fast_flags is not None:
-            self._fast_flags = FastFlagList().import_dict(fast_flags)
+            self._fast_flags = FastFlagList(source_dictionary=fast_flags)
 
         else:
-            prefix = get_studio_wineprefix()
+            studio_prefix = get_studio_wineprefix()
 
-            self._fast_flags = FastFlagList().import_file(prefix.roblox.fast_flag_dump_path)
+            self._fast_flags = FastFlagList(source_file=next(
+                filter(
+                    lambda f: f.exists(),
+                    (paths.fast_flag_cache_location(), studio_prefix.roblox.fast_flag_dump_path)
+                )
+            ))
 
-        studio_settings_exist = studio_settings_path is not None and os.path.exists(studio_settings_path)
-        player_settings_exist = player_settings_path is not None and os.path.exists(player_settings_path)
+        studio_settings_path, player_settings_path = _app_settings_paths(prefix)
+        studio_settings_exist = studio_settings_path and studio_settings_path.exists()
+        player_settings_exist = player_settings_path and player_settings_path.exists()
 
         if studio_settings_exist and player_settings_exist:
             with open(studio_settings_path, encoding=variables.text_encoding()) as studio_settings:
@@ -124,11 +123,8 @@ class FastFlagEditor(GtkBase):
                             "the flags from the Roblox Player when the flags are saved."
                         )
 
-        if studio_settings_exist:
-            self._fast_flags.overlay_flags(FastFlagList().import_file(studio_settings_path))
-
-        elif player_settings_exist:
-            self._fast_flags.overlay_flags(FastFlagList().import_file(player_settings_path))
+        for file in filter(lambda f: f.exists(), (studio_settings_path, player_settings_path)):
+            self._fast_flags.overlay_flags(FastFlagList(source_file=file))
 
         self._paginator = Paginator(self._fast_flags, 50)
         self._gtk_paginator = GtkPaginator(self._paginator)
@@ -277,10 +273,9 @@ class FastFlagEditor(GtkBase):
     def save_flags(self, *_):
         self._input_values_to_flags()
         changed_flags = self._fast_flags.get_changed_flags()
-        studio_settings_path, player_settings_path = get_app_settings_paths()
 
-        changed_flags.export_to_file(studio_settings_path)
-        changed_flags.export_to_file(player_settings_path)
+        for file in _app_settings_paths(self._prefix):
+            changed_flags.export_to_file(file)
 
         self._unsaved_changes = False
 
@@ -304,5 +299,5 @@ class FastFlagEditor(GtkBase):
     def delete_user_flags(self, *_):
         self.reset_all_flags()
 
-        for path in filter(lambda p: p and p.exists(), get_app_settings_paths()):
+        for path in filter(lambda p: p and p.exists(), _app_settings_paths(self._prefix)):
             os.remove(path)
