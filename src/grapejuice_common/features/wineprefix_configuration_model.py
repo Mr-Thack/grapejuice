@@ -15,11 +15,12 @@ class WineprefixConfigurationModel:
     wine_home: str
     dll_overrides: str
     env: Dict[str, str] = field(default_factory=dict)
-    hints: List[str] = field(default_factory=list)
+    hints: List[str] = field(default_factory=list),
+    fast_flags: Dict[str, Dict[str, any]] = field(default_factory=dict)
 
     @property
     def hints_as_enum(self) -> List[WineprefixHint]:
-        return list(map(lambda x: WineprefixHint[x], self.hints))
+        return list(map(WineprefixHint, self.hints))
 
     @property
     def base_directory(self) -> Path:
