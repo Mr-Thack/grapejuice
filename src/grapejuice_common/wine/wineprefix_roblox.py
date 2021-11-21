@@ -181,7 +181,9 @@ class WineprefixRoblox:
     def run_roblox_player(self, uri):
         player_launcher_path = self.roblox_player_launcher_path
 
-        self._write_flags(RobloxProduct.player, self.all_player_app_settings_paths)
+        product = RobloxProduct.app if uri == variables.roblox_app_experience_url() else RobloxProduct.player
+
+        self._write_flags(product, self.all_player_app_settings_paths)
 
         # TODO: Reimplement FPS unlocker launch
 
