@@ -17,12 +17,12 @@ Note that Grapejuice is unofficial software. This is not officially supported by
 
 ## Installing Grapejuice from source
 
-The installation guide can be found in the [Grapejuice Wiki](https://gitlab.com/brinkervii/grapejuice/wikis/home).
+The installation guide can be found in the [documentation](https://brinkervii.gitlab.io/grapejuice/docs/).
 
 ## Troubleshooting
 
 Are you experiencing some trouble running Roblox Studio with Grapejuice? Please check out
-the [Troubleshooting Guide](https://gitlab.com/brinkervii/grapejuice/wikis/Troubleshooting).
+the [troubleshooting guide](https://brinkervii.gitlab.io/grapejuice/docs/Troubleshooting).
 
 ## Features
 
