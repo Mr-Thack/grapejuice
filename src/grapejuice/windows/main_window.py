@@ -18,7 +18,7 @@ from grapejuice.tasks import \
     ExtractFastFlags
 from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
-from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
+from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor
 from grapejuice_common.gtk.gtk_util import set_gtk_widgets_visibility, set_label_text_and_hide_if_no_text, \
     set_style_class_conditionally

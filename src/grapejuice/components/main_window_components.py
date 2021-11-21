@@ -1,6 +1,6 @@
 from gi.repository import Gtk
 
-from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
+from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.gtk.components.grape_list_box_row_with_icon import GrapeListBoxRowWithIcon
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 

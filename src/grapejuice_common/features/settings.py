@@ -6,8 +6,8 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from grapejuice_common import paths
-from grapejuice_common.features import wineprefix_configuration_model
-from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
+from grapejuice_common.models import wineprefix_configuration_model
+from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 
 LOG = logging.getLogger(__name__)
 

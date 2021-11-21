@@ -4,7 +4,7 @@ from typing import Union, Optional
 from gi.repository import Gtk
 
 from grapejuice_common import variables, paths
-from grapejuice_common.features.fast_flags import FastFlagList, FastFlag, FastFlagDictionary
+from grapejuice_common.models.fast_flags import FastFlagList, FastFlag, FastFlagDictionary
 from grapejuice_common.gtk.gtk_base import GtkBase, handler
 from grapejuice_common.gtk.gtk_paginator import GtkPaginator
 from grapejuice_common.gtk.gtk_util import dialog

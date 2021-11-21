@@ -1,4 +1,4 @@
-from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
+from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.errors import NoWineprefixConfiguration
 from grapejuice_common.wine.wineprefix_core_control import WineprefixCoreControl
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths

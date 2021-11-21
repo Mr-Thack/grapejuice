@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List, Optional, Dict
 
 from grapejuice_common.errors import WineprefixNotFoundUsingHints
-from grapejuice_common.features.wineprefix_configuration_model import WineprefixConfigurationModel
+from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
