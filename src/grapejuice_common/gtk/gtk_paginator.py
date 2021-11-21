@@ -1,6 +1,6 @@
 from grapejuice_common import paths
 from grapejuice_common.gtk.gtk_base import GtkBase
-from grapejuice_common.util.paginator import Paginator
+from grapejuice_common.models.paginator import Paginator
 
 
 class GtkPaginator(GtkBase):

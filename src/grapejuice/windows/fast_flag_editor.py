@@ -8,7 +8,7 @@ from grapejuice_common.models.fast_flags import FastFlagList, FastFlag, FastFlag
 from grapejuice_common.gtk.gtk_base import GtkBase, handler
 from grapejuice_common.gtk.gtk_paginator import GtkPaginator
 from grapejuice_common.gtk.gtk_util import dialog
-from grapejuice_common.util.paginator import Paginator
+from grapejuice_common.models.paginator import Paginator
 from grapejuice_common.wine.wine_functions import get_studio_wineprefix
 from grapejuice_common.wine.wineprefix import Wineprefix
 
