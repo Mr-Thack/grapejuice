@@ -51,8 +51,21 @@ def can_delete_archive(file):
     return time_delta > 604800
 
 
+def remove_empty_logs():
+    for file in log_files():
+        s = os.stat(file)
+        if s.st_size <= 0:
+            LOG.info(f"Removing empty log file: {file}")
+
+            try:
+                os.remove(file)
+
+            except Exception as e:
+                LOG.error(f"Failed to remove empty log file {file}:\n{e}")
+
+
 def vacuum_logs():
-    files = log_files()
+    files = list(log_files())
 
     if len(files) >= 50:
         files.sort(key=lambda f: os.stat(f).st_ctime)

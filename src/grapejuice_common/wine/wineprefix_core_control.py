@@ -12,8 +12,8 @@ from string import Template
 from typing import Union, List
 
 from grapejuice_common import variables, paths
-from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.logs.log_util import log_function
+from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.util.string_util import non_empty_string
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths
 
@@ -99,6 +99,9 @@ def close_fds(*_, **__):
         fd.close()
 
     open_fds.clear()
+
+    from grapejuice_common.logs.log_vacuum import remove_empty_logs
+    remove_empty_logs()
 
 
 @log_function
