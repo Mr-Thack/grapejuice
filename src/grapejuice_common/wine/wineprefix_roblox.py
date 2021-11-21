@@ -4,7 +4,7 @@ import os
 import shutil
 import time
 from pathlib import Path
-from typing import Generator, Optional, List, Iterable
+from typing import Generator, List, Iterable
 
 from grapejuice_common import paths, variables
 from grapejuice_common.errors import RobloxExecutableNotFound
@@ -87,9 +87,6 @@ class WineprefixRoblox:
 
                     if executable_path.exists() and executable_path.is_file():
                         yield executable_path
-
-    def locate_roblox_executable_in_versions(self, executable_name: str) -> Optional[Path]:
-        return next(self.locate_all_roblox_executables_in_versions(executable_name), None)
 
     def locate_all_roblox_executables(self, executable_name: str) -> Generator[Path, None, None]:
         for executable in self.locate_all_roblox_executables_in_versions(executable_name):
