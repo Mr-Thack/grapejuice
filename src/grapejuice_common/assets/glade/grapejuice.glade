@@ -185,12 +185,6 @@ Author: BrinkerVII <brinkervii@gmail.com>
     <property name="icon-name">application-x-addon-symbolic</property>
     <property name="icon_size">3</property>
   </object>
-  <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">system-run</property>
-    <property name="icon_size">6</property>
-  </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -201,6 +195,20 @@ Author: BrinkerVII <brinkervii@gmail.com>
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">system-run</property>
+    <property name="icon_size">6</property>
+  </object>
+  <object class="GtkImage" id="install_roblox_icon">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="margin-top">10</property>
+    <property name="margin-bottom">10</property>
+    <property name="icon-name">package-x-generic-symbolic</property>
+    <property name="icon_size">3</property>
+  </object>
+  <object class="GtkImage" id="start_page_shortcut_2_icon">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">grapejuice-roblox-studio</property>
     <property name="icon_size">6</property>
   </object>
   <object class="GtkBox" id="cc_start_page">
@@ -278,13 +286,14 @@ Author: BrinkerVII <brinkervii@gmail.com>
         </child>
         <child>
           <object class="GtkButton">
-            <property name="label" translatable="yes">Shortcut 2</property>
+            <property name="label" translatable="yes">Open Roblox Studio</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="image">image1</property>
+            <property name="image">start_page_shortcut_2_icon</property>
             <property name="image-position">top</property>
             <property name="always-show-image">True</property>
+            <signal name="clicked" handler="open_roblox_studio" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -318,14 +327,6 @@ Author: BrinkerVII <brinkervii@gmail.com>
     <child>
       <placeholder/>
     </child>
-  </object>
-  <object class="GtkImage" id="install_roblox_icon">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-top">10</property>
-    <property name="margin-bottom">10</property>
-    <property name="icon-name">package-x-generic-symbolic</property>
-    <property name="icon_size">3</property>
   </object>
   <object class="GtkListStore" id="supported_hybrid_graphics">
     <columns>

@@ -17,7 +17,7 @@ class Wineprefix:
 
         self._paths = WineprefixPaths(configuration.base_directory)
         self._core_control = WineprefixCoreControl(self._paths, self._configuration)
-        self._roblox = WineprefixRoblox(self.paths, self._core_control)
+        self._roblox = WineprefixRoblox(self.paths, self._core_control, self._configuration)
 
     @property
     def paths(self) -> WineprefixPaths:

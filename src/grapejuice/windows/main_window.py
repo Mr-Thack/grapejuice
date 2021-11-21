@@ -15,16 +15,16 @@ from grapejuice.tasks import \
     InstallRoblox, \
     OpenLogsDirectory, \
     ShowDriveC, \
-    ExtractFastFlags
+    ExtractFastFlags, RunRobloxStudio
 from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
-from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
-from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor
+from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor, handler
 from grapejuice_common.gtk.gtk_util import set_gtk_widgets_visibility, set_label_text_and_hide_if_no_text, \
     set_style_class_conditionally
 from grapejuice_common.gtk.yes_no_dialog import yes_no_dialog
+from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.util.computed_field import ComputedField
-from grapejuice_common.wine.wine_functions import create_new_model_for_user
+from grapejuice_common.wine.wine_functions import create_new_model_for_user, get_studio_wineprefix
 from grapejuice_common.wine.wineprefix import Wineprefix
 
 
@@ -119,7 +119,7 @@ class MainWindow(GtkBase):
     _current_prefix: ComputedField[Wineprefix]
 
     def __init__(self):
-        super().__init__(glade_path=paths.grapejuice_glade())
+        super().__init__(glade_path=paths.grapejuice_glade(), handler_instance=self)
 
         self._prefix_name_handler = PrefixNameHandler(self.widgets.prefix_name_wrapper)
         self._background_task_helper = BackgroundTaskHelper(self.widgets)
@@ -217,6 +217,12 @@ class MainWindow(GtkBase):
                 self._save_current_prefix()
 
         self._prefix_name_handler.on_finish_editing(do_finish_editing_prefix_name)
+
+    @handler
+    def open_roblox_studio(self, *_):
+        studio_prefix = get_studio_wineprefix()
+
+        gui_task_manager.run_task_once(RunRobloxStudio, studio_prefix)
 
     def _show_about_window(self):
         self.widgets.dots_menu.popdown()

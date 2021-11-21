@@ -1,12 +1,15 @@
+import json
 import logging
 import os
 import shutil
 import time
 from pathlib import Path
-from typing import Union
+from typing import Generator, Optional, List, Iterable
 
-from grapejuice_common import paths
+from grapejuice_common import paths, variables
 from grapejuice_common.errors import RobloxExecutableNotFound
+from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
+from grapejuice_common.roblox_product import RobloxProduct
 from grapejuice_common.util import download_file
 from grapejuice_common.wine.registry_file import RegistryFile
 from grapejuice_common.wine.wineprefix_core_control import WineprefixCoreControl, ProcessWrapper
@@ -26,10 +29,17 @@ def _app_settings_path(executable_path: Path) -> Path:
 class WineprefixRoblox:
     _prefix_paths: WineprefixPaths
     _core_control: WineprefixCoreControl
+    _configuration: WineprefixConfigurationModel
 
-    def __init__(self, prefix_paths: WineprefixPaths, core_control: WineprefixCoreControl):
+    def __init__(
+        self,
+        prefix_paths: WineprefixPaths,
+        core_control: WineprefixCoreControl,
+        configuration: WineprefixConfigurationModel
+    ):
         self._prefix_paths = prefix_paths
         self._core_control = core_control
+        self._configuration = configuration
 
     def download_installer(self):
         path = self._prefix_paths.installer_download_location
@@ -57,7 +67,7 @@ class WineprefixRoblox:
             roblox_com = registry_file.find_key(r"Software\\Roblox\\RobloxStudioBrowser\\roblox.com")
             return (roblox_com is not None) and (roblox_com.get_attribute(".ROBLOSECURITY") is not None)
 
-    def locate_roblox_executable_in_versions(self, executable_name: str) -> Union[Path, None]:
+    def locate_all_roblox_executables_in_versions(self, executable_name: str) -> Generator[Path, None, None]:
         search_locations = [
             self._prefix_paths.roblox_appdata,
             self._prefix_paths.roblox_program_files
@@ -70,40 +80,44 @@ class WineprefixRoblox:
                 executable_path = versions_directory / executable_name
 
                 if executable_path.exists() and executable_path.is_file():
-                    return executable_path
+                    yield executable_path
 
                 for version in filter(Path.is_dir, versions_directory.glob("*")):
                     executable_path = version / executable_name
 
                     if executable_path.exists() and executable_path.is_file():
-                        return executable_path
+                        yield executable_path
 
-        return None
+    def locate_roblox_executable_in_versions(self, executable_name: str) -> Optional[Path]:
+        return next(self.locate_all_roblox_executables_in_versions(executable_name), None)
 
-    def locate_roblox_executable(self, executable_name: str) -> Union[Path, None]:
-        versioned_executable_path = self.locate_roblox_executable_in_versions(executable_name)
-
-        if versioned_executable_path is not None:
-            return versioned_executable_path
+    def locate_all_roblox_executables(self, executable_name: str) -> Generator[Path, None, None]:
+        for executable in self.locate_all_roblox_executables_in_versions(executable_name):
+            yield executable
 
         executable_path = self._prefix_paths.roblox_program_files / "Versions" / executable_name
         if executable_path.exists():
-            return executable_path
+            yield executable_path
 
-        LOG.warning(f"Failed to locate Roblox executable: {executable_name}")
+    def locate_roblox_executable(self, executable_name: str) -> Path:
+        executable = next(self.locate_all_roblox_executables(executable_name), None)
 
-        raise RobloxExecutableNotFound(executable_name)
+        if executable is None:
+            LOG.warning(f"Failed to locate Roblox executable: {executable_name}")
+            raise RobloxExecutableNotFound(executable_name)
+
+        return executable
 
     @property
-    def roblox_studio_launcher_path(self) -> Union[Path, None]:
+    def roblox_studio_launcher_path(self) -> Path:
         return self.locate_roblox_executable("RobloxStudioLauncherBeta.exe")
 
     @property
-    def roblox_studio_executable_path(self) -> Union[Path, None]:
+    def roblox_studio_executable_path(self) -> Path:
         return self.locate_roblox_executable("RobloxStudioBeta.exe")
 
     @property
-    def roblox_player_launcher_path(self) -> Union[Path, None]:
+    def roblox_player_launcher_path(self) -> Path:
         return self.locate_roblox_executable("RobloxPlayerLauncher.exe")
 
     @property
@@ -111,12 +125,20 @@ class WineprefixRoblox:
         return self._prefix_paths.roblox_appdata / "ClientSettings" / "StudioAppSettings.json"
 
     @property
-    def roblox_studio_app_settings_path(self) -> Union[Path, None]:
+    def roblox_studio_app_settings_path(self) -> Path:
         return _app_settings_path(self.roblox_studio_executable_path)
 
     @property
-    def roblox_player_app_settings_path(self) -> Union[Path, None]:
+    def roblox_player_app_settings_path(self) -> Path:
         return _app_settings_path(self.roblox_player_launcher_path)
+
+    @property
+    def all_studio_app_settings_paths(self) -> List[Path]:
+        return list(map(_app_settings_path, self.locate_all_roblox_executables("RobloxStudioBeta.exe")))
+
+    @property
+    def all_player_app_settings_paths(self) -> List[Path]:
+        return list(map(_app_settings_path, self.locate_all_roblox_executables("RobloxPlayerLauncher.exe")))
 
     @property
     def is_installed(self) -> bool:
@@ -127,11 +149,27 @@ class WineprefixRoblox:
         except RobloxExecutableNotFound:
             return False
 
+    def _write_flags(self, product: RobloxProduct, settings_paths: Iterable[Path]):
+        flags = self._configuration.fast_flags.get(product.value, None)
+        if flags is None:
+            return
+
+        if len(flags) <= 0:
+            return
+
+        json_dump = json.dumps(flags)
+
+        for p in settings_paths:
+            LOG.info(f"Writing flags for {product} to: {p}")
+            p.parent.mkdir(parents=True, exist_ok=True)
+
+            with p.open("w+", encoding=variables.text_encoding()) as fp:
+                fp.write(json_dump)
+
     def run_roblox_studio(self, uri=""):
         launcher_path = self.roblox_studio_launcher_path
 
-        if launcher_path is None:
-            raise RuntimeError("Could not locate Roblox Studio launcher")
+        self._write_flags(RobloxProduct.studio, self.all_studio_app_settings_paths)
 
         run_args = [launcher_path]
 
@@ -143,8 +181,7 @@ class WineprefixRoblox:
     def run_roblox_player(self, uri):
         player_launcher_path = self.roblox_player_launcher_path
 
-        if player_launcher_path is None:
-            raise RuntimeError("Could not locate the Roblox Player launcher")
+        self._write_flags(RobloxProduct.player, self.all_player_app_settings_paths)
 
         # TODO: Reimplement FPS unlocker launch
 
