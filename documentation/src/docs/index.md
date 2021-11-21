@@ -40,8 +40,8 @@ Do you want to install Grapejuice from source? Follow the installation guide tha
      - [Linux Mint 20 "Ulyana"](Installing-from-source/Debian-10-and-similar)
      - [Linux Mint 19.3 "Tricia"](Installing-from-source/Ubuntu-18.04-and-similar)
      - [LMDE4 (Debbie)](Installing-from-source/Debian-10-and-similar)
-- [Arch Linux](Installing-from-source/Arch-linux-and-similar)
-- [Manjaro Linux](Installing-from-source/Arch-linux-and-similar)
+- [Arch Linux](Installing-from-source/Arch-Linux-and-similar)
+- [Manjaro Linux](Installing-from-source/Arch-Linux-and-similar)
 - [Solus](Installing-from-source/Solus)
 - [Fedora Workstation](Installing-from-source/Fedora-Workstation)
 - [OpenSUSE](Installing-from-source/OpenSUSE)
@@ -56,4 +56,4 @@ Do you want to install Grapejuice from source? Follow the installation guide tha
 - Endless OS
 
 ## 💥 Troubleshooting
-Are you having trouble running Grapejuice? Check out the [Troubleshooting page](/Troubleshooting). It offers solutions to common problems with running Roblox Studio using Grapejuice.
+Are you having trouble running Grapejuice? Check out the [Troubleshooting page](Troubleshooting). It offers solutions to common problems with running Roblox Studio using Grapejuice.
