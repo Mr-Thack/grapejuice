@@ -324,7 +324,6 @@
         <property name="title" translatable="yes">Fast Flag Editor</property>
         <property name="spacing">5</property>
         <property name="show-close-button">True</property>
-        <property name="decoration-layout">menu:minimize,maximize,close</property>
         <child>
           <object class="GtkBox" id="header_widgets">
             <property name="visible">True</property>
