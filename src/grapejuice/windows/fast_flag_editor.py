@@ -10,7 +10,6 @@ from grapejuice_common.gtk.gtk_util import set_style_class_conditionally
 from grapejuice_common.models.fast_flags import FastFlagList
 from grapejuice_common.models.paginator import Paginator
 from grapejuice_common.roblox_product import RobloxProduct
-from grapejuice_common.util.capture import Capture
 from grapejuice_common.util.event import Subscription
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
@@ -110,14 +109,9 @@ class FastFlagEditor(GtkBase):
             active_enum=self._selected_product
         )
 
-        editor = Capture(self)
-
-        def on_selected_product_changed(product):
-            editor.value._selected_product = product
-
         self._roblox_product_selected_subscription = Subscription(
             self._roblox_product_menu.enum_selected,
-            on_selected_product_changed
+            self._on_selected_product_changed
         )
 
         self._roblox_product_menu.show_all()
@@ -125,6 +119,9 @@ class FastFlagEditor(GtkBase):
         self.widgets.header_widgets.add(self._roblox_product_menu)
 
         self.widgets.fast_flag_editor_header.set_subtitle(f"Prefix: {self._target_prefix.configuration.display_name}")
+
+    def _on_selected_product_changed(self, product: RobloxProduct):
+        self._selected_product = product
 
     def _clear_displayed_rows(self):
         gtk_list = self.gtk_fast_flag_list
