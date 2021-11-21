@@ -6,12 +6,12 @@
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="stock">gtk-go-forward</property>
-    <property name="icon-name">gtk-go-forward-symbolic</property>
+    <property name="icon-name">go-next-symbolic</property>
   </object>
   <object class="GtkImage" id="icon_paginator_previous">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="icon-name">gtk-go-back-symbolic</property>
+    <property name="icon-name">go-previous-symbolic</property>
   </object>
   <object class="GtkBox" id="paginator">
     <property name="visible">True</property>
