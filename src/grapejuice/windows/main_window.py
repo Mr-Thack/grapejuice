@@ -34,7 +34,7 @@ def _open_fast_flags_for(prefix: Wineprefix):
     def show_fast_flag_window():
         from grapejuice.windows.fast_flag_editor import FastFlagEditor
 
-        fast_flag_editor = FastFlagEditor(prefix=prefix)
+        fast_flag_editor = FastFlagEditor(target_prefix=prefix)
         fast_flag_editor.window.show()
 
     def warning_callback(confirmed: bool):
