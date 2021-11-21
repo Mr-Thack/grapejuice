@@ -82,7 +82,7 @@ def func_first_time_setup(_args):
     from grapejuice_common.features.settings import current_settings
     from grapejuice_common.errors import WineprefixNotFoundUsingHints
     from grapejuice_common.wine.wineprefix import Wineprefix
-    from grapejuice_common.wine.recipes.roblox_player_recipe import RobloxPlayerRecipe
+    from grapejuice_common.recipes.roblox_player_recipe import RobloxPlayerRecipe
     from grapejuice_common.wine.wine_functions import \
         get_player_wineprefix, \
         get_studio_wineprefix, \

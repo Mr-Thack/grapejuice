@@ -43,7 +43,7 @@ class NoDaemonModeConnection(IDBusConnection):
 
     def extract_fast_flags(self):
         from grapejuice_common.wine.wine_functions import get_studio_wineprefix
-        from grapejuice_common.wine.recipes.roblox_studio_recipe import RobloxStudioRecipe
+        from grapejuice_common.recipes.roblox_studio_recipe import RobloxStudioRecipe
 
         prefix = get_studio_wineprefix()
         recipe = RobloxStudioRecipe()
