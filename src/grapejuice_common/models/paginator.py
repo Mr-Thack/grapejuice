@@ -1,14 +1,15 @@
 import math
+from typing import Optional, Callable
 
 from grapejuice_common.util.event import Event
 
 
 class Paginator:
-    def __init__(self, collection, page_size):
+    def __init__(self, collection, page_size, filter_function: Optional[Callable] = None):
         self._collection = collection
         self._page_size = page_size
         self._current_page = 0
-        self._filter_function = None
+        self._filter_function = filter_function
 
         self.paged = Event()
 
@@ -42,11 +43,11 @@ class Paginator:
         return math.ceil(len(self._filtered_collection) / self._page_size)
 
     @property
-    def filter_function(self):
+    def filter_function(self) -> Optional[Callable]:
         return self._filter_function
 
     @filter_function.setter
-    def filter_function(self, v):
+    def filter_function(self, v: callable):
         assert v is None or callable(v)
 
         self._filter_function = v

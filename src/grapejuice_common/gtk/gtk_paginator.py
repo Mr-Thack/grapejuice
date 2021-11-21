@@ -1,43 +1,70 @@
+from typing import Optional, List
+
 from grapejuice_common import paths
 from grapejuice_common.gtk.gtk_base import GtkBase
 from grapejuice_common.models.paginator import Paginator
+from grapejuice_common.util.event import Subscription
 
 
 class GtkPaginator(GtkBase):
-    def __init__(self, paginator: Paginator):
+    _model: Optional[Paginator] = None
+    _model_subscriptions: List[Subscription]
+
+    def __init__(self, paginator: Optional[Paginator] = None):
         super().__init__(
             glade_path=paths.grapejuice_components_glade(),
             root_widget_name="paginator"
         )
-        self._paginator = paginator
+
+        self._model_subscriptions = []
 
         def go_back(*_):
-            self._paginator.previous()
+            if self._model:
+                self._model.previous()
 
         def go_forward(*_):
-            self._paginator.next()
+            if self._model:
+                self._model.next()
 
-        def update_display():
-            self._label.set_text(self._label_text)
+        self.widgets.paginator_previous.connect("clicked", go_back)
+        self.widgets.paginator_next.connect("clicked", go_forward)
 
-        self._button_previous.connect("clicked", go_back)
-        self._button_next.connect("clicked", go_forward)
-        self._paginator.paged.add_listener(update_display)
-
-        update_display()
-
-    @property
-    def _label(self):
-        return self._builder.get_object("paginator_label")
+        self.model = paginator
 
     @property
     def _label_text(self):
-        return f"{self._paginator.current_page_index + 1}/{self._paginator.n_pages}"
+        if self._model:
+            return f"{self._model.current_page_index + 1}/{self._model.n_pages}"
+
+        return "No model"
+
+    def _on_model_paged(self):
+        self.widgets.paginator_label.set_text(self._label_text)
+
+    def _clear_model_subscriptions(self):
+        for sub in self._model_subscriptions:
+            sub.unsubscribe()
+
+        self._model_subscriptions = []
 
     @property
-    def _button_previous(self):
-        return self._builder.get_object("paginator_previous")
+    def model(self) -> Paginator:
+        return self._model
 
-    @property
-    def _button_next(self):
-        return self._builder.get_object("paginator_next")
+    @model.setter
+    def model(self, model: Paginator):
+        self._clear_model_subscriptions()
+        self._model = model
+
+        if self._model is not None:
+            self._model_subscriptions.append(
+                Subscription(
+                    self._model.paged,
+                    self._on_model_paged
+                )
+            )
+
+            self._on_model_paged()
+
+    def __del__(self):
+        self._clear_model_subscriptions()

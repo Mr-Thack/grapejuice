@@ -196,6 +196,12 @@ class UserSettings:
 
                     did_update = True
 
+                # Prune products with no fast flags set
+                if "fast_flags" in prefix_configuration:
+                    for product_name in list(prefix_configuration["fast_flags"].keys()):
+                        if len(prefix_configuration["fast_flags"][product_name]) <= 0:
+                            prefix_configuration["fast_flags"].pop(product_name)
+
         self._settings_object[k_wineprefixes] = prefixes
 
         if did_update:

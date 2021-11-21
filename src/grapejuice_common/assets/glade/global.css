@@ -1,3 +1,7 @@
 image.update-available-highlight {
     color: #f46703;
 }
+
+image.fast-flags-unsaved-changes-highlight {
+    color: #f46703;
+}

@@ -21,12 +21,14 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="halign">start</property>
+        <property name="hexpand">True</property>
         <child>
           <object class="GtkLabel" id="fflag_name_label">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="margin-end">10</property>
             <property name="hexpand">True</property>
             <property name="label" translatable="yes">Fast flag name</property>
           </object>
@@ -37,21 +39,93 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="icon_flag_changes">
+          <object class="GtkFixed">
+            <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-start">10</property>
-            <property name="icon-name">applications-development</property>
-            <property name="icon_size">1</property>
+            <property name="hexpand">True</property>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="valign">center</property>
+            <property name="vexpand">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkImage" id="icon_fflag_changed">
+                <property name="can-focus">False</property>
+                <property name="valign">center</property>
+                <property name="margin-start">5</property>
+                <property name="margin-end">5</property>
+                <property name="icon-name">applications-development</property>
+                <property name="icon_size">1</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkBox" id="fast_flag_widgets">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="valign">center</property>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFixed">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">0</property>
       </packing>
@@ -60,34 +134,11 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="halign">start</property>
+        <property name="halign">end</property>
         <property name="valign">center</property>
         <property name="hexpand">True</property>
         <property name="vexpand">False</property>
         <property name="spacing">10</property>
-        <child>
-          <object class="GtkBox" id="fast_flag_widgets">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="valign">center</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">False</property>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
         <child>
           <object class="GtkButton" id="fflag_reset_button">
             <property name="label" translatable="yes">Reset</property>
@@ -102,15 +153,12 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">1</property>
       </packing>
@@ -133,13 +181,38 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="text" translatable="yes">Reset all flags</property>
-            <signal name="clicked" handler="reset_all_flags" swapped="no"/>
+            <property name="text" translatable="yes">Reload flags from settings</property>
+            <signal name="clicked" handler="reload_flags" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="text" translatable="yes">Set all flags to Roblox' defaults</property>
+            <signal name="clicked" handler="reset_all_flags" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
@@ -153,7 +226,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>
@@ -253,35 +326,52 @@
         <property name="show-close-button">True</property>
         <property name="decoration-layout">menu:minimize,maximize,close</property>
         <child>
-          <object class="GtkButton" id="save_flags">
+          <object class="GtkBox" id="header_widgets">
             <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="tooltip-text" translatable="yes">Save flags</property>
-            <property name="image">save_button_icon</property>
-            <property name="always-show-image">True</property>
-            <signal name="clicked" handler="save_flags" swapped="no"/>
-          </object>
-        </child>
-        <child>
-          <object class="GtkMenuButton">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="focus-on-click">False</property>
-            <property name="receives-default">True</property>
-            <property name="tooltip-text" translatable="yes">Undo changes</property>
-            <property name="popover">reset_flags_menu</property>
+            <property name="can-focus">False</property>
+            <property name="spacing">5</property>
             <child>
-              <object class="GtkImage" id="reset_flags_menu_icon">
+              <object class="GtkButton" id="save_flags">
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="icon-name">object-rotate-left-symbolic</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Save flags</property>
+                <property name="image">save_button_icon</property>
+                <property name="always-show-image">True</property>
+                <signal name="clicked" handler="save_flags" swapped="no"/>
               </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkMenuButton">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="focus-on-click">False</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Undo changes</property>
+                <property name="popover">reset_flags_menu</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="icon-name">object-rotate-left-symbolic</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
-          <packing>
-            <property name="position">3</property>
-          </packing>
         </child>
       </object>
     </child>
