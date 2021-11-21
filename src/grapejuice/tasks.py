@@ -1,6 +1,8 @@
 import os
 import subprocess
 import sys
+import time
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from grapejuice import background
@@ -34,7 +36,23 @@ class ExtractFastFlags(background.BackgroundTask):
     def work(self) -> None:
         from grapejuice_common.ipc.dbus_client import dbus_connection
 
-        dbus_connection().extract_fast_flags()
+        should_extract_flags = True
+
+        # Only check fast flags every x minutes, checking more often is overkill
+        # This also reduces overall compute time used, yay!
+
+        if paths.fast_flag_cache_location().exists():
+            ten_minutes_ago = datetime.now() - timedelta(minutes=10)
+
+            stat = os.stat(paths.fast_flag_cache_location())
+            if stat.st_mtime > ten_minutes_ago.timestamp():
+                should_extract_flags = False
+
+        if should_extract_flags:
+            dbus_connection().extract_fast_flags()
+
+        else:
+            time.sleep(1)  # Make it feel like Grapejuice is doing something
 
 
 class OpenLogsDirectory(background.BackgroundTask):
