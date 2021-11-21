@@ -5,7 +5,7 @@ from gi.repository import Gtk
 
 from grapejuice_common import variables, paths
 from grapejuice_common.features.fast_flags import FastFlagList, FastFlag, FastFlagDictionary
-from grapejuice_common.gtk.gtk_base import GtkBase
+from grapejuice_common.gtk.gtk_base import GtkBase, handler
 from grapejuice_common.gtk.gtk_paginator import GtkPaginator
 from grapejuice_common.gtk.gtk_util import dialog
 from grapejuice_common.util.paginator import Paginator
@@ -270,6 +270,7 @@ class FastFlagEditor(GtkBase):
             if flag.is_a(bool):
                 ref.reset_button.hide()
 
+    @handler
     def save_flags(self, *_):
         self._input_values_to_flags()
         changed_flags = self._fast_flags.get_changed_flags()
@@ -291,11 +292,13 @@ class FastFlagEditor(GtkBase):
         else:
             self._paginator.filter_function = None
 
+    @handler
     def reset_all_flags(self, *_):
         self._fast_flags.reset_all_flags()
         self._flags_to_inputs()
         self._unsaved_changes = False
 
+    @handler
     def delete_user_flags(self, *_):
         self.reset_all_flags()
 
