@@ -68,7 +68,7 @@ class OpenLogsDirectory(background.BackgroundTask):
 
 class OpenConfigFile(background.BackgroundTask):
     def __init__(self, **kwargs):
-        super().__init__("Opening config file", **kwargs)
+        super().__init__("Opening configuration file", **kwargs)
 
     def work(self) -> None:
         subprocess.check_call(["xdg-open", str(paths.grapejuice_user_settings())])
@@ -96,7 +96,7 @@ class InstallRoblox(background.BackgroundTask):
     _prefix: Wineprefix
 
     def __init__(self, prefix: Wineprefix, **kwargs):
-        super().__init__("Installing Roblox", **kwargs)
+        super().__init__(f"Installing Roblox in {prefix.configuration.display_name}", **kwargs)
         self._prefix = prefix
 
     def work(self):
@@ -107,7 +107,7 @@ class ShowDriveC(background.BackgroundTask):
     _path: Path
 
     def __init__(self, prefix: Wineprefix, **kwargs):
-        super().__init__("Installing Roblox", **kwargs)
+        super().__init__(f"Opening Drive C in {prefix.configuration.display_name}", **kwargs)
         self._path = prefix.paths.drive_c
 
     def work(self):
