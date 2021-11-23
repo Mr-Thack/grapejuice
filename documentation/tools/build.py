@@ -380,7 +380,7 @@ def process_html_file(
     for href_tag in soup.find_all(href=True):
         update_targeting_attr(href_tag, "href")
 
-    for href_tag in soup.find_all(href=True):
+    for href_tag in soup.find_all("a", href=True):
         update_external_anchor_tag(href_tag)
 
     for src_tag in soup.find_all(src=True):
