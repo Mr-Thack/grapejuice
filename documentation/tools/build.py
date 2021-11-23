@@ -335,14 +335,18 @@ def process_html_file(
     def update_targeting_attr(attrs, attr):
         v = attrs.get(attr)
 
-        if v == "/" or v == path_prefix or v.startswith("http"):
+        if v == path_prefix or v.startswith("http"):
             return
 
-        target = find_href_target(target_file, v)
-        if isinstance(target, Path):
-            target = str(target.relative_to(build()))
+        if v == "/":
+            target = ""
 
-        attrs[attr] = path_prefix + target if path_prefix else "/" + target
+        else:
+            target = find_href_target(target_file, v)
+            if isinstance(target, Path):
+                target = str(target.relative_to(build()))
+
+        attrs[attr] = (path_prefix + "/" + target if path_prefix else "/" + target).rstrip("/")
 
     for href_tag in soup.find_all(href=True):
         update_targeting_attr(href_tag, "href")
