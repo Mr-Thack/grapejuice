@@ -10,6 +10,12 @@
         integrity="sha256-d3j6nPvgdSos3dIAmJSHebf76C5yAALgWwcHIom40Mo="
         crossorigin="anonymous"
     />
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/styles/atom-one-light.min.css"
+        integrity="sha256-WT7iR11CrJrnAaF3o1OCW9ZhtiSfoa1LrSMlQIJenoM="
+        crossorigin="anonymous"
+    >
 
     <link
         rel="icon"
@@ -38,16 +44,32 @@
 
 <main>{% block main %} {% endblock %}</main>
 
-<script>
-    document
-        .querySelectorAll(`a[href="${window.location.pathname}"]`)
-        .forEach((e) => (e.className += ' active'));
-</script>
-
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha256-9SEPo+fwJFpMUet/KACSwO+Z/dKMReF9q4zFhU/fT9M="
     crossorigin="anonymous"
 ></script>
+<script
+    src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js"
+    integrity="sha256-ACiuknPSzs3jBPs5Vmxs9LOfqJe75LfS6l7pRNjwsHk="
+    crossorigin="anonymous"
+></script>
+
+<script>
+    document
+        .querySelectorAll(`a[href="${window.location.pathname}"]`)
+        .forEach((e) => (e.className += ' active'));
+
+    document
+        .querySelectorAll('table')
+        .forEach((e) => (e.className += ' table table-hover'));
+
+    document
+        .querySelectorAll('thead')
+        .forEach((e) => (e.className += ' table-primary'));
+
+    hljs.highlightAll();
+</script>
+
 </body>
 </html>

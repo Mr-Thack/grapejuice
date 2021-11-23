@@ -1,6 +1,6 @@
 ## Installing Grapejuice dependencies
 Grapejuice requires a set of libraries to be installed and to be run. These dependencies can be installed by running the following command:
-```shell
+```sh
 sudo zypper install git python3-devel python3-pip cairo-devel gobject-introspection-devel make wine-staging xdg-utils
 
 ```

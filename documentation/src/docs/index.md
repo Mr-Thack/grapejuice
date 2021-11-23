@@ -41,20 +41,20 @@ Do you want to install Grapejuice from source? Follow the installation guide tha
 Guides are currently written for the following distributions:
 
 - Debian
-    - [Debian 10 (buster)](Installing-from-source/Debian-10-and-similar)
-    - [Debian 11 (bullseye)](Installing-from-source/Debian-10-and-similar)
+  - [Debian 10 (buster)](Installing-from-source/Debian-10-and-similar)
+  - [Debian 11 (bullseye)](Installing-from-source/Debian-10-and-similar)
 - Ubuntu
-    - [Ubuntu 21.04 (Hirsute Hippo)](Installing-from-source/Debian-10-and-similar)
-    - [Ubuntu 20.04 (Focal Fossa)](Installing-from-source/Debian-10-and-similar)
-    - [Ubuntu 19.10 (Eoan Ermine)](Installing-from-source/Debian-10-and-similar)
-    - [Ubuntu 18.04 (Bionic Beaver)](Installing-from-source/Ubuntu-18.04-and-similar)
+  - [Ubuntu 21.04 (Hirsute Hippo)](Installing-from-source/Debian-10-and-similar)
+  - [Ubuntu 20.04 (Focal Fossa)](Installing-from-source/Debian-10-and-similar)
+  - [Ubuntu 19.10 (Eoan Ermine)](Installing-from-source/Debian-10-and-similar)
+  - [Ubuntu 18.04 (Bionic Beaver)](Installing-from-source/Ubuntu-18.04-and-similar)
 - Zorin OS
-    - [Zorin OS 15.2](Installing-from-source/Ubuntu-18.04-and-similar)
-    - [Zorin OS 16](Installing-from-source/Debian-10-and-similar)
+  - [Zorin OS 15.2](Installing-from-source/Ubuntu-18.04-and-similar)
+  - [Zorin OS 16](Installing-from-source/Debian-10-and-similar)
 - Linux Mint
-    - [Linux Mint 20 "Ulyana"](Installing-from-source/Debian-10-and-similar)
-    - [Linux Mint 19.3 "Tricia"](Installing-from-source/Ubuntu-18.04-and-similar)
-    - [LMDE4 (Debbie)](Installing-from-source/Debian-10-and-similar)
+  - [Linux Mint 20 "Ulyana"](Installing-from-source/Debian-10-and-similar)
+  - [Linux Mint 19.3 "Tricia"](Installing-from-source/Ubuntu-18.04-and-similar)
+  - [LMDE4 (Debbie)](Installing-from-source/Debian-10-and-similar)
 - [Arch Linux](Installing-from-source/Arch-Linux-and-similar)
 - [Manjaro Linux](Installing-from-source/Arch-Linux-and-similar)
 - [Solus](Installing-from-source/Solus)

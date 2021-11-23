@@ -4,7 +4,7 @@
 
 ## Installing Grapejuice dependencies
 Grapejuice requires a set of libraries to be installed and to be run. These dependencies can be installed by running the following command:
-```shell
+```sh
 sudo eopkg it -c system.devel
 sudo eopkg install wine wine-32bit git python3-devel libcairo-devel
 ```

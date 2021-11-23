@@ -192,15 +192,25 @@ def process_markdown():
         line_target = front_matter_lines
         found_front_matter = False
 
-        for line in md_content.split("\n"):
-            line = line.replace("\r", "").strip()
+        all_md_lines = md_content.split("\n")
+        all_md_lines.append("")
+        line_zero = all_md_lines[0].strip()
 
-            if line.startswith("---"):
-                line_target = md_content_lines
-                found_front_matter = True
+        scan_for_front_matter = ":" in line_zero
 
-            else:
+        if scan_for_front_matter:
+            for line in all_md_lines:
+                line = line.replace("\r", "")
+                stripped_line = line.strip()
+
+                if not found_front_matter and stripped_line.startswith("---"):
+                    line_target = md_content_lines
+                    found_front_matter = True
+
                 line_target.append(line)
+
+        else:
+            md_content_lines = all_md_lines
 
         if found_front_matter:
             try:
@@ -231,7 +241,17 @@ $MD_HTML
         """
         )
 
-        rendered_markdown = markdown.markdown(md_content)
+        rendered_markdown = markdown.markdown(
+            md_content,
+            extensions=[
+                "markdown.extensions.tables",
+                "markdown.extensions.fenced_code",
+                "markdown.extensions.codehilite",
+                "markdown.extensions.smarty",
+                "mdx_truly_sane_lists"
+            ]
+        )
+
         html_content = html_template.safe_substitute(
             {"MD_HTML": re.sub(r"\s*\[summary\-snip\]\s*", "", rendered_markdown)}
         )

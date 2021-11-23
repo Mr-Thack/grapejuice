@@ -28,7 +28,7 @@ Include = /etc/pacman.d/mirrorlist
 
 Before installing anything, you should always synchronize the package database in order to prevent strange package-not-found errors.
 
-```shell
+```sh
 sudo pacman -Syu
 ```
 
@@ -36,7 +36,7 @@ sudo pacman -Syu
 
 Installing Wine on Arch Linux is fairly straight forward once the `multilib` repository is enabled:
 
-```shell
+```sh
 sudo pacman -S wine
 ```
 
@@ -44,7 +44,7 @@ sudo pacman -S wine
 
 Some additional Wine dependencies are required for Roblox to work properly. These have to be installed explicitly because the Arch package marks these dependencies as optional. You can install them using the following command:
 
-```shell
+```sh
 sudo pacman -S --asdep lib32-gnutls lib32-openssl lib32-pipewire lib32-libpulse lib32-alsa-lib lib32-alsa-plugins
 ```
 
@@ -52,7 +52,7 @@ sudo pacman -S --asdep lib32-gnutls lib32-openssl lib32-pipewire lib32-libpulse 
 
 Grapejuice requires a set of libraries to be installed and to be run. These dependencies can be installed by running the following command:
 
-```shell
+```sh
 sudo pacman -S git python-pip cairo gtk3 gobject-introspection desktop-file-utils xdg-utils xdg-user-dirs gtk-update-icon-cache shared-mime-info gobject-introspection
 ```
 
@@ -60,13 +60,13 @@ sudo pacman -S git python-pip cairo gtk3 gobject-introspection desktop-file-util
 
 First, you have to acquire a copy of the source code. This is easily done by cloning the git repository.
 
-```shell
+```sh
 git clone https://gitlab.com/brinkervii/grapejuice.git /tmp/grapejuice
 ```
 
 After the git clone command is finished, Grapejuice can be installed.
 
-```shell
+```sh
 cd /tmp/grapejuice
 ./install.py
 ```
@@ -79,7 +79,7 @@ Running Grapejuice for the first time requires some additional steps. Please fol
 
 The default installation of Wine on Arch Linux is quite minimal. This might sometimes lead to Wine applications not working due to missing libraries. The killer (but kind of bloated) solution to this is to just install all optional dependencies of Wine. It is everything but pretty, but hey, it works.
 
-```shell
+```sh
 sudo pacman -S expac
 sudo pacman -S $(expac '%n %o' | grep ^wine)
 ```
