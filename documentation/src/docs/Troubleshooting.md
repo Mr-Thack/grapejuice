@@ -1,54 +1,23 @@
-This page describes some of the most common issues with Grapejuice and how to solve them. Do you have an issue that is
-not described here? Please let us know!
+title: Troubleshooting
+---
+This page describes some of the most common issues with Grapejuice and how to solve them. **Make sure you're using the
+latest version of Grapejuice and Wine 6.11 or above, or Wine Staging 6.16 or above!** Do you have an issue that is not
+described here? Please let us know!
+
+**Table of Contents**
 
 [TOC]
 
-## Nothing is rendering in DirectX 11 mode!
+---
 
-Due to a regression in Wine 6.1, shaders in the DirectX 11 graphics mode do not compile correctly. The end result of
-this is that nothing will be rendered in the 3D viewport, and may cause some graphical artifacting to appear.
+## An error occurred trying to launch the experience. Please try again later.
 
-### Solution
+If you're using Firefox, go to about:config and set `network.http.referer.XOriginPolicy`
+and `network.http.sendRefererHeader` to `1`.
 
-Downgrade Wine to version 6.0 until the issue has been resolved by the Wine development team. You should refer to the
-documentation of your Linux distribution to see how you should do this.
+## The server name or address could not be resolved
 
-## Roblox Studio crashes when attempting to log in / error displaying captcha
-
-This is an issue with Roblox Studio that cropped up late August of 2018. Roblox added a funcaptcha feature to the login
-screen. This however, uses the Wine web browser, which is one of the most unstable components of Wine. So whenever you
-attempt to log in through studio now, it crashes
-
-### Solution
-
-You can authenticate Roblox Studio by editing any game on the Roblox website whilst being logged in. After this has been
-done, Studio will be authenticated and ready for use. Don't know which game to edit or you don't have any games on
-Roblox? Try editing the Roblox crossroads game, click the three dots in the top right of the page and select edit.
-
-Link to
-crossroads: [https://www.roblox.com/games/1818/Classic-Crossroads](https://www.roblox.com/games/1818/Classic-Crossroads)
-
-## Roblox Studio could not authenticate user
-
-When attempting to log in, Roblox Studio may report the error  "Could not authenticate user. Request timed out".
-
-### Solution
-
-This is due to a [regression in Wine 5.0-rc2](https://bugs.winehq.org/show_bug.cgi?id=48357). If you have a version of
-wine that is in the range of `wine-5.0-rc2` through `wine-5.0-rc4`, you should downgrade your Wine installation
-to `wine-5.0-rc1` or lower.
-
-## Lighting has strange shadows
-
-Roblox Studio prefers to use DirectX rendering methods to render to the screen in its default configuration. Certain
-combinations of DirectX versions and graphics cards may produce artefacts.
-
-### Solution
-
-Click the GraphicsMode OpenGL button in Grapejuice, it is listed under the Maintenance tab.
-
-**Warning**: Using the OpenGL graphics mode makes every plugin gui in studio flicker, rendering them unusable. This
-includes some of the newer settings dialogs.
+Start the `nscd` service from `glibc`.
 
 ## Grapejuice does not launch
 
@@ -58,53 +27,135 @@ running Grapejuice in a terminal session.
 If you've installed Grapejuice from the source repository using the `install.py` script. You can run Grapejuice by
 executing
 
-```sh
+```
 ~/.local/bin/grapejuice gui
 ```
 
-## Missing shared object libffi.so.6
+## Missing shared object libffi.so.[number]
 
 Your system's `libffi` package may have upgraded, and the version of the .so file has increased. Just reinstalling
 Grapejuice to fix the issue will not work in this case. Pip caches packages locally so they don't have to be
 re-downloaded/rebuilt with new installations of a package, but this causes invalid links to shared objects to be cached
-as well
+as well.
 
 ### Solution
 
 **1.** Remove the pip package cache
 
-```sh
+```
 rm -r ~/.cache/pip
 ```
 
 **2.** Reinstall Grapejuice
 
-```sh
+```
 cd $GRAPEJUICE_SOURCES_ROOT
 ./install.py
 ```
 
+## Black box follows the cursor in Studio
+
+This is caused by [a regression in Wine](https://source.winehq.org/git/wine.git/commit/db2b266). The only known
+workaround is to revert this commit and compile Wine yourself.
+
+## Built-in screen recorder doesn't work
+
+You should consider using another screen recorder.
+
+If you need to use the built-in screen recorder, follow the below steps:
+
+1. Open Grapejuice and open Winetricks
+2. Select the default wineprefix
+3. Click "Install a Windows DLL or component"
+4. Install `qasf` and `wmp11`.
+
+## Cursor is not unlocked after locking the cursor
+
+This issue most often occurs when pressing right click to adjust the camera. It requires a custom patch in Wine to
+solve.
+
+**Warning:** You should decide if you trust the authors of the below resources before using them.
+
+- You can install a pre-compiled patched Wine version by running [this Python script](https://pastebin.com/raw/5SeVb005)
+  . This requires Python 3.8 or above.
+- Alternatively, you can compile Wine yourself using [this guide](https://github.com/e666666/robloxWineBuildGuide).
+
+## Player freezes when visiting an experience
+
+This is caused by [a regression in Wine](https://source.winehq.org/git/wine.git/commit/7ef35b3).
+
+To work around this, open Grapejuice's FFlag editor and disable the FFlag `DFFlagClientVisualEffectRemote`.
+
+## Failed to deploy
+
+This error occurs when launching Studio from the website before Studio is installed.
+
+To get around this, open Studio through Grapejuice and **do not** log in if Grapejuice asks you to.
+
+After Studio is installed, you should be able to launch Studio from the website.
+
+## Grapejuice's FFlag editor doesn't open
+
+This is because Grapejuice attempts to launch `RobloxStudioBeta.exe` rather than `RobloxStudioLauncherBeta.exe` to get
+the default FFlags. However, `RobloxStudioBeta.exe` doesn't exist if Studio is not installed.
+
+As a workaround, open Studio first to install it. After Studio is installed, you should be able to use the FFlag editor
+normally.
+
+## Bad performance/input lag
+
+### Choosing the renderer
+
+Check if your GPU supports Vulkan. [This unofficial website](https://vulkan.gpuinfo.org/listdevices.php) can help you
+check for Vulkan support on your GPU. If Vulkan is supported, using Vulkan is recommended, and you should ensure
+appropriate Vulkan 64-bit and 32-bit drivers are installed.
+
+Are you using Arch Linux? Please refer to the instructions on the Arch
+Wiki: [https://wiki.archlinux.org/title/Vulkan#Installation](https://wiki.archlinux.org/title/Vulkan#Installation)
+
+If you want to enable Vulkan support on Debian based distributions you need one or more of the packages listed in the
+table below. Depending on which GPU you have. Keep in mind though, that the base vulkan packages are always required! To
+install the drivers for you GPU, just copy the terminal command from the table and paste it into your terminal.
+
+| Package Type                    | Terminal Command                                                |
+|---------------------------------|-----------------------------------------------------------------|
+| Base vulkan packages (required) | `sudo apt install libvulkan1 libvulkan1:i386`                   |
+| MESA (amdgpu/intel)             | `sudo apt install mesa-vulkan-drivers mesa-vulkan-drivers:i386` |
+| NVidia                          | `sudo apt install nvidia-driver nvidia-driver:i386`             |
+
+If Vulkan is not supported, OpenGL is recommended.
+
+### Changing the renderer
+
+Keep in mind that the speed of each renderer varies by hardware.
+
+:warning: Make sure only one renderer is enabled.
+
+1. Open the Grapejuice FFlag editor through the Grapejuice UI.
+2. The FFlag to change to use each graphics API is listed below.
+3. Save the FFlags.
+
+| Graphics API | FFlag                            |
+|--------------|----------------------------------|
+| Vulkan       | `FFlagDebugGraphicsPreferVulkan` |
+| Direct3D     | `FFlagDebugGraphicsPreferD3D11`  |
+| OpenGL       | `FFlagDebugGraphicsPreferOpenGL` |
+
+## Known issues with no known workarounds
+
+- Window decorations (bar on the top of windows) can disappear after entering and exiting fullscreen.
+- Screenshot key in the player doesn't work, but the screenshot button does.
+- Player process occasionally stays after closing the window.
+- Non-QWERTY keyboard layouts can cause problems with controls.
+- Voice chat doesn't work.
+- The warning "Unable to read VR Path Registry" usually appears. However, this doesn't seem to affect anything.
+
 ## Automated Troubleshooter
 
-Grapejuice has a distribution independent troubleshooter that can detect some issues with your system. You can run it
-through various means:
+Grapejuice has a distribution
+independent [troubleshooter](https://gitlab.com/brinkervii/grapejuice/-/raw/master/troubleshooter.py) that can detect
+some issues with your system. You can run it with:
 
-**1.** Run it directly using curl
-
-```sh
+```
 python3 <(curl -L https://gitlab.com/brinkervii/grapejuice/-/raw/master/troubleshooter.py)
-```
-
-**2.** Run it directly using wget
-
-```sh
-pushd /tmp; python3 <(wget https://gitlab.com/brinkervii/grapejuice/-/raw/master/troubleshooter.py -O-); popd
-```
-
-**3.** Clone the repository and run it
-
-```sh
-GRAPEJUICE=$HOME/Downloads/grapejuice
-git clone https://gitlab.com/brinkervii/grapejuice "$GRAPEJUICE"
-python3 "$GRAPEJUICE/troubleshooter.py"
 ```
