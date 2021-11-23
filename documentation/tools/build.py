@@ -1,10 +1,14 @@
+import hashlib
+import json
 import os
 import re
 import shutil
 from datetime import date, datetime
 from functools import lru_cache as cache
+from json.decoder import JSONDecodeError
 from pathlib import Path, PurePath
 from string import Template
+from sys import maxsize
 from typing import List, Union
 
 import markdown
@@ -12,6 +16,8 @@ import sass
 import yaml
 from bs4 import BeautifulSoup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+
+HERE = Path(__file__).resolve().parent
 
 path_prefix = os.environ.get("BLOG_PATH_PREFIX", "")
 
@@ -33,6 +39,36 @@ scss_ptn = re.compile(r"href=\"(.+?\.scss)\s*?\"")
 @cache()
 def environment():
     return os.environ.get("BLOG_ENV", Environments.dev).lower()
+
+
+def state_path():
+    return HERE / ".state.json"
+
+
+def load_state():
+    if not state_path().exists():
+        return dict()
+
+    try:
+        with state_path().open("r") as fp:
+            return json.load(fp)
+
+    except json.JSONDecodeError:
+        return dict()
+
+
+def save_state(state):
+    with state_path().open("w+") as fp:
+        json.dump(state, fp, indent=2)
+
+
+def hash_file(file: Path):
+    h = hashlib.blake2s()
+
+    with file.open("rb") as fp:
+        h.update(fp.read())
+
+    return h.hexdigest().lower()
 
 
 def sass_output_style():
@@ -76,8 +112,20 @@ def clean():
     shutil.rmtree(build(), ignore_errors=True)
 
 
+def get_build_files():
+    build_files = list(filter(Path.is_file, build().rglob("*")))
+    return dict(zip(map(str, build_files), map(hash_file, build_files)))
+
+
 def copy():
-    shutil.copytree(src(), build())
+    state = load_state()
+
+    shutil.copytree(
+        src(), build(), ignore=lambda *_: list(state.get("static_files", dict()).keys())
+    )
+
+    state["build_files"] = get_build_files()
+    save_state(state)
 
 
 def rewrite_extension(p: Path, extension: str) -> Path:
@@ -279,6 +327,9 @@ def process_html_file(
                 f"SASS compiler error:\n{str(e)}\n{str(style_file.relative_to(build()))}\n----------"
             )
 
+        except FileNotFoundError as e:
+            print(f"File not found: {e}\n----------")
+
     soup = BeautifulSoup(content, "html5lib")
 
     if path_prefix:
@@ -367,6 +418,17 @@ def remove_empty_directories():
             os.rmdir(d)
 
 
+def update_static_files_in_state():
+    state = load_state()
+
+    old_build_files = list(map(tuple, state.get("build_files", dict()).items()))
+    build_files = list(map(tuple, get_build_files().items()))
+
+    state["static_files"] = dict(filter(lambda x: x in old_build_files, build_files))
+
+    save_state(state)
+
+
 def do_build():
     global jinja_variables
 
@@ -384,6 +446,8 @@ def do_build():
     if environment() == Environments.dist:
         strip_partials()
         remove_empty_directories()
+
+    update_static_files_in_state()
 
     print("Done!")
 
