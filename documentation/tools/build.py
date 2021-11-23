@@ -362,7 +362,8 @@ def process_html_file(
             return
 
         if v == "/":
-            target = ""
+            attrs[attr] = path_prefix if path_prefix else v
+            return
 
         else:
             target = find_href_target(target_file, v)
