@@ -1,6 +1,8 @@
 This page describes some of the most common issues with Grapejuice and how to solve them. Do you have an issue that is
 not described here? Please let us know!
 
+[TOC]
+
 ## Nothing is rendering in DirectX 11 mode!
 
 Due to a regression in Wine 6.1, shaders in the DirectX 11 graphics mode do not compile correctly. The end result of

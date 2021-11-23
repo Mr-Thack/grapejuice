@@ -250,6 +250,7 @@ $MD_HTML
                 "markdown.extensions.fenced_code",
                 "markdown.extensions.codehilite",
                 "markdown.extensions.smarty",
+                "markdown.extensions.toc",
                 "mdx_truly_sane_lists"
             ]
         )
@@ -357,7 +358,7 @@ def process_html_file(
     def update_targeting_attr(attrs, attr):
         v = attrs.get(attr)
 
-        if v == path_prefix or v.startswith("http"):
+        if v == path_prefix or v.startswith("http") or v.startswith("#"):
             return
 
         if v == "/":
