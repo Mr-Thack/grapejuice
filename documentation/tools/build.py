@@ -11,6 +11,7 @@ from string import Template
 from sys import maxsize
 from typing import List, Union
 
+import emoji
 import markdown
 import sass
 import yaml
@@ -231,6 +232,7 @@ def process_markdown():
             front_matter_data = dict()
 
         md_content = "\n".join(md_content_lines)
+        md_content = emoji.emojize(md_content, variant="emoji_type", use_aliases=True)
 
         html_template = Template(
             """{% extends "layout/_article.html" %}
@@ -380,6 +382,7 @@ def process_html_file(
     with target_file.open("w+") as fp:
         fp.write(content)
 
+
 def find_href_target(from_file: Path, href: str):
     href_split = list(filter(None, href.split("/")))
 
@@ -404,6 +407,7 @@ def find_href_target(from_file: Path, href: str):
     assert path.exists(), f"Could not find href target for {href} -> {path} in {from_file}"
 
     return path
+
 
 def process_html_file_multi_out(jenv: Environment, source_file: Path, variable: str):
     filename_template = Template(source_file.name)
