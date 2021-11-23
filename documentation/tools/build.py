@@ -371,8 +371,17 @@ def process_html_file(
 
         attrs[attr] = (path_prefix + "/" + target if path_prefix else "/" + target).rstrip("/")
 
+    def update_external_anchor_tag(tag):
+        v = tag.attrs.get("href", "")
+
+        if v.startswith("http://") or v.startswith("https://"):
+            tag.attrs["target"] = tag.attrs.get("target", "_blank")
+
     for href_tag in soup.find_all(href=True):
         update_targeting_attr(href_tag, "href")
+
+    for href_tag in soup.find_all(href=True):
+        update_external_anchor_tag(href_tag)
 
     for src_tag in soup.find_all(src=True):
         update_targeting_attr(src_tag, "src")
