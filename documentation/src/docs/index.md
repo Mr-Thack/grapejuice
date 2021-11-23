@@ -10,17 +10,10 @@ Welcome to the Grapejuice wiki. This is the repository where all the documentati
 - Make sure to install Wine!
 - Grapejuice is a **management application**! Packages will in most cases not automatically install Wine for you, since
   package management in some distributions can be extremely odd and limit your choices in custom builds.
-- You need to have Wine 6.11 or greater installed in order for Roblox Player to work!
+- You need to have Wine 6.11 or above, or Wine Staging 6.16 or above for the Roblox Player to work!
 
-Distributions mark a lot of Wine's dependencies as 'optional', in reality most of them aren't. If you're having issues
-with Roblox not functioning properly, make sure you have all the required 'optional' dependencies installed. Here's an (
-older but still relevant) blog post discussing the
-issue: https://www.gloriouseggroll.tv/how-to-get-out-of-wine-dependency-hell/
-
-### 🐞 Known Issues
-
-Roblox Player doesn't work perfectly yet. There are some bugs like the mouse getting stuck. Most known issues are
-documented on the 'Roblox on Linux' fandom page: https://roblox.fandom.com/wiki/Roblox_on_Linux
+Distributions mark a lot of Wine's dependencies as 'optional'. In reality, most of them aren't. If you're having issues
+with Roblox not functioning properly, make sure you have all the required 'optional' dependencies installed.
 
 ## 🚀 Installing Grapejuice
 
@@ -72,5 +65,4 @@ Guides are currently written for the following distributions:
 
 ## 💥 Troubleshooting
 
-Are you having trouble running Grapejuice? Check out the [Troubleshooting page](Troubleshooting). It offers solutions to
-common problems with running Roblox Studio using Grapejuice.
+The [troubleshooting page](Troubleshooting) lists known issues with workarounds
