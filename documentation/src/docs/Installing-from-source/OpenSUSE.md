@@ -18,4 +18,4 @@ cd grapejuice
 ```
 
 ## 🚀 Running Grapejuice for the first time
-Running Grapejuice for the first time requires some additional steps. Please follow the [guide on running Grapejuice for the first time](/Guides/First-time-setup)
+Running Grapejuice for the first time requires some additional steps. Please follow the [guide on running Grapejuice for the first time](../Guides/First-time-setup)

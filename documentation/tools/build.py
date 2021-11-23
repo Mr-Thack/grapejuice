@@ -256,7 +256,7 @@ $MD_HTML
         article_info = {
             "href": href,
             "front_matter": front_matter_data,
-            "title": front_matter_data.get("title", PurePath(href).name),
+            "title": front_matter_data.get("title", PurePath(href).name.rstrip(".html")),
             "subtitle": front_matter_data.get("subtitle", ""),
             "summary": summarizer.content,
             "date": article_date,
@@ -332,18 +332,23 @@ def process_html_file(
 
     soup = BeautifulSoup(content, "html5lib")
 
-    if path_prefix:
+    def update_targeting_attr(attrs, attr):
+        v = attrs.get(attr)
 
-        def prefix_attr(attrs, attr):
-            v = attrs.get(attr)
-            if v and v.startswith("/"):
-                attrs[attr] = path_prefix + v.rstrip("/")
+        if v == "/" or v == path_prefix or v.startswith("http"):
+            return
 
-        for href_tag in soup.find_all(href=True):
-            prefix_attr(href_tag, "href")
+        target = find_href_target(target_file, v)
+        if isinstance(target, Path):
+            target = str(target.relative_to(build()))
 
-        for src_tag in soup.find_all(src=True):
-            prefix_attr(src_tag, "src")
+        attrs[attr] = path_prefix + target if path_prefix else "/" + target
+
+    for href_tag in soup.find_all(href=True):
+        update_targeting_attr(href_tag, "href")
+
+    for src_tag in soup.find_all(src=True):
+        update_targeting_attr(src_tag, "src")
 
     content = soup.prettify()
 
@@ -351,6 +356,30 @@ def process_html_file(
     with target_file.open("w+") as fp:
         fp.write(content)
 
+def find_href_target(from_file: Path, href: str):
+    href_split = list(filter(None, href.split("/")))
+
+    if len(href_split) <= 0:
+        return href
+
+    if href_split[0] == "https:" or href_split[0] == "http:":
+        return href
+
+    href_starts_at_root = href[0] == "/"
+
+    if href_starts_at_root:
+        path = Path(build(), *href_split)
+
+    else:
+        path = Path(from_file.parent, *href_split)
+
+    path = path.resolve()
+    if not path.exists() and not path.name.endswith(".html"):
+        path = path.parent / (path.name + ".html")
+
+    assert path.exists(), f"Could not find href target for {href} -> {path} in {from_file}"
+
+    return path
 
 def process_html_file_multi_out(jenv: Environment, source_file: Path, variable: str):
     filename_template = Template(source_file.name)

@@ -14,13 +14,13 @@ After you've installed Grapejuice, a shortcut icon should be present in the appl
 💻 If you do not have an application launcher installed, you can add `$HOME/.local/bin` to your `$PATH` and launch Grapejuice by running `grapejuice gui` in a terminal session.
 
 ## Install Roblox
-![image](uploads/87958f89935918eb6faf66b1ac29e307/image.png)
+![image](../uploads/87958f89935918eb6faf66b1ac29e307/image.png)
 
 Installing Roblox is a simple two-step process:
 1. Click the tab labeled `Maintenance`
 2. Click the button that reads `Install Roblox`
 
-![image](uploads/e187eb7009dfe8a41d00327b9eb03c42/image.png)
+![image](../uploads/e187eb7009dfe8a41d00327b9eb03c42/image.png)
 
 Having installed everything correctly, Roblox should now proceed to install.
 
@@ -28,4 +28,4 @@ Having installed everything correctly, Roblox should now proceed to install.
 For the first time, Roblox Studio should be ran by clicking the button in the `Launcher` tab of Grapejuice. Doing this should cause Roblox Studio to be installed and start.
 
 ## Troubleshooting
-Are you having issues running Roblox Studio? Please visit the [Troubleshooting page](/Troubleshooting) for more information.
+Are you having issues running Roblox Studio? Please visit the [Troubleshooting page](../Troubleshooting) for more information.

@@ -15,7 +15,7 @@
 ## Enabling 32-bit support
 Even though Roblox Studio runs in 64-bit mode, 32-bit libraries are still required for some parts of the program. This is due to backwards compatibility in the Windows operating system. Run the following command in a terminal:
 ```sh
-sudo dpkg --add-architecture i386 
+sudo dpkg --add-architecture i386
 ```
 
 ## Add the Wine HQ repository
@@ -91,4 +91,4 @@ python3.7 ./install.py
 ```
 
 ## 🚀 Running Grapejuice for the first time
-Running Grapejuice for the first time requires some additional steps. Please follow the [guide on running Grapejuice for the first time](/Guides/First-time-setup)
+Running Grapejuice for the first time requires some additional steps. Please follow the [guide on running Grapejuice for the first time](../Guides/First-time-setup)
