@@ -1,3 +1,5 @@
+title: Install Grapejuice on Ubuntu 18.04 and similar distributions
+---
 ## Preamble
 
 ❓ If you didn't click on the guide for Ubuntu 18.04, but ended up on this page regardless, please do not panic! Ubuntu
@@ -27,10 +29,12 @@ is due to backwards compatibility in the Windows operating system. Run the follo
 sudo dpkg --add-architecture i386
 ```
 
-## Add the Wine HQ repository
+## Installing Wine
 
-Ubuntu 18.04 and similar distributions require additional repositories to run newer versions of Wine. This is a two-step
-process.
+It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
+for why and how to get the patched version of Wine.
+
+If you want to use vanilla Wine, follow the instructions below.
 
 **01:** Add the WineHQ repository key
 
@@ -119,8 +123,3 @@ After the git clone command is finished, Grapejuice can be installed.
 cd grapejuice
 python3.7 ./install.py
 ```
-
-## 🚀 Running Grapejuice for the first time
-
-Running Grapejuice for the first time requires some additional steps. Please follow
-the [guide on running Grapejuice for the first time](../Guides/First-time-setup)

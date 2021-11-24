@@ -1,3 +1,5 @@
+title: Install Grapejuice on Fedora
+---
 ## Preamble
 
 ⚠ These instructions have only been tested on Fedora Workstation 32!
@@ -7,13 +9,24 @@
 🖥 If you are using the Wayland display server, you might not get any graphical output from Roblox. In that case you
 should try running Roblox Studio using an Xorg session.
 
+## Installing Wine
+
+It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
+for why and how to get the patched version of Wine.
+
+If you want to use vanilla Wine, run the following command:
+
+```sh
+sudo dnf install wine
+```
+
 ## Installing Grapejuice dependencies
 
 Grapejuice requires a set of libraries to be installed and to be run. These dependencies can be installed by running the
 following command:
 
 ```sh
-sudo dnf install git python3-devel python3-pip cairo-devel gobject-introspection-devel cairo-gobject-devel dbus-glib-devel make wine xdg-utils
+sudo dnf install git python3-devel python3-pip cairo-devel gobject-introspection-devel cairo-gobject-devel dbus-glib-devel make xdg-utils
 ```
 
 ## Installing Grapejuice
@@ -30,8 +43,3 @@ After the git clone command is finished, Grapejuice can be installed.
 cd grapejuice
 ./install.py
 ```
-
-## 🚀 Running Grapejuice for the first time
-
-Running Grapejuice for the first time requires some additional steps. Please follow
-the [guide on running Grapejuice for the first time](../Guides/First-time-setup)

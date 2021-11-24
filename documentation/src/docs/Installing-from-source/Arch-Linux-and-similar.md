@@ -1,3 +1,5 @@
+title: Install Grapejuice on Arch Linux and similar distributions
+---
 ## Preamble
 
 :question: If you didn't click on the guide for Arch Linux, but ended up on this page regardless, please do not panic!
@@ -41,29 +43,32 @@ sudo pacman -Syu
 
 ## Installing Wine
 
-Installing Wine on Arch Linux is fairly straight forward once the `multilib` repository is enabled:
+It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
+for why and how to get the patched version of Wine.
+
+If you want to use vanilla Wine, run the following command:
 
 ```sh
 sudo pacman -S wine
 ```
 
-## Install additional wine dependencies
+## Installing dependencies for audio
 
-Some additional Wine dependencies are required for Roblox to work properly. These have to be installed explicitly
-because the Arch package marks these dependencies as optional. You can install them using the following command:
+In order for sound to work, you need to install some additional packages for the sound system you're using.
 
-```sh
-sudo pacman -S --asdep lib32-gnutls lib32-openssl lib32-pipewire lib32-libpulse lib32-alsa-lib lib32-alsa-plugins
-```
+If you're not sure what sound system you're using, run `pacman -Q pulseaudio`. If the PulseAudio package is
+found, PulseAudio is being used.
 
-## Installing Grapejuice dependencies
+Otherwise, run `pacman -Q pipewire`. If the Pipewire package is found, Pipewire is being used.
 
-Grapejuice requires a set of libraries to be installed and to be run. These dependencies can be installed by running the
-following command:
+If neither PulseAudio or PipeWire is installed, install one of them first.
 
-```sh
-sudo pacman -S git python-pip cairo gtk3 gobject-introspection desktop-file-utils xdg-utils xdg-user-dirs gtk-update-icon-cache shared-mime-info gobject-introspection
-```
+Use the below table to find what packages to install.
+
+| Sound system | Required Package |
+|--------------|------------------|
+| PulseAudio   | `lib32-libpulse` |
+| PipeWire     | `pipewire-pulse` |
 
 ## Installing Grapejuice
 
@@ -78,20 +83,4 @@ After the git clone command is finished, Grapejuice can be installed.
 ```sh
 cd /tmp/grapejuice
 ./install.py
-```
-
-## :rocket: Running Grapejuice for the first time
-
-Running Grapejuice for the first time requires some additional steps. Please follow
-the [guide on running Grapejuice for the first time](../Guides/First-time-setup)
-
-## :star: Bonus Wine Tip :star:
-
-The default installation of Wine on Arch Linux is quite minimal. This might sometimes lead to Wine applications not
-working due to missing libraries. The killer (but kind of bloated) solution to this is to just install all optional
-dependencies of Wine. It is everything but pretty, but hey, it works.
-
-```sh
-sudo pacman -S expac
-sudo pacman -S $(expac '%n %o' | grep ^wine)
 ```
