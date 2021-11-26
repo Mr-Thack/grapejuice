@@ -1,6 +1,5 @@
 from enum import Enum
 from pathlib import Path
-from typing import Optional
 
 
 class ChassisType(Enum):
@@ -53,8 +52,7 @@ class ChassisType(Enum):
 
         try:
             chassis_type_int = int(raw_chassis_type)
+            return cls(chassis_type_int)
 
         except ValueError:
             return cls.Unknown
-
-        return cls(chassis_type_int)
