@@ -3,9 +3,8 @@ import json
 import os
 import re
 import shutil
-from datetime import date, datetime
+from datetime import datetime
 from functools import lru_cache as cache
-from json.decoder import JSONDecodeError
 from pathlib import Path, PurePath
 from string import Template
 from sys import maxsize
@@ -29,7 +28,8 @@ class Environments:
 
 
 def default_jinja_variables():
-    return {"articles": dict(), "articles_by_tag": dict()}
+    now = datetime.utcnow()
+    return {"articles": dict(), "articles_by_tag": dict(), "current_year": now.year}
 
 
 jinja_variables = default_jinja_variables()
@@ -251,8 +251,8 @@ $MD_HTML
                 "markdown.extensions.codehilite",
                 "markdown.extensions.smarty",
                 "markdown.extensions.toc",
-                "mdx_truly_sane_lists"
-            ]
+                "mdx_truly_sane_lists",
+            ],
         )
 
         html_content = html_template.safe_substitute(
@@ -279,7 +279,9 @@ $MD_HTML
         article_info = {
             "href": href,
             "front_matter": front_matter_data,
-            "title": front_matter_data.get("title", PurePath(href).name.rstrip(".html")),
+            "title": front_matter_data.get(
+                "title", PurePath(href).name.rstrip(".html")
+            ),
             "subtitle": front_matter_data.get("subtitle", ""),
             "summary": summarizer.content,
             "date": article_date,
@@ -370,7 +372,9 @@ def process_html_file(
             if isinstance(target, Path):
                 target = str(target.relative_to(build()))
 
-        attrs[attr] = (path_prefix + "/" + target if path_prefix else "/" + target).rstrip("/")
+        attrs[attr] = (
+            path_prefix + "/" + target if path_prefix else "/" + target
+        ).rstrip("/")
 
     def update_external_anchor_tag(tag):
         v = tag.attrs.get("href", "")
@@ -415,7 +419,9 @@ def find_href_target(from_file: Path, href: str):
     if not path.exists() and not path.name.endswith(".html"):
         path = path.parent / (path.name + ".html")
 
-    assert path.exists(), f"Could not find href target for {href} -> {path} in {from_file}"
+    assert (
+        path.exists()
+    ), f"Could not find href target for {href} -> {path} in {from_file}"
 
     return path
 
