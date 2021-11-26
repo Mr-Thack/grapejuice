@@ -90,7 +90,7 @@ sudo apt install -y software-properties-common
 sudo add-apt-repository ppa:deadsnakes/ppa
 ```
 
-## Synchronizing the package repositories
+## Synchronise the package repositories
 
 We have to make sure that all repositories and locally installed packages are up to date. Run the following two commands
 in a terminal:
@@ -100,26 +100,40 @@ sudo apt update
 sudo apt upgrade -y
 ```
 
-## Installing Grapejuice dependencies
+## Installing required utilities
 
-Grapejuice requires a set of libraries to be installed and to be run. These dependencies can be installed by running the
-following command:
+The `wget` and `gpg` utilities are required for the following steps. Run the following command in a terminal:
 
 ```sh
-sudo apt install -y wine-stable git pkg-config python3.7 python3.7-dev python3-pip libcairo2-dev libgirepository1.0-dev libgtk-3-0 libgtk-3-bin gir1.2-gtk-3.0
+sudo apt install -y wget gpg
+```
+
+## Downloading Grapejuice's keyring
+
+In order to ensure that the Grapejuice package hasn't been tampered with, you need Grapejuice's keyring.
+To download the keyring, run the following commands in a terminal:
+
+```sh
+wget -O- https://gitlab.com/brinkervii/grapejuice/-/raw/master/ci_scripts/signing_keys/public_key.gpg | gpg --dearmor > /tmp/grapejuice-archive-keyring.gpg
+sudo cp /tmp/grapejuice-archive-keyring.gpg /usr/share/keyrings/
+rm /tmp/grapejuice-archive-keyring.gpg
+```
+
+## Adding the Grapejuice repository
+
+The Grapejuice repository needs to be added to your system to get the Grapejuice package.
+Run the following command in a terminal:
+
+```sh
+sudo tee /etc/apt/sources.list.d/grapejuice.list <<< 'deb [signed-by=/usr/share/keyrings/grapejuice-archive-keyring.gpg] https://brinkervii.gitlab.io/grapejuice/repositories/debian/ universal main' > /dev/null
 ```
 
 ## Installing Grapejuice
 
-First, you have to aquire a copy of the source code. This is easily done by cloning the git repository.
+Since a new repository was added, you need to update package information on your system so apt can find Grapejuice.
+Run the following commands in a terminal:
 
 ```sh
-git clone https://gitlab.com/brinkervii/grapejuice.git
-```
-
-After the git clone command is finished, Grapejuice can be installed.
-
-```sh
-cd grapejuice
-python3.7 ./install.py
+sudo apt update
+sudo apt install -y grapejuice
 ```

@@ -52,26 +52,41 @@ sudo apt update
 sudo apt upgrade -y
 ```
 
-## Installing Grapejuice dependencies
+## Installing required utilities
 
-Grapejuice requires a set of libraries to be installed and to be run. These dependencies can be installed by running the
-following command:
+The `wget` and `gpg` utilities are required for the following steps. Run the following command in a terminal:
 
 ```sh
-sudo apt install -y git python3-pip python3-setuptools python3-wheel python3-dev pkg-config libcairo2-dev gtk-update-icon-cache desktop-file-utils xdg-utils libgirepository1.0-dev gir1.2-gtk-3.0
+sudo apt install -y wget gpg
 ```
 
-## Install Grapejuice
+## Downloading Grapejuice's keyring
 
-First, you have to acquire a copy of the source code. This is easily done by cloning the git repository.
+In order to ensure that the Grapejuice package hasn't been tampered with, you need Grapejuice's keyring.
+To download the keyring, run the following commands in a terminal:
 
 ```sh
-git clone https://gitlab.com/brinkervii/grapejuice.git /tmp/grapejuice
+wget -O- https://gitlab.com/brinkervii/grapejuice/-/raw/master/ci_scripts/signing_keys/public_key.gpg | gpg --dearmor > /tmp/grapejuice-archive-keyring.gpg
+sudo cp /tmp/grapejuice-archive-keyring.gpg /usr/share/keyrings/
+rm /tmp/grapejuice-archive-keyring.gpg
 ```
 
-After the git clone command is finished, Grapejuice can be installed.
+## Adding the Grapejuice repository
+
+The Grapejuice repository needs to be added to your system to get the Grapejuice package.
+Run the following command in a terminal:
 
 ```sh
-cd /tmp/grapejuice
-python3 ./install.py
+sudo tee /etc/apt/sources.list.d/grapejuice.list <<< 'deb [signed-by=/usr/share/keyrings/grapejuice-archive-keyring.gpg] https://brinkervii.gitlab.io/grapejuice/repositories/debian/ universal main' > /dev/null
+```
+
+
+## Installing Grapejuice
+
+Since a new repository was added, you need to update package information on your system so apt can find Grapejuice.
+Run the following commands in a terminal:
+
+```sh
+sudo apt update
+sudo apt install -y grapejuice
 ```

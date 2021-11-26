@@ -17,42 +17,39 @@ with Roblox not functioning properly, make sure you have all the required 'optio
 
 ## 🚀 Installing Grapejuice
 
-### 📦 Install using a package manager
+Packages are available for some distributions. If a package is available for your distribution,
+it's recommended that you use the package rather than installing from source. Otherwise, you'll need to install
+Grapejuice from source.
 
-Packages are available for some distributions. Just make sure to go through
-the [first time setup guide](https://gitlab.com/brinkervii/grapejuice/-/wikis/Guides/First-time-setup) after you have
-installed the package.
+Follow the installation guide that's appropriate for your distribution. Guides:
 
-- Arch Linux: `grapejuice-git` (AUR). Preferably installed through an AUR helper: `yay -S grapejuice-git`
-  , `paru -S grapejuice-git`, etc
-- Manjaro Linux: `grapejuice-git`. Preferably installed through `pamac` or an AUR helper.
-- [NixOS](https://github.com/NixOS/nixpkgs/pull/127397): `grapejuice`
-
-### 📄 Install from source:
-
-Do you want to install Grapejuice from source? Follow the installation guide that's appropriate for your distribution.
-Guides are currently written for the following distributions:
-
-- Debian
-  - [Debian 10 (buster)](Installing-from-source/Debian-10-and-similar)
-  - [Debian 11 (bullseye)](Installing-from-source/Debian-10-and-similar)
+- Debian: [Install from package](Installing-from-package/Debian-10-and-similar) or
+  [install from source](Installing-from-source/Debian-10-and-similar)
 - Ubuntu
-  - [Ubuntu 21.04 (Hirsute Hippo)](Installing-from-source/Debian-10-and-similar)
-  - [Ubuntu 20.04 (Focal Fossa)](Installing-from-source/Debian-10-and-similar)
-  - [Ubuntu 19.10 (Eoan Ermine)](Installing-from-source/Debian-10-and-similar)
-  - [Ubuntu 18.04 (Bionic Beaver)](Installing-from-source/Ubuntu-18.04-and-similar)
+  - Ubuntu 18.04 (Bionic Beaver): [Install from package](Installing-from-package/Ubuntu-18.04-and-similar) or
+    [install from source](Installing-from-source/Ubuntu-18.04-and-similar)
+  - Ubuntu 20.04 (Focal Fossa) and above: [Install from package](Installing-from-package/Debian-10-and-similar) or
+    [install from source](Installing-from-source/Debian-10-and-similar)
 - Zorin OS
-  - [Zorin OS 15.2](Installing-from-source/Ubuntu-18.04-and-similar)
-  - [Zorin OS 16](Installing-from-source/Debian-10-and-similar)
+  - Zorin OS 15.2: [Install from package](Installing-from-package/Ubuntu-18.04-and-similar) or
+    [install from source](Installing-from-source/Ubuntu-18.04-and-similar)
+  - Zorin OS 16: [Install from package](Installing-from-package/Debian-10-and-similar) or
+    [install from source](Installing-from-source/Debian-10-and-similar)
 - Linux Mint
-  - [Linux Mint 20 "Ulyana"](Installing-from-source/Debian-10-and-similar)
-  - [Linux Mint 19.3 "Tricia"](Installing-from-source/Ubuntu-18.04-and-similar)
-  - [LMDE4 (Debbie)](Installing-from-source/Debian-10-and-similar)
-- [Arch Linux](Installing-from-source/Arch-Linux-and-similar)
-- [Manjaro Linux](Installing-from-source/Arch-Linux-and-similar)
-- [Solus](Installing-from-source/Solus)
-- [Fedora Workstation](Installing-from-source/Fedora-Workstation)
-- [OpenSUSE](Installing-from-source/OpenSUSE)
+  - Linux Mint 20 (Ulyana): [Install from package](Installing-from-package/Debian-10-and-similar) or
+    [install from source](Installing-from-source/Debian-10-and-similar)
+  - Linux Mint 19.3 (Tricia): [Install from package](Installing-from-package/Ubuntu-18.04-and-similar) or
+    [install from source](Installing-from-source/Ubuntu-18.04-and-similar)
+  - LMDE4 (Debbie): [Install from package](Installing-from-package/Debian-10-and-similar) or
+    [install from source](Installing-from-source/Debian-10-and-similar)
+- Arch Linux: [Install from package](Installing-from-package/Arch-Linux-and-similar) or
+  [install from source](Installing-from-source/Arch-Linux-and-similar)
+- Manjaro Linux: [Install from package](Installing-from-package/Arch-Linux-and-similar) or
+  [install from source](Installing-from-source/Arch-Linux-and-similar)
+- NixOS: [Install from package](Installing-from-package/NixOS)
+- Solus: [Install from source](Installing-from-source/Solus)
+- Fedora Workstation: [Install from source](Installing-from-source/Fedora-Workstation)
+- OpenSUSE: [Install from source](Installing-from-source/OpenSUSE)
 
 **Please note that the following distributions are NOT supported:**
 

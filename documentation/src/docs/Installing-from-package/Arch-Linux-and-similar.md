@@ -16,31 +16,6 @@ minimalism, it is recommended that you run your desktop session using a display 
 
 ---
 
-:package: This setup guide assumes you have AUR support enabled on your system, which implies that the `base-devel`
-package is installed and that your account can use the `sudo` command.
-
-## Enabling 32-bit support
-
-Even though Roblox Studio runs in 64-bit mode, 32-bit libraries are still required for some parts of the program. This
-is due to backwards compatibility in the Windows operating system.
-
-You enable 32-bit support by editing `/etc/pacman.conf` with your favourite editor, where you uncomment the multilib
-repository. Note that you have to be root in order to edit the file. The resulting file should contain the following:
-
-```ini
-[multilib]
-Include = /etc/pacman.d/mirrorlist
-```
-
-## Synchronize the package database
-
-Before installing anything, you should always synchronize the package database in order to prevent strange
-package-not-found errors.
-
-```sh
-sudo pacman -Syu
-```
-
 ## Installing Wine
 
 It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
@@ -51,6 +26,14 @@ If you want to use vanilla Wine, run the following command:
 ```sh
 sudo pacman -S wine
 ```
+
+## Installing Grapejuice
+
+1. Enable the [multilib repository](https://wiki.archlinux.org/title/Official_repositories#multilib).
+2. Get an [AUR helper](https://wiki.archlinux.org/title/AUR_helpers) or
+[learn how to install packages from the AUR manually](https://wiki.archlinux.org/title/Arch_User_Repository).
+3. Install the `base-devel` package group with `sudo pacman -S base-devel`.
+4. Install [grapejuice-git](https://aur.archlinux.org/packages/grapejuice-git/) through an AUR helper or manually.
 
 ## Installing dependencies for audio
 
@@ -69,18 +52,3 @@ Use the below table to find what packages to install.
 |--------------|------------------|
 | PulseAudio   | `lib32-libpulse` |
 | PipeWire     | `pipewire-pulse` |
-
-## Installing Grapejuice
-
-First, you have to acquire a copy of the source code. This is easily done by cloning the git repository.
-
-```sh
-git clone https://gitlab.com/brinkervii/grapejuice.git /tmp/grapejuice
-```
-
-After the git clone command is finished, Grapejuice can be installed.
-
-```sh
-cd /tmp/grapejuice
-./install.py
-```

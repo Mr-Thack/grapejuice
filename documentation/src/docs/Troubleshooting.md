@@ -71,14 +71,7 @@ If you need to use the built-in screen recorder, follow the below steps:
 
 ## Cursor is not unlocked after locking the cursor
 
-This issue most often occurs when pressing right click to adjust the camera. It requires a custom patch in Wine to
-solve.
-
-**Warning:** You should decide if you trust the authors of the below resources before using them.
-
-- You can install a pre-compiled patched Wine version by running [this Python script](https://pastebin.com/raw/5SeVb005)
-  . This requires Python 3.8 or above.
-- Alternatively, you can compile Wine yourself using [this guide](https://github.com/e666666/robloxWineBuildGuide).
+You need a patched version of Wine to solve this. See [this guide](Guides/Installing-Wine).
 
 ## Player freezes when visiting an experience
 

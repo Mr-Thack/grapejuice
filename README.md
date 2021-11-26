@@ -1,12 +1,5 @@
 # Grapejuice
 
-⚠️ You need at least Wine 6.11 or Wine Staging 6.16 for the Roblox Player to work!
-Please grab an up-to-date copy from your repositories. If your repositories don't have Wine 6.11/Wine Staging 6.16, have
-a look at
-[WineHQ's official repositories](https://wiki.winehq.org/Download).
-
----
-
 These days Roblox works quite well with Wine, though there are some minor issues running it. Grapejuice fills in the
 gaps around these issues, so you can experience Roblox to its fullest on your favourite Linux distribution.
 
