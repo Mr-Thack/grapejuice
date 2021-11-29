@@ -14,7 +14,7 @@ from grapejuice_common.gtk.gtk_base import GtkBase, handler
 from grapejuice_common.gtk.gtk_util import dialog
 from grapejuice_common.gtk.yes_no_dialog import yes_no_dialog
 from grapejuice_common.uninstall import UninstallationParameters
-from grapejuice_common.update_info_providers import UpdateInformationProvider
+from grapejuice_common.update_info_providers import guess_relevant_provider
 from grapejuice_common.util import xdg_open
 
 
@@ -28,13 +28,12 @@ def _from_user_settings(key: str, default_value, **kwargs):
     )
 
 
+def _can_update() -> bool:
+    return guess_relevant_provider().can_update()
+
+
 def _do_reinstall_grapejuice():
-    from grapejuice_common import update_info_providers
-
-    provider: UpdateInformationProvider = update_info_providers.guess_relevant_provider()
-    if not provider.can_update():
-        return
-
+    provider = guess_relevant_provider()
     gui_task_manager.run_task_once(PerformUpdate, provider, reopen=True)
 
 
@@ -67,10 +66,7 @@ def _do_uninstall_grapejuice():
 
 
 def _install_actions():
-    from grapejuice_common import update_info_providers
-
-    provider: UpdateInformationProvider = update_info_providers.guess_relevant_provider()
-    if not provider.can_update():
+    if not _can_update():
         return None
 
     return GrapeSettingsGroup(
@@ -102,34 +98,36 @@ def _install_actions():
 
 
 def _general_settings():
-    return GrapeSettingsGroup(
-        title="General",
-        description="These are general Grapejuice settings",
-        settings=[
-            _from_user_settings(
-                key="show_fast_flag_warning",
-                default_value=True,
-                display_name="Show Fast Flag Warning",
-                description="Should Grapejuice warn you when opening the Fast Flag Editor?"
-            ),
-            _from_user_settings(
-                key="no_daemon_mode",
-                default_value=True,
-                display_name="Use Grapejuice daemon",
-                description="Enable or Disable the Grapejuice Daemon. This is an advanced debugging feature only "
-                            "meant for people who work on Wine itself.",
-                bidirectional_transformer=lambda b: not b
-            ),
+    settings = [
+        _from_user_settings(
+            key="show_fast_flag_warning",
+            default_value=True,
+            display_name="Show Fast Flag Warning",
+            description="Should Grapejuice warn you when opening the Fast Flag Editor?"
+        ),
+        _from_user_settings(
+            key="no_daemon_mode",
+            default_value=True,
+            display_name="Use Grapejuice daemon",
+            description="Enable or Disable the Grapejuice Daemon. This is an advanced debugging feature only "
+                        "meant for people who work on Wine itself.",
+            bidirectional_transformer=lambda b: not b
+        ),
+        _from_user_settings(
+            key="ignore_wine_version",
+            default_value=False,
+            display_name="Ignore Wine version"
+        )
+    ]
+
+    if _can_update():
+        settings += [
             _from_user_settings(
                 key="disable_updates",
                 default_value=False,
                 display_name="Disable self-updater"
             ),
-            _from_user_settings(
-                key="ignore_wine_version",
-                default_value=False,
-                display_name="Ignore Wine version"
-            ),
+
             _from_user_settings(
                 key="release_channel",
                 default_value="master",
@@ -138,6 +136,11 @@ def _general_settings():
                             "installs. "
             )
         ]
+
+    return GrapeSettingsGroup(
+        title="General",
+        description="These are general Grapejuice settings",
+        settings=settings
     )
 
 
