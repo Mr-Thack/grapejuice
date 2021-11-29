@@ -76,7 +76,7 @@ class OpenConfigFile(background.BackgroundTask):
 
 class PerformUpdate(background.BackgroundTask):
     def __init__(self, update_provider: UpdateInformationProvider, reopen: bool = False, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(name="Performing Update", **kwargs)
         self._update_provider = update_provider
         self._reopen = reopen
 

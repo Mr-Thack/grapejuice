@@ -50,12 +50,4 @@ def yes_no_dialog(title: str = "Untitled Dialog", message="This is a message"):
     dlg.destroy()
 
     # Process the response
-    if response == Gtk.ResponseType.OK:
-        return True
-
-    elif response == Gtk.ResponseType.CANCEL:
-        return False
-
-    else:
-        # WTF?
-        raise RuntimeError("The universe is falling apart")
+    return response == Gtk.ResponseType.OK

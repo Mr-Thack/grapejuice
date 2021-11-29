@@ -30,4 +30,4 @@ def download_file(url, target_path: Path):
 
 def xdg_open(*args):
     # Find a less heinous way of opening a program while deferring ownership
-    os.spawnlp(os.P_NOWAIT, "xdg-open", "xdg-open", *args)
+    os.spawnlp(os.P_NOWAIT, "xdg-open", "xdg-open", *list(map(str, args)))

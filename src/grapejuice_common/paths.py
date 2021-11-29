@@ -130,6 +130,10 @@ def fast_flag_warning_glade() -> Path:
     return glade_directory() / "fast_flag_warning.ui"
 
 
+def settings_glade() -> Path:
+    return glade_directory() / "settings.ui"
+
+
 def grapejuice_cache_directory() -> Path:
     return _ensure_directory(xdg_cache_home() / "grapejuice")
 

@@ -7,4 +7,3 @@ Icon=$GRAPEJUICE_ICON
 Exec=$GRAPEJUICE_EXECUTABLE gui
 Categories=Development;
 StartupWMClass=Grapejuice
-Name[en_GB]=grapejuice.desktop

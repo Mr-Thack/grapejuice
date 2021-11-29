@@ -16,6 +16,7 @@ from grapejuice.tasks import \
     OpenLogsDirectory, \
     ShowDriveC, \
     ExtractFastFlags, RunRobloxStudio
+from grapejuice.windows.settings_window import SettingsWindow
 from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
 from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor, handler
@@ -134,31 +135,6 @@ class MainWindow(GtkBase):
 
         _check_for_updates(self.widgets)
 
-        # TODO: Remove task indicator tester
-        # class TaskCounter:
-        #     n = 1
-        #
-        # def add_test_task():
-        #     from grapejuice.background import BackgroundTask
-        #
-        #     class TestTask(BackgroundTask):
-        #         def __init__(self):
-        #             super().__init__(f"This test task {TaskCounter.n}")
-        #             TaskCounter.n += 1
-        #
-        #         def work(self):
-        #             import time
-        #
-        #             time.sleep(2)
-        #             self.finish()
-        #
-        #     background.tasks.add(TestTask())
-        #
-        #     return True
-        #
-        # from gi.repository import GObject
-        # GObject.timeout_add(1200, add_test_task)
-
     def _save_current_prefix(self):
         if self._current_prefix_model is not None:
             current_settings.save_prefix_model(self._current_prefix_model)
@@ -223,6 +199,11 @@ class MainWindow(GtkBase):
         studio_prefix = get_studio_wineprefix()
 
         gui_task_manager.run_task_once(RunRobloxStudio, studio_prefix)
+
+    @handler
+    def open_settings_window(self, *_):
+        window = SettingsWindow()
+        window.show()
 
     def _show_about_window(self):
         self.widgets.dots_menu.popdown()

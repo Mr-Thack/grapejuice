@@ -57,3 +57,21 @@ def set_style_class_conditionally(widgets, style_class, condition):
         style_context = w.get_style_context()
         method = style_context.add_class if condition else style_context.remove_class
         method(style_class)
+
+
+def set_all_margins(widget, margin):
+    for side in ("top", "end", "bottom", "start"):
+        method = getattr(widget, f"set_margin_{side}")
+        method(margin)
+
+
+def set_vertical_margins(widget, margin):
+    for side in ("top", "bottom"):
+        method = getattr(widget, f"set_margin_{side}")
+        method(margin)
+
+
+def set_horizontal_margins(widget, margin):
+    for side in ("start", "end"):
+        method = getattr(widget, f"set_margin_{side}")
+        method(margin)

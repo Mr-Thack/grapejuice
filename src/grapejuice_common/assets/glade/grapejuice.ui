@@ -104,6 +104,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <property name="text" translatable="yes">Settings</property>
+            <signal name="clicked" handler="open_settings_window" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
