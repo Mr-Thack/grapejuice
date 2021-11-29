@@ -2,7 +2,7 @@ import os
 import re
 import subprocess
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from grapejuice_common import variables
 
@@ -13,8 +13,19 @@ class LSPciEntry:
     attributes: Dict[str, str] = field(default_factory=dict)
 
     @property
+    def id_attribute(self) -> Optional[Tuple[str, str]]:
+        for k, v in self.attributes.items():
+            if k == "vga compatible controller":
+                return k, v
+
+            elif ("3d" in k) or ("2d" in k):
+                return k, v
+
+        return None
+
+    @property
     def is_graphics_card(self) -> bool:
-        return "vga compatible controller" in self.attributes
+        return self.id_attribute is not None
 
     @property
     def kernel_driver(self) -> Optional[str]:
