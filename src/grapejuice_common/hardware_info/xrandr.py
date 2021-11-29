@@ -3,6 +3,7 @@ import subprocess
 from dataclasses import dataclass
 from typing import List
 
+# pylint: disable=C0301
 XRANDR_LINE_PTN = re.compile(
     r"Provider\s+(\d+):\s+id:\s+([a-f\dx]+)\s+cap:\s+(.+)\s+crtcs:\s+(\d+)\s+outputs:\s+(\d+)\s+associated providers:\s+(\d+)\s+name:(.+)\s+@\s+(.+)"
 )
