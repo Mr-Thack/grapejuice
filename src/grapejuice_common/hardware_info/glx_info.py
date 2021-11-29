@@ -61,11 +61,14 @@ class GLXInfo:
     @property
     def version(self) -> Tuple[int, ...]:
         versions = list(
-            map(
-                _parse_opengl_version,
-                filter(
-                    None,
-                    (self.core_profile_version_string, self.version_string)
+            filter(
+                None,
+                map(
+                    _parse_opengl_version,
+                    filter(
+                        None,
+                        (self.core_profile_version_string, self.version_string)
+                    )
                 )
             )
         )
