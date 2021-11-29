@@ -13,7 +13,7 @@ class LSPciEntry:
     attributes: Dict[str, str] = field(default_factory=dict)
 
     @property
-    def id_attribute(self) -> Optional[Tuple[str, str]]:
+    def gpu_id_attribute(self) -> Optional[Tuple[str, str]]:
         for k, v in self.attributes.items():
             if k == "vga compatible controller":
                 return k, v
@@ -25,7 +25,11 @@ class LSPciEntry:
 
     @property
     def is_graphics_card(self) -> bool:
-        return self.id_attribute is not None
+        return self.gpu_id_attribute is not None
+
+    @property
+    def gpu_id_string(self) -> str:
+        return self.gpu_id_attribute[1]
 
     @property
     def kernel_driver(self) -> Optional[str]:
@@ -58,7 +62,12 @@ class LSPci:
         lc_all = os.environ.get("LC_ALL", "")
         lang = os.environ.get("LANG")
         os.environ["LC_ALL"] = "C"
-        os.environ.pop("LANG")
+
+        try:
+            os.environ.pop("LANG")
+
+        except KeyError:
+            pass
 
         try:
             content = subprocess.check_output(["lspci", "-vvv"]).decode(variables.text_encoding())

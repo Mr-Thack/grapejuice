@@ -9,7 +9,7 @@ XRANDR_LINE_PTN = re.compile(
 )
 
 
-@dataclass
+@dataclass(frozen=True)
 class XRandRProvider:
     index: int
     id: int
