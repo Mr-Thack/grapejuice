@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List
 
-from grapejuice_common.graphics_detect.lspci import LSPci
+from grapejuice_common.hardware_info.lspci import LSPci
 
 
 class GraphicsVendor(Enum):
