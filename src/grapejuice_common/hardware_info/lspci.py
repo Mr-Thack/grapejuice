@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import re
@@ -131,3 +132,10 @@ class LSPci:
     @property
     def graphics_cards(self) -> List[LSPciEntry]:
         return list(filter(lambda x: x.is_graphics_card, self._entries))
+
+    @property
+    def graphics_id(self) -> str:
+        h = hashlib.new("blake2s")
+        h.update(json.dumps([card.gpu_id_string for card in self.graphics_cards]).encode(variables.text_encoding()))
+
+        return h.hexdigest()
