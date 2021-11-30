@@ -1,6 +1,7 @@
+import json
 import logging
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from itertools import chain
 from subprocess import CalledProcessError
 from typing import Dict, List
@@ -67,6 +68,59 @@ class ComputeParametersState:
     @property
     def number_of_graphics_cards(self):
         return len(self.hardware_list.graphics_cards)
+
+
+@dataclass
+class HardwareProfile:
+    graphics_id: str
+    gpu_vendor_id: int
+    gpu_pci_id: str
+    gpu_can_do_vulkan: bool
+    provider_index: int
+    provider_name: str
+    should_prime: bool
+    use_mesa_gl_override: bool
+    preferred_roblox_renderer_string: str
+
+    @property
+    def gpu_vendor(self) -> GPUVendor:
+        return GPUVendor(self.gpu_vendor_id)
+
+    @property
+    def preferred_roblox_renderer(self) -> RobloxRenderer:
+        return RobloxRenderer(self.preferred_roblox_renderer_string)
+
+    @property
+    def as_json(self) -> str:
+        return json.dumps(asdict(self), indent=2)
+
+    @classmethod
+    def from_dict(cls, d: Dict):
+        return cls(**d)
+
+    @classmethod
+    def from_json(cls, json_string: str):
+        return cls.from_dict(json.loads(json_string))
+
+    @classmethod
+    def from_profiler(
+        cls,
+        state: ComputeParametersState
+    ):
+        card = state.target_card
+        provider = state.card_provider_lookup.get(card)
+
+        return cls(
+            state.hardware_list.graphics_id,
+            card.vendor.value,
+            card.pci_id,
+            card.can_do_vulkan,
+            provider.index,
+            provider.name,
+            state.should_prime,
+            state.use_mesa_gl_override,
+            state.preferred_roblox_renderer.value
+        )
 
 
 def _collect_information(state: ComputeParametersState):
@@ -183,7 +237,7 @@ def _pick_renderer(state: ComputeParametersState):
     state.use_mesa_gl_override = use_mesa_gl_override
 
 
-def compute_parameters():
+def profile_hardware() -> HardwareProfile:
     log.info("Computing hardware profile parameters")
 
     state = ComputeParametersState()
@@ -194,13 +248,10 @@ def compute_parameters():
     _pick_target_card(state)
     _pick_renderer(state)
 
-    print(state.target_card)
-
-    target_provider = state.card_provider_lookup.get(state.target_card, None)
-    if target_provider:
-        print(target_provider)
+    return HardwareProfile.from_profiler(state)
 
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
-    compute_parameters()
+    profile = profile_hardware()
+    print(profile.as_json)
