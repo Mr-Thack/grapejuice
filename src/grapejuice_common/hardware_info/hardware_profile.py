@@ -82,6 +82,8 @@ class HardwareProfile:
     use_mesa_gl_override: bool
     preferred_roblox_renderer_string: str
 
+    version: int = 1
+
     @property
     def gpu_vendor(self) -> GPUVendor:
         return GPUVendor(self.gpu_vendor_id)
@@ -91,8 +93,12 @@ class HardwareProfile:
         return RobloxRenderer(self.preferred_roblox_renderer_string)
 
     @property
+    def as_dict(self) -> Dict[str, any]:
+        return asdict(self)
+
+    @property
     def as_json(self) -> str:
-        return json.dumps(asdict(self), indent=2)
+        return json.dumps(self.as_dict, indent=2)
 
     @classmethod
     def from_dict(cls, d: Dict):

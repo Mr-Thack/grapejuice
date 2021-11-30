@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from grapejuice_common import paths
+from grapejuice_common.hardware_info import hardware_profile
+from grapejuice_common.hardware_info.hardware_profile import HardwareProfile
 from grapejuice_common.models import wineprefix_configuration_model
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 
@@ -14,6 +16,8 @@ LOG = logging.getLogger(__name__)
 CURRENT_SETTINGS_VERSION = 2
 
 k_version = "__version__"  # Magic variable gets underscores
+k_hardware_profile = "__hardware_profile__"
+
 k_show_fast_flag_warning = "show_fast_flag_warning"
 k_wine_binary = "wine_binary"
 k_dll_overrides = "dll_overrides"
@@ -29,6 +33,7 @@ k_unsupported_settings = "unsupported_settings"
 def default_settings() -> Dict[str, any]:
     return {
         k_version: 0,
+        k_hardware_profile: None,
         k_show_fast_flag_warning: True,
         k_no_daemon_mode: True,
         k_release_channel: "master",
@@ -81,6 +86,13 @@ class UserSettings:
         return self.get(k_version, 0)
 
     @property
+    def hardware_profile(self) -> HardwareProfile:
+        if self._profile_hardware():
+            self.save()
+
+        return HardwareProfile.from_dict(self._settings_object[k_hardware_profile])
+
+    @property
     def raw_wineprefixes_sorted(self) -> List[Dict]:
         return list(sorted(
             self._settings_object.get(k_wineprefixes),
@@ -111,6 +123,27 @@ class UserSettings:
             self.save()
 
         return value
+
+    def _profile_hardware(self, always_profile: Optional[bool] = False) -> bool:
+        saved_profile = None if always_profile else self._settings_object.get(k_hardware_profile, None)
+
+        if saved_profile:
+            from grapejuice_common.hardware_info.lspci import LSPci
+            hardware_list = LSPci()
+
+            should_profile_hardware = (hardware_list.graphics_id != saved_profile["graphics_id"]) or \
+                                      (saved_profile.get("version", -1) != HardwareProfile.version)
+
+        else:
+            should_profile_hardware = True
+
+        if should_profile_hardware:
+            LOG.info("Going to profile hardware")
+            profile = hardware_profile.profile_hardware()
+            self._settings_object[k_hardware_profile] = profile.as_dict
+            return True
+
+        return False
 
     def load(self):
         save_settings = False
@@ -144,6 +177,8 @@ class UserSettings:
             save_settings = True
 
         self._perform_migrations()
+
+        save_settings = self._profile_hardware() or save_settings
 
         if save_settings:
             LOG.info("Saving settings after load, because something was wrong.")
