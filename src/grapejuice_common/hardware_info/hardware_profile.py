@@ -192,6 +192,7 @@ def compute_parameters():
     _consider_chassis(state)
     _consider_cards_that_can_be_primed(state)
     _pick_target_card(state)
+    _pick_renderer(state)
 
     print(state.target_card)
 
