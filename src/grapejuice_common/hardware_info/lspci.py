@@ -86,7 +86,7 @@ class LSPci:
         work: Optional[LSPciEntry] = None
 
         whitespace_ptn = re.compile(r"^\s+\w+")
-        pci_id_ptn = re.compile(r"([\d:\.]+)\s+(.*)\s*")
+        pci_id_ptn = re.compile(r"([a-fA-F\d:\.]+)\s+(.*)\s*")
 
         def explode_line(line_to_be_exploded: str):
             s = line_to_be_exploded.split(":")

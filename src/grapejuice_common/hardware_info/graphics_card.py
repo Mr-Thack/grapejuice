@@ -1,6 +1,7 @@
 import re
 from dataclasses import dataclass
 from enum import Enum
+from typing import Optional
 
 from grapejuice_common.hardware_info.lspci import LSPciEntry
 
@@ -15,6 +16,14 @@ class GPUVendor(Enum):
     NVIDIA = 2
     UNKNOWN = 999
 
+
+GPU_VENDOR_PRIORITY = {
+    GPUVendor.NVIDIA: 0,
+    GPUVendor.AMD: 1,
+    GPUVendor.INTEL: 2,
+
+    GPUVendor.UNKNOWN: 999
+}
 
 DRIVER_TO_VENDOR_MAPPING = {
     "i915": GPUVendor.INTEL,
@@ -37,9 +46,10 @@ special_nvidia_vulkan_cards = [
 ]
 
 
-@dataclass(frozen=True)
+@dataclass()
 class GraphicsCard:
     lspci_entry: LSPciEntry
+    _can_do_vulkan_value: Optional[bool] = None
 
     @property
     def vendor(self) -> GPUVendor:
@@ -49,31 +59,44 @@ class GraphicsCard:
 
         return GPUVendor.UNKNOWN
 
+    @property
+    def pci_id(self) -> str:
+        return self.lspci_entry.pci_id
+
     # pylint: disable=R1702,R0911,R0912
     @property
     def can_do_vulkan(self):
+        if self._can_do_vulkan_value is not None:
+            return self._can_do_vulkan_value
+
         id_string = self.lspci_entry.gpu_id_string
         id_string_l = id_string.lower()
+
+        def resolve(x):
+            self._can_do_vulkan_value = x
+            return x
 
         if self.vendor is GPUVendor.NVIDIA:
             # Any RTX card can do Vulkan
             if "RTX" in id_string:
-                return True
+                return resolve(True)
 
             # Any GTX card in the 900+ series can do vulkan
             match = re.search(r"GeForce\s+GTX\s+(\d+)", id_string)
             if match:
                 series = int(match.group(1))
                 if series > 900:
-                    return True
+                    return resolve(True)
 
             # Any card that got some TLC from nVidia
-            return any(
-                map(
-                    lambda x: x in id_string_l,
+            return resolve(
+                any(
                     map(
-                        str.lower,
-                        special_nvidia_vulkan_cards
+                        lambda x: x in id_string_l,
+                        map(
+                            str.lower,
+                            special_nvidia_vulkan_cards
+                        )
                     )
                 )
             )
@@ -88,35 +111,35 @@ class GraphicsCard:
                             v = int(match.group(1))
 
                             if v >= 5700:
-                                return True
+                                return resolve(True)
 
                             if 400 < v < 600:
-                                return True
+                                return resolve(True)
 
             # R7 and R9 series graphics
             if ("r7" in id_string_l) or ("r9" in id_string_l):
-                return True
+                return resolve(True)
 
             # R5 series graphics (but only 240 and up)
             match = re.search(r"r5\s+(\d+)", id_string_l)
             if match:
                 if int(match.group(1)) >= 240:
-                    return True
+                    return resolve(True)
 
             # HD 8000 and up
             match = re.search(r"hd (\d+)", id_string_l)
             if match:
                 if int(match.group(1)) >= 8570:
-                    return True
+                    return resolve(True)
 
             # HD7000 and lower technically do support Vulkan, but the version is not high
             # enough for Roblox.
 
-            return False
+            return resolve(False)
 
         elif self.vendor is GPUVendor.INTEL:
             # Assume any 'gaming' laptop has a new enough intel GPU
             # Other code should ignore the vulkan value if another GPU vendor card is present
-            return True
+            return resolve(True)
 
-        return False
+        return resolve(False)

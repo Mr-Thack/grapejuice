@@ -1,3 +1,5 @@
+import json
+import os
 import re
 import subprocess
 from copy import deepcopy
@@ -19,7 +21,20 @@ class GLXInfo:
     _attributes: Dict[str, str]
 
     def __init__(self, env: Optional[Dict[str, str]] = None):
-        info_string = subprocess.check_output(["glxinfo"], env=env).decode("UTF-8")
+        # TODO: Undo env changes properly
+        if env:
+            for k, v in env.items():
+                os.environ[k] = v
+
+        info_string = subprocess.check_output(["glxinfo"]).decode("UTF-8")
+
+        if env:
+            for k in env.keys():
+                try:
+                    os.environ.pop(k)
+
+                except KeyError:
+                    pass
 
         lines_of_interest = list(
             map(
@@ -81,3 +96,6 @@ class GLXInfo:
     @property
     def attributes(self):
         return deepcopy(self._attributes)
+
+    def __hash__(self):
+        return hash(json.dumps(self._attributes))

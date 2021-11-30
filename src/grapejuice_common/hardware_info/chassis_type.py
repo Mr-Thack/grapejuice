@@ -56,3 +56,21 @@ class ChassisType(Enum):
 
         except ValueError:
             return cls.Unknown
+
+
+mobile_chassis = (
+    ChassisType.Laptop,
+    ChassisType.Notebook,
+    ChassisType.HandHeld,
+    ChassisType.AllInOne,
+    ChassisType.SubNotebook,
+    ChassisType.SpaceSaving,
+    ChassisType.Tablet,
+    ChassisType.Convertible,
+    ChassisType.EmbeddedPC,
+    ChassisType.MiniPC
+)
+
+
+def is_mobile_chassis(chassis: ChassisType) -> bool:
+    return chassis in mobile_chassis

@@ -36,6 +36,10 @@ class XRandRProvider:
     def sink_offload(self) -> bool:
         return "Sink Offload" in self.cap
 
+    @property
+    def pci_device_id(self):
+        return ":".join(self.pci_id.split(":")[-2:])
+
     @classmethod
     def from_line(cls, line: str):
         line = line.strip()
