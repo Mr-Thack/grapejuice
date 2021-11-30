@@ -2,7 +2,7 @@ import json
 import re
 import subprocess
 from dataclasses import dataclass, asdict
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 # pylint: disable=C0301
 XRANDR_LINE_PTN = re.compile(
@@ -72,6 +72,20 @@ class XRandRProvider:
             associated_providers=int(match.group(6)),
             name=match.group(7)
         )
+
+    def as_serializable_dict(self) -> Dict[str, any]:
+        return {
+            "pci_id": self.pci_id or "",
+            "pci_device_id": self.pci_device_id or "",
+            "source_output": self.source_output,
+            "sink_output": self.sink_output,
+            "source_offload": self.source_offload,
+            "sink_offload": self.sink_offload,
+            **asdict(self)
+        }
+
+    def __str__(self):
+        return f"<{type(self).__name__}> " + json.dumps(self.as_serializable_dict(), indent=2)
 
 
 class XRandR:

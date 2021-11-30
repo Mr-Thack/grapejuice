@@ -1,7 +1,8 @@
+import json
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
+from typing import Optional, Dict
 
 from grapejuice_common.hardware_info.lspci import LSPciEntry
 
@@ -143,6 +144,17 @@ class GraphicsCard:
             return resolve(True)
 
         return resolve(False)
+
+    def as_serializable_dict(self) -> Dict[str, any]:
+        return {
+            "pci_id": self.pci_id,
+            "vendor": self.vendor.value,
+            "can_do_vulkan": self.can_do_vulkan,
+            **self.lspci_entry.attributes
+        }
+
+    def __str__(self):
+        return f"<{type(self).__name__}> " + json.dumps(self.as_serializable_dict(), indent=2)
 
     def __hash__(self):
         return hash(self.lspci_entry)

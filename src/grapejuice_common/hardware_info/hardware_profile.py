@@ -1,8 +1,9 @@
 import logging
 import sys
+from dataclasses import dataclass
 from itertools import chain
 from subprocess import CalledProcessError
-from typing import Dict
+from typing import Dict, List
 
 from grapejuice_common.hardware_info.chassis_type import is_mobile_chassis, ChassisType
 from grapejuice_common.hardware_info.glx_info import GLXInfo
@@ -40,52 +41,94 @@ def can_prime_card(card: GraphicsCard, provider: XRandRProvider):
         primed_glx_info_hash = hash(GLXInfo(env=get_prime_env(card, provider)))
 
     except CalledProcessError as e:
+        log.error(e)
         return False
 
     return base_glx_info_hash != primed_glx_info_hash
 
 
-def compute_parameters():
-    log.info("Computing hardware profile parameters")
+@dataclass(init=False)
+class ComputeParametersState:
+    xrandr: XRandR
+    hardware_list: LSPci
 
+    graphics_cards_unordered: List[GraphicsCard]
+    graphics_cards_ordered: List[GraphicsCard]
+
+    card_provider_lookup: Dict[GraphicsCard, XRandRProvider]
+    can_prime_lookup: Dict[GraphicsCard, bool]
+
+    should_prime: bool
+
+    target_card: GraphicsCard
+    use_mesa_gl_override: bool
+    preferred_roblox_renderer: RobloxRenderer
+
+    @property
+    def number_of_graphics_cards(self):
+        return len(self.hardware_list.graphics_cards)
+
+
+def _collect_information(state: ComputeParametersState):
     log.info("Getting lspci and XRandR data")
-    xrandr = XRandR()
-    hardware_list = LSPci()
-    graphics_hardware = hardware_list.graphics_cards
 
-    if len(graphics_hardware) <= 0:
+    state.xrandr = XRandR()
+    state.hardware_list = LSPci()
+
+    graphics_cards = state.hardware_list.graphics_cards
+    state.should_prime = state.number_of_graphics_cards > 1
+    if state.number_of_graphics_cards <= 0:
         raise RuntimeError("No graphics hardware")
 
-    should_prime = len(graphics_hardware) > 1
-    log.info(f"Got multiple graphics cards: {should_prime}")
-
-    if should_prime:
-        should_prime = is_mobile_chassis(ChassisType.local_chassis_type())
-        log.info(f"We are on a mobile platform: {should_prime}")
-
-    unordered_graphics_cards = list(map(GraphicsCard, graphics_hardware))
-    graphics_cards = list(sorted(unordered_graphics_cards, key=lambda card: GPU_VENDOR_PRIORITY[card.vendor]))
+    state.graphics_cards_unordered = list(map(GraphicsCard, graphics_cards))
+    state.graphics_cards_ordered = list(
+        sorted(
+            state.graphics_cards_unordered,
+            key=lambda card: GPU_VENDOR_PRIORITY[card.vendor]
+        )
+    )
 
     # Let's just hope cards and providers always follow the same order here
-    card_provider_lookup = dict(zip(unordered_graphics_cards, xrandr.providers))
-    can_prime_lookup = dict(zip(
-        unordered_graphics_cards,
-        map(lambda card: can_prime_card(card, card_provider_lookup[card]), unordered_graphics_cards)
+    state.card_provider_lookup = dict(zip(state.graphics_cards_unordered, state.xrandr.providers))
+    state.can_prime_lookup = dict(zip(
+        state.graphics_cards_unordered,
+        map(
+            lambda card: can_prime_card(card, state.card_provider_lookup[card]),
+            state.graphics_cards_unordered
+        )
     ))
 
-    should_prime = any(can_prime_lookup.values())
-    log.info(f"We can prime a graphics card: {should_prime}")
+    log.info(f"Got multiple graphics cards: {state.should_prime}")
 
-    if len(graphics_cards) == 1:
+
+def _consider_chassis(state: ComputeParametersState):
+    if state.should_prime:
+        state.should_prime = is_mobile_chassis(ChassisType.local_chassis_type())
+
+
+def _consider_cards_that_can_be_primed(state: ComputeParametersState):
+    if state.should_prime:
+        state.should_prime = any(state.can_prime_lookup.values())
+        log.info(f"We can prime a graphics card: {state.should_prime}")
+
+
+def _pick_target_card(state: ComputeParametersState):
+    if state.number_of_graphics_cards == 1:
         log.info("There is only one graphics card installed, pick the 0th one")
-        target_card = graphics_cards[0]
+        target_card = state.graphics_cards_ordered[0]
 
     else:
-        vendor_set = list(set(map(lambda c: c.vendor, graphics_cards)))
+        vendor_set = list(set(map(lambda c: c.vendor, state.graphics_cards_ordered)))
         homogenous_system = len(vendor_set) == 1
 
         # Prepend a list of cards we can prime so they have a higher priority
-        card_iter = chain(filter(lambda card: can_prime_lookup[card], graphics_cards), iter(graphics_cards))
+        card_iter = chain(
+            filter(
+                lambda card: state.can_prime_lookup[card],
+                state.graphics_cards_ordered
+            ),
+            iter(state.graphics_cards_ordered)
+        )
 
         if homogenous_system:
             log.info("The system is homogenous in vendors just pick the first card we can prime")
@@ -94,19 +137,23 @@ def compute_parameters():
         else:
             log.info("Pick the first vulkan card")  # Which we can prime
             vulkan_card = next(filter(lambda card: card.can_do_vulkan, card_iter))
-            target_card = vulkan_card or graphics_cards[0]
+            target_card = vulkan_card or state.graphics_cards_ordered[0]
 
+    state.target_card = target_card
+
+
+def _pick_renderer(state: ComputeParametersState):
     use_mesa_gl_override = False
 
-    if target_card.can_do_vulkan:
+    if state.target_card.can_do_vulkan:
         log.info("Target card can do Vulkan, prefer vulkan")
         preferred_roblox_renderer = RobloxRenderer.Vulkan
 
     else:
         try:
-            provider = card_provider_lookup.get(target_card, None)
-            if should_prime and provider:
-                glx_info = GLXInfo(env=get_prime_env(target_card, provider))
+            provider = state.card_provider_lookup.get(state.target_card, None)
+            if state.should_prime and provider:
+                glx_info = GLXInfo(env=get_prime_env(state.target_card, provider))
 
             else:
                 glx_info = GLXInfo()
@@ -115,7 +162,7 @@ def compute_parameters():
             # for Roblox. In this case some mesa trickery is required.
 
             # Special nVidia case
-            if target_card.vendor is GPUVendor.NVIDIA and glx_info.version == (4, 60):
+            if state.target_card.vendor is GPUVendor.NVIDIA and glx_info.version == (4, 60):
                 log.info("Card is an ancient nVidia one, use mesa gl override")
                 use_mesa_gl_override = True
 
@@ -132,7 +179,25 @@ def compute_parameters():
             # As a last resort, use D3D11 if GL info is not available
             preferred_roblox_renderer = RobloxRenderer.DX11
 
-    print(target_card)
+    state.preferred_roblox_renderer = preferred_roblox_renderer
+    state.use_mesa_gl_override = use_mesa_gl_override
+
+
+def compute_parameters():
+    log.info("Computing hardware profile parameters")
+
+    state = ComputeParametersState()
+
+    _collect_information(state)
+    _consider_chassis(state)
+    _consider_cards_that_can_be_primed(state)
+    _pick_target_card(state)
+
+    print(state.target_card)
+
+    target_provider = state.card_provider_lookup.get(state.target_card, None)
+    if target_provider:
+        print(target_provider)
 
 
 if __name__ == '__main__':
