@@ -57,9 +57,14 @@ class XRandRProvider:
 
 
 class XRandR:
-    @staticmethod
-    def list_providers() -> List[XRandRProvider]:
+    _providers: List[XRandRProvider]
+
+    def __init__(self):
         output = subprocess.check_output(["xrandr", "--listproviders"]).decode("UTF-8")
         lines = list(filter(None, map(str.strip, output.split("\n"))))
 
-        return list(map(XRandRProvider.from_line, lines[1:]))
+        self._providers = list(map(XRandRProvider.from_line, lines[1:]))
+
+    @property
+    def providers(self) -> List[XRandRProvider]:
+        return self._providers
