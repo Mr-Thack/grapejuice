@@ -1,11 +1,12 @@
+import json
 import re
 import subprocess
-from dataclasses import dataclass
-from typing import List
+from dataclasses import dataclass, asdict
+from typing import List, Optional
 
 # pylint: disable=C0301
 XRANDR_LINE_PTN = re.compile(
-    r"Provider\s+(\d+):\s+id:\s+([a-f\dx]+)\s+cap:\s+(.+)\s+crtcs:\s+(\d+)\s+outputs:\s+(\d+)\s+associated providers:\s+(\d+)\s+name:(.+)\s+@\s+(.+)"
+    r"Provider\s+(\d+):\s+id:\s+([a-f\dx]+)\s+cap:\s+(.+)\s+crtcs:\s+(\d+)\s+outputs:\s+(\d+)\s+associated providers:\s+(\d+)\s+name:(.+)"
 )
 
 
@@ -18,7 +19,6 @@ class XRandRProvider:
     outputs: int
     associated_providers: int
     name: str
-    pci_id: str
 
     @property
     def source_output(self) -> bool:
@@ -37,8 +37,23 @@ class XRandRProvider:
         return "Sink Offload" in self.cap
 
     @property
-    def pci_device_id(self):
-        return ":".join(self.pci_id.split(":")[-2:])
+    def pci_id(self) -> Optional[str]:
+        match = re.search(r"@\s+(pci:.+)$", self.name)
+        if match:
+            return match.group(1).strip()
+
+        return None
+
+    @property
+    def pci_device_id(self) -> Optional[str]:
+        pci_id = self.pci_id
+        if pci_id:
+            return ":".join(pci_id.split(":")[-2:])
+
+        return None
+
+    def __hash__(self):
+        return hash(json.dumps(asdict(self)))
 
     @classmethod
     def from_line(cls, line: str):
@@ -55,8 +70,7 @@ class XRandRProvider:
             crtcs=int(match.group(4)),
             outputs=int(match.group(5)),
             associated_providers=int(match.group(6)),
-            name=match.group(7),
-            pci_id=match.group(8)
+            name=match.group(7)
         )
 
 

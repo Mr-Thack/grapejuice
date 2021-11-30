@@ -143,3 +143,6 @@ class GraphicsCard:
             return resolve(True)
 
         return resolve(False)
+
+    def __hash__(self):
+        return hash(self.lspci_entry)

@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import subprocess
@@ -51,6 +52,9 @@ class LSPciEntry:
                 )
             )
         )
+
+    def __hash__(self):
+        return hash(json.dumps(self.attributes))
 
 
 class LSPci:
