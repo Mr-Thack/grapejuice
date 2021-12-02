@@ -70,6 +70,14 @@ Use the below table to find what packages to install.
 | PulseAudio   | `lib32-libpulse` |
 | PipeWire     | `pipewire-pulse` |
 
+## Installing dependencies for networking
+
+Install `gnutls` and `lib32-gnutls` with the following command:
+
+```sh
+sudo pacman -S gnutls lib32-gnutls
+```
+
 ## Installing Grapejuice
 
 First, you have to acquire a copy of the source code. This is easily done by cloning the git repository.

@@ -106,7 +106,7 @@ Grapejuice requires a set of libraries to be installed and to be run. These depe
 following command:
 
 ```sh
-sudo apt install -y wine-stable git pkg-config python3.7 python3.7-dev python3-pip libcairo2-dev libgirepository1.0-dev libgtk-3-0 libgtk-3-bin gir1.2-gtk-3.0
+sudo apt install -y wine-stable git pkg-config python3.7 python3.7-dev python3-pip libcairo2-dev libgirepository1.0-dev libgtk-3-0 libgtk-3-bin gir1.2-gtk-3.0 gnutls-bin:i386
 ```
 
 ## Installing Grapejuice
