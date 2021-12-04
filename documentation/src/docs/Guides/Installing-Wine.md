@@ -21,4 +21,6 @@ There are two options available:
 
 Vanilla Wine does not currently have the mouse patch, meaning the mouse bug will occur when using vanilla Wine.
 
-Use the installation guide for your distribution to see how to install vanilla Wine.
+If your distribution provides the `wine` package, install that from your package manager.
+
+Otherwise, use the [download page for Wine](https://wiki.winehq.org/Download).
