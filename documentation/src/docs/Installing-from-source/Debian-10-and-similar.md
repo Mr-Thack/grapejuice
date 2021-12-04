@@ -33,14 +33,7 @@ menu.
 ## Installing Wine
 
 It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
-for why and how to get the patched version of Wine.
-
-If you want to use vanilla Wine, use the [official WineHQ repositories](https://wiki.winehq.org/Download)
-and install either `winehq-devel` or `winehq-staging`.
-
-Note for users of distributions that are Ubuntu derivatives: You need to select an Ubuntu repository that aligns with
-your specific derivative. The Ubuntu codename for your specific distribution can be found in the file `/etc/os-release`
-as the value `UBUNTU_CODENAME`
+for more information.
 
 ## Synchronise the package repositories
 

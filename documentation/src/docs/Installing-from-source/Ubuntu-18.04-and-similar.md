@@ -32,33 +32,7 @@ sudo dpkg --add-architecture i386
 ## Installing Wine
 
 It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
-for why and how to get the patched version of Wine.
-
-If you want to use vanilla Wine, follow the instructions below.
-
-**01:** Add the WineHQ repository key
-
-```
-wget -nc https://dl.winehq.org/wine-builds/winehq.key -O /tmp/winehq.key
-sudo apt-key add /tmp/winehq.key
-```
-
-**02:** Install the WineHQ repository. The command differs slighly per distribution variant, so please pick the correct
-one for you distribution.
-
-| Distribution                 | Command                                                                             |
-|------------------------------|-------------------------------------------------------------------------------------|
-| Ubuntu 18.04                 | sudo apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main' |
-| Linux Mint 19.x              | sudo apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main' |
-
----
-
-❓ Are you not sure which distribution you are on? Run the following command to see the details about your specific
-distribution:
-
-```sh
-cat /etc/os-release
-```
+for more information.
 
 ## Install FAudio
 
@@ -106,7 +80,7 @@ Grapejuice requires a set of libraries to be installed and to be run. These depe
 following command:
 
 ```sh
-sudo apt install -y wine-stable git pkg-config python3.7 python3.7-dev python3-pip libcairo2-dev libgirepository1.0-dev libgtk-3-0 libgtk-3-bin gir1.2-gtk-3.0 gnutls-bin:i386
+sudo apt install -y git pkg-config python3.7 python3.7-dev python3-pip libcairo2-dev libgirepository1.0-dev libgtk-3-0 libgtk-3-bin gir1.2-gtk-3.0 gnutls-bin:i386
 ```
 
 ## Installing Grapejuice
