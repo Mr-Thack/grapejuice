@@ -141,7 +141,7 @@ def create_studio_prefix_model(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[WineprefixHint.studio.value, *_profiled_hints()],
+        hints=[WineprefixHint.studio.value, WineprefixHint.render_dx11],
         prime_offload_sink=_prime_offload_sink()
     )
 
