@@ -32,8 +32,8 @@ def git_repository():
     return "https://gitlab.com/brinkervii/grapejuice"
 
 
-def git_wiki():
-    return f"{git_repository()}/-/wikis/home"
+def documentation_link():
+    return "https://brinkervii.gitlab.io/grapejuice/docs/"
 
 
 def git_grapejuice_init():

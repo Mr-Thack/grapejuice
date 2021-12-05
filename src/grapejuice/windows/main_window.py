@@ -219,7 +219,7 @@ class MainWindow(GtkBase):
 
         from grapejuice_common.util import xdg_open
 
-        xdg_open(variables.git_wiki())
+        xdg_open(variables.documentation_link())
 
     def _show_start_page(self):
         self._set_page(self.widgets.cc_start_page)
