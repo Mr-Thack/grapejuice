@@ -235,9 +235,9 @@ def _pick_renderer(state: ComputeParametersState):
 
         except CalledProcessError as e:
             log.error(e)
-            log.info("Cannot get GL info, prefer D3D11 instead")
+            log.info("Cannot get GL info, let Roblox decide")
             # As a last resort, use D3D11 if GL info is not available
-            preferred_roblox_renderer = RobloxRenderer.DX11
+            preferred_roblox_renderer = RobloxRenderer.Undetermined
 
     state.preferred_roblox_renderer = preferred_roblox_renderer
     state.use_mesa_gl_override = use_mesa_gl_override

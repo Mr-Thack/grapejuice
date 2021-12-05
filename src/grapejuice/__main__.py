@@ -176,7 +176,8 @@ def main(in_args=None):
     update_info_provider = guess_relevant_provider()
 
     if current_settings:
-        log.info("Loaded settings")
+        current_settings.perform_migrations()
+        log.info("Loaded and migrated settings")
 
     if in_args is None:
         in_args = sys.argv

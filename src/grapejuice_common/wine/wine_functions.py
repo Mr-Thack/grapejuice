@@ -5,6 +5,7 @@ from typing import List, Optional, Dict
 
 from grapejuice_common.errors import WineprefixNotFoundUsingHints
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
+from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
@@ -22,7 +23,7 @@ def get_wineprefix(hints: List[WineprefixHint]):
 
         if has_all_hints:
             return Wineprefix(
-                configuration=WineprefixConfigurationModel(**prefix_configuration)
+                configuration=WineprefixConfigurationModel.from_dict(prefix_configuration)
             )
 
     raise WineprefixNotFoundUsingHints(hints)
@@ -70,6 +71,33 @@ def _wine_home(settings) -> str:
     return "/usr"
 
 
+renderer_hint_mapping = {
+    RobloxRenderer.Vulkan: WineprefixHint.render_vulkan,
+    RobloxRenderer.OpenGL: WineprefixHint.render_opengl,
+    RobloxRenderer.DX11: WineprefixHint.render_dx11
+}
+
+
+def _profiled_hints() -> List[WineprefixHint]:
+    from grapejuice_common.features.settings import current_settings
+
+    try:
+        profile = current_settings.hardware_profile
+
+        render_hint = renderer_hint_mapping.get(profile.preferred_roblox_renderer, None)
+
+        return list(map(
+            lambda h: h.value,
+            filter(None, [
+                render_hint
+            ])
+        ))
+
+    except Exception as e:
+        LOG.error(e)
+        return []
+
+
 def create_player_prefix_model(settings: Optional[Dict] = None):
     if settings is None:
         settings = dict()
@@ -82,7 +110,7 @@ def create_player_prefix_model(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[WineprefixHint.player.value, WineprefixHint.app.value]
+        hints=[WineprefixHint.player.value, WineprefixHint.app.value, *_profiled_hints()]
     )
 
 
@@ -95,7 +123,7 @@ def create_studio_prefix_model(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[WineprefixHint.studio.value]
+        hints=[WineprefixHint.studio.value, *_profiled_hints()]
     )
 
 
@@ -108,7 +136,7 @@ def create_new_model_for_user(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[]
+        hints=[*_profiled_hints()]
     )
 
     model.create_name_on_disk_from_display_name()

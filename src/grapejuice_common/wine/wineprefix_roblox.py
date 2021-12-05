@@ -10,14 +10,22 @@ from grapejuice_common import paths, variables
 from grapejuice_common.errors import RobloxExecutableNotFound
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.roblox_product import RobloxProduct
+from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.util import download_file
 from grapejuice_common.wine.registry_file import RegistryFile
 from grapejuice_common.wine.wineprefix_core_control import WineprefixCoreControl, ProcessWrapper
+from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths
 
 LOG = logging.getLogger(__name__)
 
 ROBLOX_DOWNLOAD_URL = "https://www.roblox.com/download/client"
+
+hint_renderer_mapping = {
+    WineprefixHint.render_vulkan: RobloxRenderer.Vulkan,
+    WineprefixHint.render_opengl: RobloxRenderer.OpenGL,
+    WineprefixHint.render_dx11: RobloxRenderer.DX11
+}
 
 
 def _app_settings_path(executable_path: Path) -> Path:
@@ -147,14 +155,19 @@ class WineprefixRoblox:
             return False
 
     def _write_flags(self, product: RobloxProduct, settings_paths: Iterable[Path]):
-        flags = self._configuration.fast_flags.get(product.value, None)
-        if flags is None:
-            return
+        flags = self._configuration.fast_flags.get(product.value, None) or dict()
 
+        # Apply rendering hints
+        for hint in self._configuration.hints_as_enum:
+            if hint in hint_renderer_mapping:
+                renderer = hint_renderer_mapping[hint]
+                flags[renderer.prefer_flag] = True
+
+        # Don't do anything when we don't have any flags
         if len(flags) <= 0:
             return
 
-        json_dump = json.dumps(flags)
+        json_dump = json.dumps(flags, indent=2)
 
         for p in settings_paths:
             LOG.info(f"Writing flags for {product} to: {p}")

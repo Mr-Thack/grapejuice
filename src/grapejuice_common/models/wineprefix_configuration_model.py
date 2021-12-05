@@ -43,6 +43,6 @@ class WineprefixConfigurationModel:
 
         self.name_on_disk = s
 
-
-def from_json(json_object: Dict[str, any]):
-    return WineprefixConfigurationModel(**json_object)
+    @classmethod
+    def from_dict(cls, data: Dict[str, any]):
+        return cls(**data)

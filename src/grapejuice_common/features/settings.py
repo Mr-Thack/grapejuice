@@ -8,7 +8,6 @@ from typing import Dict, List, Optional
 from grapejuice_common import paths
 from grapejuice_common.hardware_info import hardware_profile
 from grapejuice_common.hardware_info.hardware_profile import HardwareProfile
-from grapejuice_common.models import wineprefix_configuration_model
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 
 LOG = logging.getLogger(__name__)
@@ -52,7 +51,7 @@ class UserSettings:
         self._location = file_location
         self.load()
 
-    def _perform_migrations(self, desired_migration_version: int = CURRENT_SETTINGS_VERSION):
+    def perform_migrations(self, desired_migration_version: int = CURRENT_SETTINGS_VERSION):
         if self.version == desired_migration_version:
             LOG.debug(f"Settings file is up to date at version {self.version}")
             return
@@ -101,12 +100,12 @@ class UserSettings:
 
     @property
     def parsed_wineprefixes_sorted(self) -> List[WineprefixConfigurationModel]:
-        return list(map(wineprefix_configuration_model.from_json, self.raw_wineprefixes_sorted))
+        return list(map(WineprefixConfigurationModel.from_dict, self.raw_wineprefixes_sorted))
 
     def find_wineprefix(self, search_id: str) -> Optional[WineprefixConfigurationModel]:
         for prefix_configuration in self._settings_object.get(k_wineprefixes, []):
             if prefix_configuration["id"] == search_id:
-                return WineprefixConfigurationModel(**prefix_configuration)
+                return WineprefixConfigurationModel.from_dict(prefix_configuration)
 
         return None
 
@@ -175,8 +174,6 @@ class UserSettings:
         else:
             LOG.info("There is no settings file present, going to save one")
             save_settings = True
-
-        self._perform_migrations()
 
         save_settings = self._profile_hardware() or save_settings
 
