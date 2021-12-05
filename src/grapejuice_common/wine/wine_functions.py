@@ -116,8 +116,7 @@ def _prime_offload_sink() -> int:
 
 
 def create_player_prefix_model(settings: Optional[Dict] = None):
-    if settings is None:
-        settings = dict()
+    settings = settings or dict()
 
     return WineprefixConfigurationModel(
         id=str(uuid.uuid4()),
@@ -133,6 +132,8 @@ def create_player_prefix_model(settings: Optional[Dict] = None):
 
 
 def create_studio_prefix_model(settings: Optional[Dict] = None):
+    settings = settings or dict()
+
     return WineprefixConfigurationModel(
         id=str(uuid.uuid4()),
         priority=0,
@@ -147,6 +148,8 @@ def create_studio_prefix_model(settings: Optional[Dict] = None):
 
 
 def create_new_model_for_user(settings: Optional[Dict] = None):
+    settings = settings or dict()
+
     model = WineprefixConfigurationModel(
         id=str(uuid.uuid4()),
         priority=0,
