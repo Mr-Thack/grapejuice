@@ -30,6 +30,7 @@ DRIVER_TO_VENDOR_MAPPING = {
     "i915": GPUVendor.INTEL,
     "amdgpu": GPUVendor.AMD,
     "r600": GPUVendor.AMD,
+    "radeon": GPUVendor.AMD,
     "nvidia": GPUVendor.NVIDIA,
     "nouveau": GPUVendor.NVIDIA
 }
