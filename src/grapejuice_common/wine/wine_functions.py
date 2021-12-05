@@ -13,7 +13,7 @@ from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 LOG = logging.getLogger(__name__)
 
 
-def get_wineprefix(hints: List[WineprefixHint]):
+def get_wineprefix(hints: List[WineprefixHint], when_not_found_prefix_factory: Optional[callable] = None):
     from grapejuice_common.features.settings import current_settings, k_wineprefixes
 
     for prefix_configuration in current_settings.get(k_wineprefixes):
@@ -27,26 +27,33 @@ def get_wineprefix(hints: List[WineprefixHint]):
                 configuration=WineprefixConfigurationModel.from_dict(prefix_configuration)
             )
 
-    raise WineprefixNotFoundUsingHints(hints)
+    if callable(when_not_found_prefix_factory):
+        when_not_found_prefix_factory()
+        get_wineprefix(hints)
+
+    else:
+        raise WineprefixNotFoundUsingHints(hints)
+
+
+def _create_and_save_wineprefix(model_factory):
+    from grapejuice_common.features.settings import current_settings
+
+    model = model_factory()
+    current_settings.save_prefix_model(model)
 
 
 OtherHints = Optional[List[WineprefixHint]]
 
 
-def _get_wineprefix_with_other_hints(hint: WineprefixHint, other_hints: OtherHints) -> Wineprefix:
-    return get_wineprefix(hints=list({hint, *(other_hints or [])}))
-
-
-def get_studio_wineprefix(other_hints: OtherHints = None) -> Wineprefix:
-    return _get_wineprefix_with_other_hints(WineprefixHint.studio, other_hints)
-
-
-def get_player_wineprefix(other_hints: OtherHints = None) -> Wineprefix:
-    return _get_wineprefix_with_other_hints(WineprefixHint.player, other_hints)
-
-
-def get_app_wineprefix(other_hints: OtherHints = None) -> Wineprefix:
-    return _get_wineprefix_with_other_hints(WineprefixHint.app, other_hints)
+def _get_wineprefix_with_other_hints(
+    hint: WineprefixHint,
+    other_hints: OtherHints,
+    when_not_found_prefix_factory: Optional[callable] = None
+) -> Wineprefix:
+    return get_wineprefix(
+        hints=list({hint, *(other_hints or [])}),
+        when_not_found_prefix_factory=when_not_found_prefix_factory
+    )
 
 
 def find_wineprefix(prefix_id: str) -> Wineprefix:
@@ -142,7 +149,7 @@ def create_studio_prefix_model(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[WineprefixHint.studio.value, WineprefixHint.render_dx11],
+        hints=[WineprefixHint.studio.value, WineprefixHint.render_dx11.value],
         prime_offload_sink=_prime_offload_sink()
     )
 
@@ -165,3 +172,27 @@ def create_new_model_for_user(settings: Optional[Dict] = None):
     model.create_name_on_disk_from_display_name()
 
     return model
+
+
+def get_studio_wineprefix(other_hints: OtherHints = None) -> Wineprefix:
+    return _get_wineprefix_with_other_hints(
+        WineprefixHint.studio,
+        other_hints,
+        when_not_found_prefix_factory=_create_and_save_wineprefix(create_studio_prefix_model)
+    )
+
+
+def get_player_wineprefix(other_hints: OtherHints = None) -> Wineprefix:
+    return _get_wineprefix_with_other_hints(
+        WineprefixHint.player,
+        other_hints,
+        when_not_found_prefix_factory=_create_and_save_wineprefix(create_player_prefix_model)
+    )
+
+
+def get_app_wineprefix(other_hints: OtherHints = None) -> Wineprefix:
+    return _get_wineprefix_with_other_hints(
+        WineprefixHint.app,
+        other_hints,
+        when_not_found_prefix_factory=_create_and_save_wineprefix(create_player_prefix_model)
+    )
