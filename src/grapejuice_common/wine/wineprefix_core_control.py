@@ -405,7 +405,6 @@ class WineprefixCoreControl:
 
         wine_binary = self.wine_binary("64" if use_wine64 else "")
         command = [wine_binary, exe_path_string, *args]
-        LOG.info("Command: " + " ".join(command))
 
         if current_settings.get(settings.k_no_daemon_mode):
             return run_exe_no_daemon(command, exe_name, run_async, post_run_function=post_run_function)
