@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List, Optional, Dict
 
 from grapejuice_common.errors import WineprefixNotFoundUsingHints
+from grapejuice_common.hardware_info.hardware_profile import HardwareProfile
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.wine.wineprefix import Wineprefix
@@ -78,24 +79,46 @@ renderer_hint_mapping = {
 }
 
 
-def _profiled_hints() -> List[WineprefixHint]:
+def _hardware_profile() -> HardwareProfile:
     from grapejuice_common.features.settings import current_settings
 
+    return current_settings.hardware_profile
+
+
+def _profiled_hints() -> List[WineprefixHint]:
     try:
-        profile = current_settings.hardware_profile
-
-        render_hint = renderer_hint_mapping.get(profile.preferred_roblox_renderer, None)
-
-        return list(map(
-            lambda h: h.value,
-            filter(None, [
-                render_hint
-            ])
-        ))
+        profile = _hardware_profile()
 
     except Exception as e:
+        LOG.error("Could not get hardware profile")
         LOG.error(e)
+
         return []
+
+    render_hint = renderer_hint_mapping.get(profile.preferred_roblox_renderer, None)
+
+    return list(map(
+        lambda h: h.value,
+        filter(None, [
+            render_hint
+        ])
+    ))
+
+
+def _prime_offload_sink() -> int:
+    try:
+        profile = _hardware_profile()
+
+    except Exception as e:
+        LOG.error("Could not get hardware profile")
+        LOG.error(e)
+
+        return -1
+
+    if profile.should_prime:
+        return profile.provider_index
+
+    return -1
 
 
 def create_player_prefix_model(settings: Optional[Dict] = None):
@@ -110,7 +133,8 @@ def create_player_prefix_model(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[WineprefixHint.player.value, WineprefixHint.app.value, *_profiled_hints()]
+        hints=[WineprefixHint.player.value, WineprefixHint.app.value, *_profiled_hints()],
+        prime_offload_sink=_prime_offload_sink()
     )
 
 
@@ -123,7 +147,8 @@ def create_studio_prefix_model(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[WineprefixHint.studio.value, *_profiled_hints()]
+        hints=[WineprefixHint.studio.value, *_profiled_hints()],
+        prime_offload_sink=_prime_offload_sink()
     )
 
 
@@ -136,7 +161,8 @@ def create_new_model_for_user(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[*_profiled_hints()]
+        hints=[*_profiled_hints()],
+        prime_offload_sink=_prime_offload_sink()
     )
 
     model.create_name_on_disk_from_display_name()

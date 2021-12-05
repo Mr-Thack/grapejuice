@@ -1,4 +1,5 @@
 import atexit
+import json
 import logging
 import os
 import shutil
@@ -9,9 +10,10 @@ import time
 from datetime import datetime
 from pathlib import Path
 from string import Template
-from typing import Union, List
+from typing import Union, List, Dict
 
 from grapejuice_common import variables, paths
+from grapejuice_common.hardware_info.graphics_card import GPUVendor
 from grapejuice_common.logs.log_util import log_function
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.util.string_util import non_empty_string
@@ -226,6 +228,37 @@ class WineprefixCoreControl:
 
         return str(path)
 
+    def _dri_prime_variables(self) -> Dict[str, str]:
+        from grapejuice_common.features.settings import current_settings
+
+        try:
+            profile = current_settings.hardware_profile
+
+        except Exception as e:
+            LOG.error("Could not get hardware profile")
+            LOG.error(e)
+
+            return dict()
+
+        prime_env = dict()
+
+        if self._configuration.prime_offload_sink >= 0:
+            sink = str(self._configuration.prime_offload_sink)
+
+            prime_env = {"DRI_PRIME": sink}
+
+            if profile.gpu_vendor is GPUVendor.NVIDIA:
+                prime_env = {
+                    **prime_env,
+                    "__NV_PRIME_RENDER_OFFLOAD": sink,
+                    "__VK_LAYER_NV_optimus": "NVIDIA_only",
+                    "__GLX_VENDOR_LIBRARY_NAME": "nvidia"
+                }
+
+        LOG.info(f"PRIME environment variables: {json.dumps(prime_env)}")
+
+        return prime_env
+
     def prepare_for_launch(self):
         user_env = self._configuration.env
         dll_overrides = list(filter(non_empty_string, self._configuration.dll_overrides.split(DLL_OVERRIDE_SEP)))
@@ -235,7 +268,8 @@ class WineprefixCoreControl:
             "WINEDLLOVERRIDES": DLL_OVERRIDE_SEP.join(dll_overrides),
             **user_env,
             "WINEPREFIX": str(self._prefix_paths.base_directory),
-            "WINEARCH": "win64"
+            "WINEARCH": "win64",
+            **self._dri_prime_variables()
         }
 
         # Variables in os.environ take priority
