@@ -173,6 +173,7 @@ class UserSettings:
 
         else:
             LOG.info("There is no settings file present, going to save one")
+            self._settings_object = default_settings()
             save_settings = True
 
         save_settings = self._profile_hardware() or save_settings
@@ -201,6 +202,7 @@ class UserSettings:
             self._settings_object[k_unsupported_settings][k] = self._settings_object.pop(k)
 
         # Perform actual save
+        self._location.parent.mkdir(parents=True, exist_ok=True)
         with self._location.open("w+") as fp:
             self._settings_object = {
                 **defaults,

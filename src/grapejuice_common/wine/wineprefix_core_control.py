@@ -184,6 +184,24 @@ def default_dll_overrides() -> List[str]:
     ]
 
 
+def _legacy_hardware_variables():
+    from grapejuice_common.features.settings import current_settings
+
+    d = dict()
+
+    try:
+        profile = current_settings.hardware_profile
+
+        if profile.use_mesa_gl_override:
+            d["MESA_GL_VERSION_OVERRIDE"] = "4.4"
+
+    except Exception as e:
+        LOG.error("Could not get hardware profile")
+        LOG.error(e)
+
+    return d
+
+
 class WineprefixCoreControl:
     _prefix_paths: WineprefixPaths
     _configuration: WineprefixConfigurationModel
@@ -259,7 +277,7 @@ class WineprefixCoreControl:
 
         return prime_env
 
-    def prepare_for_launch(self):
+    def prepare_for_launch(self, accelerate_graphics: bool = False):
         user_env = self._configuration.env
         dll_overrides = list(filter(non_empty_string, self._configuration.dll_overrides.split(DLL_OVERRIDE_SEP)))
         dll_overrides.extend(default_dll_overrides())
@@ -269,7 +287,8 @@ class WineprefixCoreControl:
             **user_env,
             "WINEPREFIX": str(self._prefix_paths.base_directory),
             "WINEARCH": "win64",
-            **self._dri_prime_variables()
+            **(self._dri_prime_variables() if accelerate_graphics else dict()),
+            **_legacy_hardware_variables()
         }
 
         # Variables in os.environ take priority
@@ -280,6 +299,8 @@ class WineprefixCoreControl:
         # Setting WINEDEBUG to -all *should* fix it
         if "WINEDEBUG" not in apply_env:
             apply_env["WINEDEBUG"] = "-all"
+
+        LOG.info("Applying environment: " + json.dumps(apply_env))
 
         # Apply env
         for k, v in apply_env.items():
@@ -360,13 +381,14 @@ class WineprefixCoreControl:
         *args,
         run_async=False,
         use_wine64=False,
+        accelerate_graphics: bool = False,
         post_run_function: callable = None
     ) -> Union[ProcessWrapper, None]:
         from grapejuice_common.features.settings import current_settings
         from grapejuice_common.features import settings
 
-        self.prepare_for_launch()
-        LOG.info("Prepared Wine.")
+        self.prepare_for_launch(accelerate_graphics=accelerate_graphics)
+        LOG.info("Prepared environment for wine")
 
         if isinstance(exe_path, Path):
             exe_path_string = str(exe_path.resolve())
@@ -383,6 +405,7 @@ class WineprefixCoreControl:
 
         wine_binary = self.wine_binary("64" if use_wine64 else "")
         command = [wine_binary, exe_path_string, *args]
+        LOG.info("Command: " + " ".join(command))
 
         if current_settings.get(settings.k_no_daemon_mode):
             return run_exe_no_daemon(command, exe_name, run_async, post_run_function=post_run_function)

@@ -186,7 +186,7 @@ class WineprefixRoblox:
         if uri:
             run_args.append(uri)
 
-        self._core_control.run_exe(*run_args)
+        self._core_control.run_exe(*run_args, accelerate_graphics=True)
 
     def run_roblox_player(self, uri):
         player_launcher_path = self.roblox_player_launcher_path
@@ -197,7 +197,7 @@ class WineprefixRoblox:
 
         # TODO: Reimplement FPS unlocker launch
 
-        self._core_control.run_exe(player_launcher_path, uri)
+        self._core_control.run_exe(player_launcher_path, uri, accelerate_graphics=True)
 
     def run_roblox_studio_with_events(self, run_async: bool = True, **events) -> ProcessWrapper:
         roblox_studio_path = self.roblox_studio_executable_path
