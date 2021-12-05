@@ -13,6 +13,7 @@ from string import Template
 from typing import Union, List, Dict
 
 from grapejuice_common import variables, paths
+from grapejuice_common.errors import HardwareProfilingError
 from grapejuice_common.hardware_info.graphics_card import GPUVendor
 from grapejuice_common.logs.log_util import log_function
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
@@ -195,7 +196,7 @@ def _legacy_hardware_variables():
         if profile.use_mesa_gl_override:
             d["MESA_GL_VERSION_OVERRIDE"] = "4.4"
 
-    except Exception as e:
+    except HardwareProfilingError as e:
         LOG.error("Could not get hardware profile")
         LOG.error(e)
 
@@ -252,7 +253,7 @@ class WineprefixCoreControl:
         try:
             profile = current_settings.hardware_profile
 
-        except Exception as e:
+        except HardwareProfilingError as e:
             LOG.error("Could not get hardware profile")
             LOG.error(e)
 

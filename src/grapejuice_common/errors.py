@@ -29,3 +29,7 @@ class WineprefixNotFoundUsingHints(RuntimeError):
         msg = f"A wineprefix could not be found using hints. The following hints were used:\n\n{hints_as_string}"
 
         super().__init__(msg)
+
+
+class HardwareProfilingError(RuntimeError):
+    pass

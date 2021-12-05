@@ -3,7 +3,7 @@ import uuid
 from pathlib import Path
 from typing import List, Optional, Dict
 
-from grapejuice_common.errors import WineprefixNotFoundUsingHints
+from grapejuice_common.errors import WineprefixNotFoundUsingHints, HardwareProfilingError
 from grapejuice_common.hardware_info.hardware_profile import HardwareProfile
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.roblox_renderer import RobloxRenderer
@@ -79,20 +79,21 @@ renderer_hint_mapping = {
 }
 
 
-def _hardware_profile() -> HardwareProfile:
+def _hardware_profile() -> Optional[HardwareProfile]:
     from grapejuice_common.features.settings import current_settings
 
-    return current_settings.hardware_profile
+    try:
+        return current_settings.hardware_profile
+
+    except HardwareProfilingError as e:
+        LOG.error(e)
+
+    return None
 
 
 def _profiled_hints() -> List[WineprefixHint]:
-    try:
-        profile = _hardware_profile()
-
-    except Exception as e:
-        LOG.error("Could not get hardware profile")
-        LOG.error(e)
-
+    profile = _hardware_profile()
+    if profile is None:
         return []
 
     render_hint = renderer_hint_mapping.get(profile.preferred_roblox_renderer, None)
@@ -106,16 +107,9 @@ def _profiled_hints() -> List[WineprefixHint]:
 
 
 def _prime_offload_sink() -> int:
-    try:
-        profile = _hardware_profile()
+    profile = _hardware_profile()
 
-    except Exception as e:
-        LOG.error("Could not get hardware profile")
-        LOG.error(e)
-
-        return -1
-
-    if profile.should_prime:
+    if profile and profile.should_prime:
         return profile.provider_index
 
     return -1

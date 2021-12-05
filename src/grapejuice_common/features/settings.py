@@ -6,8 +6,8 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from grapejuice_common import paths
-from grapejuice_common.hardware_info import hardware_profile
-from grapejuice_common.hardware_info.hardware_profile import HardwareProfile
+from grapejuice_common.errors import HardwareProfilingError
+from grapejuice_common.hardware_info.hardware_profile import HardwareProfile, profile_hardware
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 
 LOG = logging.getLogger(__name__)
@@ -128,7 +128,14 @@ class UserSettings:
 
         if saved_profile:
             from grapejuice_common.hardware_info.lspci import LSPci
-            hardware_list = LSPci()
+
+            try:
+                hardware_list = LSPci()
+
+            except Exception as e:
+                LOG.info("Failed to get LSPci info: " + str(e))
+
+                return False
 
             should_profile_hardware = (hardware_list.graphics_id != saved_profile["graphics_id"]) or \
                                       (saved_profile.get("version", -1) != HardwareProfile.version)
@@ -138,8 +145,16 @@ class UserSettings:
 
         if should_profile_hardware:
             LOG.info("Going to profile hardware")
-            profile = hardware_profile.profile_hardware()
+
+            try:
+                profile = profile_hardware()
+
+            except HardwareProfilingError as e:
+                LOG.error("Failed to profile hardware: " + str(e))
+                return False
+
             self._settings_object[k_hardware_profile] = profile.as_dict
+
             return True
 
         return False

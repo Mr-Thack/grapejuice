@@ -6,6 +6,7 @@ from itertools import chain
 from subprocess import CalledProcessError
 from typing import Dict, List
 
+from grapejuice_common.errors import HardwareProfilingError
 from grapejuice_common.hardware_info.chassis_type import is_mobile_chassis, ChassisType
 from grapejuice_common.hardware_info.glx_info import GLXInfo
 from grapejuice_common.hardware_info.graphics_card import GraphicsCard, GPU_VENDOR_PRIORITY, GPUVendor
@@ -257,15 +258,19 @@ def _pick_renderer(state: ComputeParametersState):
 def profile_hardware() -> HardwareProfile:
     log.info("Computing hardware profile parameters")
 
-    state = ComputeParametersState()
+    try:
+        state = ComputeParametersState()
 
-    _collect_information(state)
-    _consider_chassis(state)
-    _consider_cards_that_can_be_primed(state)
-    _pick_target_card(state)
-    _pick_renderer(state)
+        _collect_information(state)
+        _consider_chassis(state)
+        _consider_cards_that_can_be_primed(state)
+        _pick_target_card(state)
+        _pick_renderer(state)
 
-    return HardwareProfile.from_profiler(state)
+        return HardwareProfile.from_profiler(state)
+
+    except Exception as e:
+        raise HardwareProfilingError from e
 
 
 if __name__ == '__main__':
