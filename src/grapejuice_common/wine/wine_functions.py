@@ -29,17 +29,20 @@ def get_wineprefix(hints: List[WineprefixHint], when_not_found_prefix_factory: O
 
     if callable(when_not_found_prefix_factory):
         when_not_found_prefix_factory()
-        get_wineprefix(hints)
+        return get_wineprefix(hints)
 
     else:
         raise WineprefixNotFoundUsingHints(hints)
 
 
 def _create_and_save_wineprefix(model_factory):
-    from grapejuice_common.features.settings import current_settings
+    def factory():
+        from grapejuice_common.features.settings import current_settings
 
-    model = model_factory()
-    current_settings.save_prefix_model(model)
+        model = model_factory()
+        current_settings.save_prefix_model(model)
+
+    return factory
 
 
 OtherHints = Optional[List[WineprefixHint]]
