@@ -69,6 +69,10 @@ class ComputeParametersState:
     def number_of_graphics_cards(self):
         return len(self.hardware_list.graphics_cards)
 
+    @property
+    def all_cards_can_do_vulkan(self):
+        return all(map(lambda card: card.can_do_vulkan, self.graphics_cards_unordered))
+
 
 @dataclass
 class HardwareProfile:
@@ -195,9 +199,16 @@ def _pick_target_card(state: ComputeParametersState):
             target_card = next(card_iter)
 
         else:
-            log.info("Pick the first vulkan card")  # Which we can prime
-            vulkan_card = next(filter(lambda card: card.can_do_vulkan, card_iter))
-            target_card = vulkan_card or state.graphics_cards_ordered[0]
+            # Only pick the first Vulkan card if *all* cards can do Vulkan
+            # Odds are if not all cards can do vulkan, is that the Intel Vulkan guess is wrong
+
+            if state.all_cards_can_do_vulkan:
+                log.info("Pick the first vulkan card")  # Which we can prime
+                target_card = next(filter(lambda card: card.can_do_vulkan, card_iter), state.graphics_cards_ordered[0])
+
+            else:
+                log.info("Pick first card because not all of them can do Vulkan")
+                target_card = state.graphics_cards_ordered[0]
 
     state.target_card = target_card
 
