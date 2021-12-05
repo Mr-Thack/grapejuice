@@ -68,7 +68,9 @@ mobile_chassis = (
     ChassisType.Tablet,
     ChassisType.Convertible,
     ChassisType.EmbeddedPC,
-    ChassisType.MiniPC
+    ChassisType.MiniPC,
+    ChassisType.Portable,
+    ChassisType.LowProfileDesktop  # Consider beefed up office PCs
 )
 
 
