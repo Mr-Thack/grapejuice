@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from grapejuice_common import paths
-from grapejuice_common.errors import HardwareProfilingError
+from grapejuice_common.errors import HardwareProfilingError, NoHardwareProfile
 from grapejuice_common.hardware_info.hardware_profile import HardwareProfile, profile_hardware
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 
@@ -88,6 +88,9 @@ class UserSettings:
     def hardware_profile(self) -> HardwareProfile:
         if self._profile_hardware():
             self.save()
+
+        if k_hardware_profile not in self._settings_object:
+            raise NoHardwareProfile()
 
         return HardwareProfile.from_dict(self._settings_object[k_hardware_profile])
 

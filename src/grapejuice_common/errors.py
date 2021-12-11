@@ -33,3 +33,7 @@ class WineprefixNotFoundUsingHints(RuntimeError):
 
 class HardwareProfilingError(RuntimeError):
     pass
+
+
+class NoHardwareProfile(HardwareProfilingError):
+    pass
