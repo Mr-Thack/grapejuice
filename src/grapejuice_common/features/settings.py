@@ -148,12 +148,11 @@ class UserSettings:
 
             try:
                 profile = profile_hardware()
+                self._settings_object[k_hardware_profile] = profile.as_dict
 
             except HardwareProfilingError as e:
                 LOG.error("Failed to profile hardware: " + str(e))
                 return False
-
-            self._settings_object[k_hardware_profile] = profile.as_dict
 
             return True
 
