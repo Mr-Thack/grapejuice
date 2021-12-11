@@ -89,7 +89,7 @@ class UserSettings:
         if self._profile_hardware():
             self.save()
 
-        if k_hardware_profile not in self._settings_object:
+        if self._settings_object.get(k_hardware_profile, None) is None:
             raise NoHardwareProfile()
 
         return HardwareProfile.from_dict(self._settings_object[k_hardware_profile])
