@@ -25,4 +25,4 @@ class RobloxStudioRecipe(Recipe):
             prefix.roblox.run_roblox_studio()
 
         else:
-            prefix.roblox.install_roblox(post_install_function=prefix.roblox.run_roblox_studio())
+            prefix.roblox.install_roblox(post_install_function=prefix.roblox.run_roblox_studio)
