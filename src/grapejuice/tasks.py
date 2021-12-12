@@ -1,9 +1,11 @@
 import os
+import random
 import subprocess
 import sys
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Optional
 
 from grapejuice import background
 from grapejuice_common import paths
@@ -112,3 +114,20 @@ class ShowDriveC(background.BackgroundTask):
 
     def work(self):
         xdg_open(str(self._path))
+
+
+class FaultyOnPurpose(background.BackgroundTask):
+    _timeout: int
+
+    def __init__(self, timeout: Optional[int] = None):
+        super().__init__("Causing problems")
+        self._timeout = timeout or random.randint(2, 5)
+
+    def work(self):
+        try:
+            time.sleep(self._timeout)
+
+        except KeyboardInterrupt:
+            pass
+
+        raise RuntimeError("Woops 😈")

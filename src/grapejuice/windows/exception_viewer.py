@@ -1,11 +1,13 @@
 import logging
+import uuid
+from dataclasses import dataclass, field
 from itertools import chain
 from pathlib import Path
 from typing import List, Optional, Iterable, Dict
 
 from gi.repository import Gtk
 
-from grapejuice_common import paths
+from grapejuice_common import paths, variables
 from grapejuice_common.errors import PresentableError, format_exception
 from grapejuice_common.gtk.gtk_base import GtkBase, handler
 from grapejuice_common.gtk.gtk_paginator import GtkPaginator
@@ -18,12 +20,22 @@ from grapejuice_common.util.event import Subscription
 log = logging.getLogger(__name__)
 
 
-def _exception_hash(ex: Exception):
-    return hash(str(ex))
+@dataclass(frozen=True)
+class ExceptionContainer:
+    exception: Exception
+    container_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+
+    def __hash__(self):
+        return hash(self.container_id + str(self.exception))
+
+    def __lt__(self, other):
+        assert isinstance(other, ExceptionContainer)
+
+        return str(self.exception) < str(other.exception)
 
 
 class ExceptionViewer(GtkBase):
-    _exceptions: List[Exception]
+    _exceptions: List[ExceptionContainer]
     _tracebacks: Dict[int, str]
     _paginator: Paginator
     _gtk_paginator: GtkPaginator
@@ -45,42 +57,35 @@ class ExceptionViewer(GtkBase):
         self._is_main = is_main
 
         self._exceptions = list(
-            filter(
-                None,
-                chain(
-                    [exception],
-                    exceptions or []
+            map(
+                ExceptionContainer,
+                filter(
+                    None,
+                    chain(
+                        [exception],
+                        exceptions or []
+                    )
                 )
             )
         )
 
         if len(self._exceptions) <= 0:
-            self._exceptions.append(PresentableError(
-                title="No errors",
-                description="The exception viewer was summoned, but no actual errors were reported to it. It looks "
-                            "like the developer has made a mistake 😳",
-                traceback_from_given_info=True
-            ))
+            self._exceptions.append(
+                ExceptionContainer(
+                    PresentableError(
+                        title="No errors",
+                        description="The exception viewer was summoned, but no actual errors were reported to it. It "
+                                    "looks like the developer has made a mistake 😳",
+                        traceback_from_given_info=True
+                    )
+                )
+            )
+
+        self._make_tracebacks()
 
         single = "Grapejuice has run into a problem! Please check the details below."
         multiple = "Grapejuice has run into multiple problems! Please check the details below."
         self.widgets.problem_intro.set_text(single if len(self._exceptions) <= 1 else multiple)
-
-        self._tracebacks = dict()
-        for ex in self._exceptions:
-            if isinstance(ex, PresentableError):
-                tb = ex.traceback
-
-            else:
-                tb = format_exception(ex)
-
-            tb = tb or "?! Something has gone wrong while getting the traceback"
-            tb = strip_pii(tb)
-
-            log.info(str(ex))
-            log.info(tb)
-
-            self._tracebacks[_exception_hash(ex)] = tb
 
         self._paginator = Paginator(collection=self._exceptions, page_size=1)
         self._gtk_paginator = GtkPaginator(self._paginator)
@@ -89,6 +94,23 @@ class ExceptionViewer(GtkBase):
         self.widgets.pagination_container.add(self._gtk_paginator.root_widget)
 
         self._show_exception(self.current_exception)
+
+    def _make_tracebacks(self):
+        self._tracebacks = dict()
+        for ex_container in self._exceptions:
+            if isinstance(ex_container, PresentableError):
+                tb = ex_container.traceback
+
+            else:
+                tb = format_exception(ex_container.exception)
+
+            tb = tb or "?! Something has gone wrong while getting the traceback"
+            tb = strip_pii(tb)
+
+            log.info(str(ex_container))
+            log.info(tb)
+
+            self._tracebacks[hash(ex_container)] = tb
 
     @handler
     def on_destroy(self, _window):
@@ -141,10 +163,16 @@ class ExceptionViewer(GtkBase):
 
             log.info(f"User accepted file overwrite of {path}")
 
-        tb_string = "\n\n".join(list(self._tracebacks.values()))
+        error_count = len(self._tracebacks)
+        tb_string = "\n\n".join(list(
+            map(
+                lambda t: f"=== Error {t[0] + 1} of {error_count} ===\n{t[1]}",
+                enumerate(self._tracebacks.values())
+            )
+        ))
 
         try:
-            with path.open("w+") as fp:
+            with path.open("w+", encoding=variables.text_encoding()) as fp:
                 fp.write(tb_string)
 
             dialog(f"Successfully saved error information to {path}")
@@ -157,24 +185,24 @@ class ExceptionViewer(GtkBase):
             dialog("Something went wrong while exporting the error information:\n\n" + str(e))
 
     @property
-    def current_exception(self) -> Exception:
+    def current_exception(self) -> ExceptionContainer:
         return self._paginator.page[0]
 
     def _on_paged(self):
         self._show_exception(self.current_exception)
 
-    def _show_exception(self, exception: Exception):
+    def _show_exception(self, exception_container: ExceptionContainer):
 
-        if isinstance(exception, PresentableError):
-            self.widgets.error_title.set_text(exception.title)
-            self.widgets.error_description.set_text(exception.description)
+        if isinstance(exception_container, PresentableError):
+            self.widgets.error_title.set_text(exception_container.title)
+            self.widgets.error_description.set_text(exception_container.description)
 
         set_gtk_widgets_visibility(
             [self.widgets.error_title, self.widgets.error_description],
-            isinstance(exception, PresentableError)
+            isinstance(exception_container, PresentableError)
         )
 
-        self.widgets.traceback_buffer.set_text(self._tracebacks[_exception_hash(exception)])
+        self.widgets.traceback_buffer.set_text(self._tracebacks[hash(exception_container)])
 
     def show(self):
         self.root_widget.show()

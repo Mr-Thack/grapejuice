@@ -114,7 +114,7 @@ class BackgroundTaskHelper:
             on_no_primary_task()
 
         set_gtk_widgets_visibility([self._widgets.background_task_menu], any_tasks_running)
-        set_gtk_widgets_visibility([self._widgets.background_task_error_indicator], self._have_errors)
+        set_gtk_widgets_visibility([self._widgets.background_task_error_button], self._have_errors)
 
     @property
     def _stack(self):
@@ -147,6 +147,14 @@ class BackgroundTaskHelper:
             self._task_reference.remove(to_delete)
             self._widgets.background_task_list.remove(to_delete)
             to_delete.destroy()
+
+    def take_errors(self) -> List[Exception]:
+        taken = [*self._errors]
+        self._errors = []
+
+        self._update()
+
+        return taken
 
     def destroy(self):
         for subscription in self._subscriptions:

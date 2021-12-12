@@ -28,6 +28,11 @@ Author: BrinkerVII <brinkervii@gmail.com>
   <!-- interface-description A Wine+Roblox Management Application -->
   <!-- interface-copyright 2021 -->
   <!-- interface-authors BrinkerVII <brinkervii@gmail.com> -->
+  <object class="GtkImage" id="background_task_error_button_image">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">dialog-error</property>
+  </object>
   <object class="GtkPopover" id="background_task_popover">
     <property name="can-focus">False</property>
     <child>
@@ -545,91 +550,113 @@ Author: BrinkerVII <brinkervii@gmail.com>
           </packing>
         </child>
         <child>
-          <object class="GtkMenuButton" id="background_task_menu">
+          <object class="GtkBox" id="background_task_controls">
             <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="focus-on-click">False</property>
-            <property name="receives-default">True</property>
-            <property name="popover">background_task_popover</property>
+            <property name="can-focus">False</property>
+            <property name="spacing">5</property>
             <child>
-              <object class="GtkBox">
+              <object class="GtkButton" id="background_task_error_button">
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="spacing">5</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Grapejuice has run into some trouble. Click to see details.</property>
+                <property name="image">background_task_error_button_image</property>
+                <property name="always-show-image">True</property>
+                <signal name="clicked" handler="show_errors" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkMenuButton" id="background_task_menu">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="focus-on-click">False</property>
+                <property name="receives-default">True</property>
+                <property name="popover">background_task_popover</property>
                 <child>
-                  <object class="GtkSpinner" id="background_task_spinner">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkImage" id="background_task_error_indicator">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="icon-name">dialog-error</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkStack" id="background_task_status_stack">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="vhomogeneous">False</property>
-                    <property name="transition-type">slide-up</property>
+                    <property name="spacing">5</property>
                     <child>
-                      <object class="GtkLabel" id="background_task_status_label_none">
+                      <object class="GtkSpinner" id="background_task_spinner">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="halign">start</property>
                       </object>
                       <packing>
-                        <property name="name">page0</property>
-                        <property name="title" translatable="yes">page0</property>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="background_task_status_label_a">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">A</property>
-                      </object>
-                      <packing>
-                        <property name="name">page1</property>
-                        <property name="title" translatable="yes">page1</property>
-                        <property name="position">1</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="background_task_status_label_b">
+                      <object class="GtkStack" id="background_task_status_stack">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">B</property>
+                        <property name="vhomogeneous">False</property>
+                        <property name="transition-type">slide-up</property>
+                        <child>
+                          <object class="GtkLabel" id="background_task_status_label_none">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="halign">start</property>
+                          </object>
+                          <packing>
+                            <property name="name">page0</property>
+                            <property name="title" translatable="yes">page0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="background_task_status_label_a">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="label" translatable="yes">A</property>
+                          </object>
+                          <packing>
+                            <property name="name">page1</property>
+                            <property name="title" translatable="yes">page1</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="background_task_status_label_b">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="label" translatable="yes">B</property>
+                          </object>
+                          <packing>
+                            <property name="name">page2</property>
+                            <property name="title" translatable="yes">page2</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
-                        <property name="name">page2</property>
-                        <property name="title" translatable="yes">page2</property>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
                         <property name="position">2</property>
                       </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
                 </child>
               </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
         </child>

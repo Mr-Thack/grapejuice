@@ -205,6 +205,17 @@ class MainWindow(GtkBase):
         window = SettingsWindow()
         window.show()
 
+    @handler
+    def show_errors(self, *_):
+        errors = self._background_task_helper.take_errors()
+        if not errors:
+            return
+
+        from grapejuice.windows.exception_viewer import ExceptionViewer
+
+        window = ExceptionViewer(exceptions=errors)
+        window.show()
+
     def _show_about_window(self):
         self.widgets.dots_menu.popdown()
 
