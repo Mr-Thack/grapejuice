@@ -107,7 +107,7 @@ def glade_directory() -> Path:
 
 
 def grapejuice_glade() -> Path:
-    return glade_directory() / "grapejuice.ui"
+    return glade_directory() / "grapejuice.glade"
 
 
 def global_css() -> Path:
@@ -115,27 +115,27 @@ def global_css() -> Path:
 
 
 def about_glade() -> Path:
-    return glade_directory() / "about.ui"
+    return glade_directory() / "about.glade"
 
 
 def fast_flag_editor_glade() -> Path:
-    return glade_directory() / "fast_flag_editor.ui"
+    return glade_directory() / "fast_flag_editor.glade"
 
 
 def grapejuice_components_glade() -> Path:
-    return glade_directory() / "grapejuice_components.ui"
+    return glade_directory() / "grapejuice_components.glade"
 
 
 def fast_flag_warning_glade() -> Path:
-    return glade_directory() / "fast_flag_warning.ui"
+    return glade_directory() / "fast_flag_warning.glade"
 
 
 def exception_viewer_glade() -> Path:
-    return glade_directory() / "exception_viewer.ui"
+    return glade_directory() / "exception_viewer.glade"
 
 
 def settings_glade() -> Path:
-    return glade_directory() / "settings.ui"
+    return glade_directory() / "settings.glade"
 
 
 def grapejuice_cache_directory() -> Path:
