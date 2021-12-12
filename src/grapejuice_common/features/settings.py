@@ -27,6 +27,7 @@ k_wineprefixes = "wineprefixes"
 k_enabled_tweaks = "enabled_tweaks"
 k_ignore_wine_version = "ignore_wine_version"
 k_unsupported_settings = "unsupported_settings"
+k_try_profiling_hardware = "try_profiling_hardware"
 
 
 def default_settings() -> Dict[str, any]:
@@ -38,6 +39,7 @@ def default_settings() -> Dict[str, any]:
         k_release_channel: "master",
         k_disable_updates: False,
         k_ignore_wine_version: False,
+        k_try_profiling_hardware: True,
         k_wineprefixes: [],
         k_unsupported_settings: dict()
     }
@@ -127,7 +129,18 @@ class UserSettings:
         return value
 
     def _profile_hardware(self, always_profile: Optional[bool] = False) -> bool:
+        """
+        Profile the hardware of the machine Grapejuice is running on. This method may silently
+        fail as profiling hardware is quite a complex task. Due to this, the return value
+        of this method is a boolean indicating if the caller should save the Grapejuice settings.
+        :param always_profile: Override any logic in the method, and just go ahead with the profiling
+        :return: Boolean indicating whether settings should be saved or not.
+        """
         saved_profile = None if always_profile else self._settings_object.get(k_hardware_profile, None)
+
+        should_try = self._settings_object.get(k_try_profiling_hardware, True)
+        if not should_try:
+            return False
 
         if saved_profile:
             from grapejuice_common.hardware_info.lspci import LSPci
@@ -155,7 +168,9 @@ class UserSettings:
 
             except HardwareProfilingError as e:
                 LOG.error("Failed to profile hardware: " + str(e))
-                return False
+                LOG.info("No longer try to profile hardware due to errors")
+
+                self.set(k_try_profiling_hardware, False, save=False)
 
             return True
 
