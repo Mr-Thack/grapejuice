@@ -4,10 +4,23 @@ from typing import Optional, Type, TypeVar, List
 from gi.repository import Gtk
 
 HandlerType = TypeVar("HandlerType")
+HandlerMethod = TypeVar("HandlerMethod")
 
 
-def handler(x):
-    return x
+def handler(x: HandlerMethod) -> HandlerMethod:
+    def wrapper(*args, **kwargs):
+        try:
+            return x(*args, **kwargs)
+
+        except Exception as e:
+            from grapejuice.windows.exception_viewer import ExceptionViewer
+
+            window = ExceptionViewer(exception=e)
+            window.show()
+
+            return None
+
+    return wrapper
 
 
 class WidgetAccessor:
