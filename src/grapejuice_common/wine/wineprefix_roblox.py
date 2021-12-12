@@ -211,9 +211,6 @@ class WineprefixRoblox:
     def run_roblox_studio_with_events(self, run_async: bool = True, **events) -> ProcessWrapper:
         roblox_studio_path = self.roblox_studio_executable_path
 
-        if roblox_studio_path is None:
-            raise RuntimeError("Could not locate Roblox Studio")
-
         run_args = [roblox_studio_path]
 
         for k, v in events.items():
