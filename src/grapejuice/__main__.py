@@ -172,13 +172,6 @@ def func_uninstall_grapejuice(*_):
         print("Uninstallation aborted")
 
 
-def run_daemon_instead(argv):
-    from grapejuiced.__main__ import main as daemon_main
-    daemon_main([sys.argv[0], *argv])
-
-    return 0
-
-
 def _main(in_args=None):
     from grapejuice_common.logs import log_config
 
@@ -196,10 +189,6 @@ def _main(in_args=None):
 
     if in_args is None:
         in_args = sys.argv
-
-    if len(in_args) > 1:
-        if in_args[1].lower() == "grapejuiced":
-            return run_daemon_instead(in_args[2:])
 
     parser = argparse.ArgumentParser(prog="grapejuice", description="Manage Roblox on Linux")
     subparsers = parser.add_subparsers(title="subcommands", help="sub-command help")
