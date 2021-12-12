@@ -55,7 +55,17 @@ class WineprefixPaths:
 
     @property
     def roblox_studio_app_settings(self):
-        return self.roblox_appdata / "ClientSettings" / "StudioAppSettings.json"
+        possible_paths = [
+            self.roblox_appdata / "ClientSettings" / "StudioAppSettings.json",
+            self.user_directory / "Local Settings" / "Application Data" / "Roblox" / "ClientSettings" / "StudioAppSettings.json"
+        ]
+
+        existing_paths = list(filter(lambda p: p.exists(), possible_paths))
+
+        if existing_paths:
+            return existing_paths[0]
+
+        return existing_paths[0]
 
     @property
     def installer_download_location(self):
