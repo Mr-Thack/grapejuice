@@ -1,4 +1,3 @@
-import getpass
 import logging
 import os
 import sys
@@ -8,32 +7,24 @@ from pathlib import Path
 from typing import IO, Union, Optional
 
 from grapejuice_common import paths
-
-
-def _strip_pii(s: str):
-    s = s.replace(str(paths.home()), "~")
-
-    if getpass.getuser().lower() != "root":
-        s = s.replace(getpass.getuser(), "[REDACTED]")
-
-    return s
+from grapejuice_common.util import strip_pii
 
 
 class GrapejuiceLogFormatter(logging.Formatter):
     def format(self, record: LogRecord) -> str:
-        return _strip_pii(super().format(record))
+        return strip_pii(super().format(record))
 
     def formatTime(self, record: LogRecord, datefmt: Optional[str] = ...) -> str:
-        return _strip_pii(super().formatTime(record, datefmt))
+        return strip_pii(super().formatTime(record, datefmt))
 
     def formatException(self, ei) -> str:
-        return _strip_pii(super().formatException(ei))
+        return strip_pii(super().formatException(ei))
 
     def formatMessage(self, record: LogRecord) -> str:
-        return _strip_pii(super().formatMessage(record))
+        return strip_pii(super().formatMessage(record))
 
     def formatStack(self, stack_info: str) -> str:
-        return _strip_pii(super().formatStack(stack_info))
+        return strip_pii(super().formatStack(stack_info))
 
 
 class LoggerConfiguration:

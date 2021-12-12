@@ -130,6 +130,10 @@ def fast_flag_warning_glade() -> Path:
     return glade_directory() / "fast_flag_warning.ui"
 
 
+def exception_viewer_glade() -> Path:
+    return glade_directory() / "exception_viewer.ui"
+
+
 def settings_glade() -> Path:
     return glade_directory() / "settings.ui"
 

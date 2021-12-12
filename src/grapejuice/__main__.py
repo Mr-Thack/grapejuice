@@ -10,6 +10,16 @@ from grapejuice_common.logs import log_config
 from grapejuice_common.logs.log_vacuum import vacuum_logs
 
 
+def handle_fatal_error(ex: Exception):
+    def make_exception_window():
+        from grapejuice.windows.exception_viewer import ExceptionViewer
+        window = ExceptionViewer(exception=ex, is_main=True)
+
+        window.show()
+
+    gtk_boot(make_exception_window)
+
+
 def main_gui():
     def make_main_window():
         from grapejuice.windows.main_window import MainWindow
@@ -222,8 +232,15 @@ def main(in_args=None):
     exit_code = 1
 
     if hasattr(args, "func"):
-        f: Callable[[any], int] = getattr(args, "func")
-        exit_code = f(args) or 0
+        try:
+            f: Callable[[any], int] = getattr(args, "func")
+            exit_code = f(args) or 0
+
+        except Exception as e:
+            log.error(str(e))
+            handle_fatal_error(e)
+
+            exit_code = -999
 
     else:
         parser.print_help()

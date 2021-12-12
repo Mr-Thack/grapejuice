@@ -31,3 +31,15 @@ def download_file(url, target_path: Path):
 def xdg_open(*args):
     # Find a less heinous way of opening a program while deferring ownership
     os.spawnlp(os.P_NOWAIT, "xdg-open", "xdg-open", *list(map(str, args)))
+
+
+def strip_pii(s: str):
+    from grapejuice_common import paths
+    import getpass
+
+    s = s.replace(str(paths.home()), "~")
+
+    if getpass.getuser().lower() != "root":
+        s = s.replace(getpass.getuser(), "[REDACTED]")
+
+    return s

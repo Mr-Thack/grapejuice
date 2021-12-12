@@ -2,13 +2,21 @@ import sys
 
 from grapejuice_common import paths
 
+did_require_version = False
+
 
 def gtk_boot(main_function, *args, gtk_main=True, **kwargs):
+    global did_require_version
+
     assert callable(main_function)
     sys.argv[0] = "Grapejuice"
 
-    import gi
-    gi.require_version("Gtk", "3.0")
+    if not did_require_version:
+        import gi
+        gi.require_version("Gtk", "3.0")
+
+        did_require_version = True
+
     from gi.repository import Gtk
 
     from grapejuice_common.gtk.gtk_styling import load_style_from_path

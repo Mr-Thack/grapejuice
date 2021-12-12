@@ -1,6 +1,60 @@
-from typing import List
+import traceback
+from typing import List, Optional
 
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
+
+
+def format_exception(ex: Exception):
+    return "".join(
+        traceback.format_exception(
+            etype=type(ex),
+            value=ex,
+            tb=ex.__traceback__
+        )
+    )
+
+
+class PresentableError(RuntimeError):
+    _title: str
+    _description: str
+    _traceback_value: Optional[str] = None
+
+    def __init__(
+        self,
+        title: str,
+        description: str,
+        cause: Optional[Exception] = None,
+        technical_description: Optional[str] = None,
+        traceback_from_given_info: Optional[bool] = False
+    ):
+        super_arg = cause or technical_description
+        if super_arg is None:
+            super_arg = f"{title}:\n{description}"
+
+        super().__init__(super_arg)
+
+        self._title = title
+        self._description = description
+
+        if traceback_from_given_info:
+            self._traceback_value = f"{title}:\n{description}"
+
+    @property
+    def title(self) -> str:
+        return self._title
+
+    @property
+    def description(self) -> str:
+        return self._description
+
+    @property
+    def traceback(self) -> str:
+        if self._traceback_value:
+            return self._traceback_value
+
+        self._traceback_value = format_exception(self)
+
+        return self._traceback_value
 
 
 class NoWineError(RuntimeError):
