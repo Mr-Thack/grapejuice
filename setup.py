@@ -42,7 +42,10 @@ def main():
         url=__about__.package_repository,
         classifiers=[
             "Development Status :: 4 - Beta",
-            'Programming Language :: Python :: 3.7'
+            "Programming Language :: Python :: 3.7",
+            "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",
+            "Programming Language :: Python :: 3.10"
         ],
         keywords=["grapejuice wine roblox studio"],
         packages=find_packages("src", exclude=[
