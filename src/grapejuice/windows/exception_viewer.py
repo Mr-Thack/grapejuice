@@ -98,11 +98,18 @@ class ExceptionViewer(GtkBase):
     def _make_tracebacks(self):
         self._tracebacks = dict()
         for ex_container in self._exceptions:
-            if isinstance(ex_container, PresentableError):
-                tb = ex_container.traceback
+            ex = ex_container.exception
 
-            else:
-                tb = format_exception(ex_container.exception)
+            try:
+                if isinstance(ex, PresentableError):
+                    tb = ex.traceback
+
+                else:
+                    tb = format_exception(ex)
+
+            except Exception as e:
+                log.error(str(e))
+                tb = "An error has occurred while generating the traceback: " + str(e)
 
             tb = tb or "?! Something has gone wrong while getting the traceback"
             tb = strip_pii(tb)
@@ -192,14 +199,15 @@ class ExceptionViewer(GtkBase):
         self._show_exception(self.current_exception)
 
     def _show_exception(self, exception_container: ExceptionContainer):
+        exception = exception_container.exception
 
-        if isinstance(exception_container, PresentableError):
-            self.widgets.error_title.set_text(exception_container.title)
-            self.widgets.error_description.set_text(exception_container.description)
+        if isinstance(exception, PresentableError):
+            self.widgets.error_title.set_text(exception.title)
+            self.widgets.error_description.set_text(exception.description)
 
         set_gtk_widgets_visibility(
             [self.widgets.error_title, self.widgets.error_description],
-            isinstance(exception_container, PresentableError)
+            isinstance(exception, PresentableError)
         )
 
         self.widgets.traceback_buffer.set_text(self._tracebacks[hash(exception_container)])
