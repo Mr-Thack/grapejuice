@@ -76,7 +76,7 @@
             <property name="can-focus">False</property>
             <property name="halign">start</property>
             <property name="margin-top">20</property>
-            <property name="label" translatable="yes">Following is the technical mumbo jumbo associated with the error. If it isn't very useful to you, it might be for the developers or support volunteers!</property>
+            <property name="label" translatable="yes">Following is the technical mumbo jumbo associated with the error. If it isn't very useful to you, it might be for the developers or support volunteers! Click the export button in the top left in order to save the technical information to a file.</property>
             <property name="wrap">True</property>
           </object>
           <packing>
