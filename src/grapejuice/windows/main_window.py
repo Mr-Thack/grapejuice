@@ -15,13 +15,17 @@ from grapejuice.tasks import \
     InstallRoblox, \
     OpenLogsDirectory, \
     ShowDriveC, \
-    ExtractFastFlags, RunRobloxStudio
+    ExtractFastFlags, \
+    RunRobloxStudio, \
+    PerformUpdate
 from grapejuice.windows.settings_window import SettingsWindow
 from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
 from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor, handler
-from grapejuice_common.gtk.gtk_util import set_gtk_widgets_visibility, set_label_text_and_hide_if_no_text, \
-    set_style_class_conditionally
+from grapejuice_common.gtk.gtk_util import \
+    set_gtk_widgets_visibility, \
+    set_label_text_and_hide_if_no_text, \
+    set_style_class_conditionally, dialog
 from grapejuice_common.gtk.yes_no_dialog import yes_no_dialog
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.util.computed_field import ComputedField
@@ -215,6 +219,22 @@ class MainWindow(GtkBase):
 
         window = ExceptionViewer(exceptions=errors)
         window.show()
+
+    @handler
+    def update_grapejuice(self, *_):
+        from grapejuice_common.update_info_providers import guess_relevant_provider
+
+        update_provider = guess_relevant_provider()
+        if not update_provider.can_update():
+            dialog("This installation of grapejuice does not support updating itself.")
+            return
+
+        dialog(
+            "Grapejuice will now update, the application will re-open after the process has finished.\n"
+            "If however, the application does not re-open, you might have to redo your source install."
+        )
+
+        gui_task_manager.run_task_once(PerformUpdate, update_provider, True)
 
     def _show_about_window(self):
         self.widgets.dots_menu.popdown()

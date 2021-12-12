@@ -417,6 +417,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <property name="halign">center</property>
+            <signal name="clicked" handler="update_grapejuice" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
