@@ -270,7 +270,7 @@ def profile_hardware() -> HardwareProfile:
         return HardwareProfile.from_profiler(state)
 
     except Exception as e:
-        raise HardwareProfilingError from e
+        raise HardwareProfilingError(e) from e
 
 
 if __name__ == '__main__':
