@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from grapejuice_common import paths
-from grapejuice_common.errors import HardwareProfilingError, NoHardwareProfile
+from grapejuice_common.errors import HardwareProfilingError, NoHardwareProfile, PresentableError
 from grapejuice_common.hardware_info.hardware_profile import HardwareProfile, profile_hardware
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 
@@ -183,10 +183,13 @@ class UserSettings:
                             save_settings = True
 
             except json.JSONDecodeError as e:
-                LOG.error(e)
-
-                self._settings_object = default_settings()
-                save_settings = True
+                raise PresentableError(
+                    title="Invalid settings file",
+                    description="Grapejuice could not properly decode the information in the user settings file. This "
+                                "is most likely due to a formatting error in the actual settings file. Did you make a "
+                                "mistake while manually editing the file?",
+                    cause=e
+                )
 
         else:
             LOG.info("There is no settings file present, going to save one")

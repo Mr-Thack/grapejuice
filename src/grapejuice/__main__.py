@@ -5,12 +5,12 @@ from typing import Callable
 
 import grapejuice_common.util
 from grapejuice_common.gtk.gtk_util import gtk_boot
-from grapejuice_common.ipc.dbus_client import dbus_connection
-from grapejuice_common.logs import log_config
 from grapejuice_common.logs.log_vacuum import vacuum_logs
 
 
 def handle_fatal_error(ex: Exception):
+    print("Fatal error: " + str(ex))
+
     def make_exception_window():
         from grapejuice.windows.exception_viewer import ExceptionViewer
         window = ExceptionViewer(exception=ex, is_main=True)
@@ -35,6 +35,7 @@ def func_gui(_args):
 
 def func_player(args):
     def player_main():
+        from grapejuice_common.ipc.dbus_client import dbus_connection
         from grapejuice_common.wine.wine_functions import get_player_wineprefix
 
         prefix = get_player_wineprefix()
@@ -52,6 +53,7 @@ def func_player(args):
 def func_app(*_):
     def player_main():
         import grapejuice_common.variables as v
+        from grapejuice_common.ipc.dbus_client import dbus_connection
         from grapejuice_common.wine.wine_functions import get_app_wineprefix
 
         prefix = get_app_wineprefix()
@@ -68,6 +70,7 @@ def func_app(*_):
 
 def func_studio(args):
     from grapejuice_common.wine.wine_functions import get_studio_wineprefix
+    from grapejuice_common.ipc.dbus_client import dbus_connection
 
     prefix = get_studio_wineprefix()
     uri = grapejuice_common.util.prepare_uri(args.uri)
@@ -176,7 +179,9 @@ def run_daemon_instead(argv):
     return 0
 
 
-def main(in_args=None):
+def _main(in_args=None):
+    from grapejuice_common.logs import log_config
+
     log_config.configure_logging("grapejuice")
     log = logging.getLogger(f"{__name__}/main")
 
@@ -232,15 +237,8 @@ def main(in_args=None):
     exit_code = 1
 
     if hasattr(args, "func"):
-        try:
-            f: Callable[[any], int] = getattr(args, "func")
-            exit_code = f(args) or 0
-
-        except Exception as e:
-            log.error(str(e))
-            handle_fatal_error(e)
-
-            exit_code = -999
+        f: Callable[[any], int] = getattr(args, "func")
+        exit_code = f(args) or 0
 
     else:
         parser.print_help()
@@ -255,6 +253,15 @@ def main(in_args=None):
         log.error(str(e))
 
     return exit_code
+
+
+def main(in_args=None):
+    try:
+        return _main(in_args)
+
+    except Exception as fatal_error:
+        handle_fatal_error(fatal_error)
+        return -1
 
 
 if __name__ == "__main__":
