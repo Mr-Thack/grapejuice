@@ -1,5 +1,6 @@
 import getpass
 from pathlib import Path
+from typing import List
 
 
 class WineprefixPaths:
@@ -41,31 +42,21 @@ class WineprefixPaths:
         return self.drive_c / "users" / getpass.getuser()
 
     @property
-    def roblox_appdata(self):
-        possible_locations = [
+    def possible_roblox_appdata(self) -> List[Path]:
+        return [
             self.user_directory / "AppData" / "Local" / "Roblox",
             self.user_directory / "Local Settings" / "Application Data" / "Roblox"
         ]
+
+    @property
+    def roblox_appdata(self):
+        possible_locations = self.possible_roblox_appdata
 
         for location in possible_locations:
             if location.exists():
                 return location
 
         return possible_locations[0]
-
-    @property
-    def roblox_studio_app_settings(self):
-        possible_paths = [
-            self.roblox_appdata / "ClientSettings" / "StudioAppSettings.json",
-            self.user_directory / "Local Settings" / "Application Data" / "Roblox" / "ClientSettings" / "StudioAppSettings.json"
-        ]
-
-        existing_paths = list(filter(lambda p: p.exists(), possible_paths))
-
-        if existing_paths:
-            return existing_paths[0]
-
-        return existing_paths[0]
 
     @property
     def installer_download_location(self):

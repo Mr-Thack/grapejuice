@@ -127,7 +127,16 @@ class WineprefixRoblox:
 
     @property
     def fast_flag_dump_path(self) -> Path:
-        return self._prefix_paths.roblox_appdata / "ClientSettings" / "StudioAppSettings.json"
+        def append_app_settings(p):
+            return p / "ClientSettings" / "StudioAppSettings.json"
+
+        possible_locations = list(map(append_app_settings, self._prefix_paths.possible_roblox_appdata))
+
+        for location in possible_locations:
+            if location.exists():
+                return location
+
+        return possible_locations[0]
 
     @property
     def roblox_studio_app_settings_path(self) -> Path:
