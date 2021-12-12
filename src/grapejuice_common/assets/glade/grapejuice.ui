@@ -779,6 +779,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
             <property name="receives-default">True</property>
             <property name="image">install_roblox_icon</property>
             <property name="image-position">top</property>
+            <property name="always-show-image">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -794,6 +795,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
             <property name="receives-default">True</property>
             <property name="image">view_logs_icon</property>
             <property name="image-position">top</property>
+            <property name="always-show-image">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -809,6 +811,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
             <property name="receives-default">True</property>
             <property name="image">drive_c_icon</property>
             <property name="image-position">top</property>
+            <property name="always-show-image">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -824,6 +827,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
             <property name="receives-default">True</property>
             <property name="image">fflags_icon</property>
             <property name="image-position">top</property>
+            <property name="always-show-image">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
