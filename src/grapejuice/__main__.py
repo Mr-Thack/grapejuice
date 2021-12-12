@@ -157,8 +157,8 @@ def func_uninstall_grapejuice(*_):
 
     if uninstall_grapejuice:
         delete_prefix_response = input(
-            "Remove the Wineprefix that contains your installation of Roblox Studio? This will cause all "
-            "configuration of Roblox Studio to be permanently deleted! [n/Y] "
+            "Remove the Wineprefixes that contain your installations of Roblox? This will cause all "
+            "configurations for Roblox to be permanently deleted! [n/Y] "
         ).strip().lower()
 
         delete_prefix = (delete_prefix_response[0] == "y") if delete_prefix_response else False
