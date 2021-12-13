@@ -730,6 +730,20 @@ Author: BrinkerVII <brinkervii@gmail.com>
           </packing>
         </child>
         <child>
+          <object class="GtkModelButton" id="open_taskmgr">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="text" translatable="yes">Task Manager</property>
+            <signal name="clicked" handler="open_wine_task_manager" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkModelButton" id="open_winetricks">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
@@ -740,8 +754,11 @@ Author: BrinkerVII <brinkervii@gmail.com>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">3</property>
+            <property name="position">4</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>

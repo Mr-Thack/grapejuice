@@ -251,6 +251,10 @@ class MainWindow(GtkBase):
         background.tasks.add(RunBuiltinWineApp(self._current_prefix.value, "regedit.exe"))
 
     @handler
+    def open_wine_task_manager(self, *_):
+        background.tasks.add(RunBuiltinWineApp(self._current_prefix.value, "taskmgr.exe"))
+
+    @handler
     def open_winetricks(self, *_):
         background.tasks.add(RunLinuxApp(self._current_prefix.value, "winetricks"))
 
