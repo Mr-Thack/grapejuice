@@ -75,7 +75,7 @@ def _graphics_settings(prefix: Wineprefix) -> Optional[GrapeSettingsGroup]:
 
         except Exception as e:
             log.error(str(e))
-            return None
+            return []
 
         def provider_to_string(provider: XRandRProvider):
             return f"{provider.index}: {provider.name}"
