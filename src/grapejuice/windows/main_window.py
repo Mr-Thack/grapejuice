@@ -154,10 +154,6 @@ class MainWindow(GtkBase):
             "clicked",
             lambda _b: gui_task_manager.run_task_once(InstallRoblox, self._current_prefix.value)
         )
-        self.widgets.view_logs_button.connect(
-            "clicked",
-            lambda _b: gui_task_manager.run_task_once(OpenLogsDirectory)
-        )
         self.widgets.drive_c_button.connect(
             "clicked",
             lambda _b: gui_task_manager.run_task_once(ShowDriveC, self._current_prefix.value)
@@ -235,6 +231,10 @@ class MainWindow(GtkBase):
         )
 
         gui_task_manager.run_task_once(PerformUpdate, update_provider, True)
+
+    @handler
+    def view_logs(self, *_):
+        gui_task_manager.run_task_once(OpenLogsDirectory)
 
     def _show_about_window(self):
         self.widgets.dots_menu.popdown()

@@ -118,6 +118,20 @@ Author: BrinkerVII <brinkervii@gmail.com>
           </packing>
         </child>
         <child>
+          <object class="GtkModelButton" id="view_logs_button">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="text" translatable="yes">Open logs directory</property>
+            <signal name="clicked" handler="view_logs" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkModelButton" id="check_for_updates_button">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
@@ -127,7 +141,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
@@ -138,7 +152,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child>
@@ -151,7 +165,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">3</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child>
@@ -164,7 +178,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">4</property>
+            <property name="position">5</property>
           </packing>
         </child>
       </object>
@@ -664,12 +678,12 @@ Author: BrinkerVII <brinkervii@gmail.com>
       </object>
     </child>
   </object>
-  <object class="GtkImage" id="view_logs_icon">
+  <object class="GtkImage" id="wine_actions_button">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="margin-top">10</property>
     <property name="margin-bottom">10</property>
-    <property name="icon-name">system-file-manager-symbolic</property>
+    <property name="icon-name">wine-symbolic</property>
     <property name="icon_size">3</property>
   </object>
   <object class="GtkBox" id="cc_prefix_page">
@@ -789,12 +803,12 @@ Author: BrinkerVII <brinkervii@gmail.com>
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="view_logs_button">
-            <property name="label" translatable="yes">View Logs</property>
+          <object class="GtkButton" id="wine_actions_butto">
+            <property name="label" translatable="yes">Wine Stuff</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="image">view_logs_icon</property>
+            <property name="image">wine_actions_button</property>
             <property name="image-position">top</property>
             <property name="always-show-image">True</property>
           </object>
