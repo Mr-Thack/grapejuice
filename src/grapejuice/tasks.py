@@ -119,8 +119,8 @@ class ShowDriveC(background.BackgroundTask):
 class FaultyOnPurpose(background.BackgroundTask):
     _timeout: int
 
-    def __init__(self, timeout: Optional[int] = None):
-        super().__init__("Causing problems")
+    def __init__(self, timeout: Optional[int] = None, **kwargs):
+        super().__init__("Causing problems", **kwargs)
         self._timeout = timeout or random.randint(2, 5)
 
     def work(self):
@@ -131,3 +131,31 @@ class FaultyOnPurpose(background.BackgroundTask):
             pass
 
         raise RuntimeError("Woops 😈")
+
+
+class RunBuiltinWineApp(background.BackgroundTask):
+    _prefix: Wineprefix
+    _app: str
+
+    def __init__(self, prefix: Wineprefix, app: str, **kwargs):
+        super().__init__(f"Running {app} in {prefix.configuration.display_name}", **kwargs)
+
+        self._prefix = prefix
+        self._app = app
+
+    def work(self):
+        self._prefix.core_control.run_exe(self._app)
+
+
+class RunLinuxApp(background.BackgroundTask):
+    _prefix: Wineprefix
+    _app: str
+
+    def __init__(self, prefix: Wineprefix, app: str, **kwargs):
+        super().__init__(f"Running {app} in {prefix.configuration.display_name}", **kwargs)
+
+        self._prefix = prefix
+        self._app = app
+
+    def work(self):
+        self._prefix.core_control.run_linux_command(self._app)

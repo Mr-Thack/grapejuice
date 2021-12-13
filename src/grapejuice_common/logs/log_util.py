@@ -1,7 +1,10 @@
 import logging
+from typing import TypeVar
+
+LoggedFunction = TypeVar("LoggedFunction")
 
 
-def log_function(func: callable):
+def log_function(func: LoggedFunction) -> LoggedFunction:
     log = logging.getLogger(f"log_function/{func.__name__}")
 
     def wrapper(*args, **kwargs):

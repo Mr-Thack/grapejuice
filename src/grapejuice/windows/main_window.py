@@ -17,7 +17,9 @@ from grapejuice.tasks import \
     ShowDriveC, \
     ExtractFastFlags, \
     RunRobloxStudio, \
-    PerformUpdate
+    PerformUpdate, \
+    RunBuiltinWineApp, \
+    RunLinuxApp
 from grapejuice.windows.settings_window import SettingsWindow
 from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
@@ -235,6 +237,22 @@ class MainWindow(GtkBase):
     @handler
     def view_logs(self, *_):
         gui_task_manager.run_task_once(OpenLogsDirectory)
+
+    @handler
+    def open_wine_cfg(self, *_):
+        background.tasks.add(RunBuiltinWineApp(self._current_prefix.value, "winecfg"))
+
+    @handler
+    def open_wine_explorer(self, *_):
+        background.tasks.add(RunBuiltinWineApp(self._current_prefix.value, "explorer.exe"))
+
+    @handler
+    def open_wine_regedit(self, *_):
+        background.tasks.add(RunBuiltinWineApp(self._current_prefix.value, "regedit.exe"))
+
+    @handler
+    def open_winetricks(self, *_):
+        background.tasks.add(RunLinuxApp(self._current_prefix.value, "winetricks"))
 
     def _show_about_window(self):
         self.widgets.dots_menu.popdown()

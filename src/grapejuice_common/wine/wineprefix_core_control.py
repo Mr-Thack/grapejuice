@@ -413,6 +413,12 @@ class WineprefixCoreControl:
         else:
             return run_exe_in_daemon(command, post_run_function=post_run_function)
 
+    def run_linux_command(self, command: str):
+        self.prepare_for_launch()
+
+        # TODO: Make commands use wine defined in prefix configuration
+        run_exe_no_daemon([command], command, run_async=False)
+
     def kill_wine_server(self):
         self.prepare_for_launch()
 
