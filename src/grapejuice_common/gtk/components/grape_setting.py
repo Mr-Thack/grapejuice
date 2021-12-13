@@ -1,4 +1,5 @@
-from typing import Optional, Type, Callable, Any
+from enum import Enum
+from typing import Optional, Type, Callable, Any, Union, List
 
 from gi.repository import Gtk
 
@@ -79,6 +80,32 @@ class GrapeSettingWidget(Gtk.Box):
 
             widget.connect("clicked", initial_value.action)
 
+        elif isinstance(initial_value, Enum):
+            widget = Gtk.ComboBoxText()
+            widget.set_entry_text_column(0)
+
+            active_index = 0
+            for i, option in enumerate(type(initial_value)):
+                widget.append_text(str(option.name))
+
+                if option is initial_value:
+                    active_index = i
+
+            widget.set_active(active_index)
+
+        elif isinstance(value_type, list):
+            widget = Gtk.ComboBoxText()
+            widget.set_entry_text_column(0)
+
+            active_index = 0
+            for i, option in enumerate(value_type):
+                widget.append_text(str(option))
+
+                if option is initial_value:
+                    active_index = i
+
+            widget.set_active(active_index)
+
         if widget:
             self.add(_row_auto_padding(False))
             self.add(widget)
@@ -97,7 +124,7 @@ class GrapeSettingWidget(Gtk.Box):
 
 class GrapeSetting(Gtk.ListBoxRow):
     _key: str
-    _value_type: Type
+    _value_type: Union[Type, List[Any]]
     _display_name: str
     _use_tooltip = False
     _setting_widget: GrapeSettingWidget
@@ -109,7 +136,7 @@ class GrapeSetting(Gtk.ListBoxRow):
         key: str,
         value: any,
         *args,
-        value_type: Optional[Type] = None,
+        value_type: Optional[Union[Type, List[Any]]] = None,
         display_name: Optional[str] = None,
         description: Optional[str] = None,
         get_transformer: Optional[Transformer] = None,

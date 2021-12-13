@@ -10,6 +10,7 @@ from grapejuice.components.main_window_components import \
     GrapeWineprefixRow, \
     GtkAddWineprefixRow
 from grapejuice.helpers.background_task_helper import BackgroundTaskHelper
+from grapejuice.helpers.prefix_feature_toggles import PrefixFeatureToggles
 from grapejuice.helpers.prefix_name_handler import PrefixNameHandler
 from grapejuice.tasks import \
     InstallRoblox, \
@@ -123,6 +124,7 @@ class MainWindow(GtkBase):
     _current_prefix_model: Optional[WineprefixConfigurationModel] = None
     _prefix_name_handler: PrefixNameHandler
     _background_task_helper: BackgroundTaskHelper
+    _prefix_feature_toggles: PrefixFeatureToggles
     _current_prefix: ComputedField[Wineprefix]
 
     def __init__(self):
@@ -130,6 +132,7 @@ class MainWindow(GtkBase):
 
         self._prefix_name_handler = PrefixNameHandler(self.widgets.prefix_name_wrapper)
         self._background_task_helper = BackgroundTaskHelper(self.widgets)
+        self._prefix_feature_toggles = PrefixFeatureToggles(self.widgets.feature_toggle_pane)
 
         self._connect_signals()
         self._populate_prefix_list()
@@ -375,6 +378,8 @@ class MainWindow(GtkBase):
             not prefix_exists_on_disk
         )
 
+        self._prefix_feature_toggles.use_prefix(self._current_prefix.value)
+
     def _show_page_for_new_prefix(self):
         model = create_new_model_for_user(current_settings.as_dict())
 
@@ -411,6 +416,7 @@ class MainWindow(GtkBase):
 
     def _on_destroy(self, *_):
         self._background_task_helper.destroy()
+        self._prefix_feature_toggles.destroy()
 
         Gtk.main_quit()
 

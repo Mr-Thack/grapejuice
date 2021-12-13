@@ -13,6 +13,7 @@ class GrapeSettingsPane(Gtk.ScrolledWindow):
         self,
         *args,
         groups: Optional[Iterable[GrapeSettingsGroup]] = None,
+        min_content_height: Optional[int] = 550,
         **kwargs
     ):
         super().__init__(*args, **kwargs)
@@ -21,7 +22,7 @@ class GrapeSettingsPane(Gtk.ScrolledWindow):
         self.set_hexpand_set(True)
         self.set_vexpand(True)
         self.set_vexpand_set(True)
-        self.set_min_content_height(550)
+        self.set_min_content_height(min_content_height)
 
         self._viewport = Gtk.Viewport()
         self.add(self._viewport)

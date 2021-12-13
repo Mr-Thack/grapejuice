@@ -8,24 +8,17 @@ from typing import Generator, List, Iterable
 
 from grapejuice_common import paths, variables
 from grapejuice_common.errors import RobloxExecutableNotFound
+from grapejuice_common.hint_mappings import hint_renderer_mapping
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.roblox_product import RobloxProduct
-from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.util import download_file
 from grapejuice_common.wine.registry_file import RegistryFile
 from grapejuice_common.wine.wineprefix_core_control import WineprefixCoreControl, ProcessWrapper
-from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths
 
 LOG = logging.getLogger(__name__)
 
 ROBLOX_DOWNLOAD_URL = "https://www.roblox.com/download/client"
-
-hint_renderer_mapping = {
-    WineprefixHint.render_vulkan: RobloxRenderer.Vulkan,
-    WineprefixHint.render_opengl: RobloxRenderer.OpenGL,
-    WineprefixHint.render_dx11: RobloxRenderer.DX11
-}
 
 
 def _app_settings_path(executable_path: Path) -> Path:

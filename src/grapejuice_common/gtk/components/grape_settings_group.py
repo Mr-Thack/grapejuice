@@ -22,6 +22,8 @@ def _description(description: str) -> Gtk.Label:
     label.set_halign(Gtk.Align.START)
     label.set_text(description)
     label.set_margin_bottom(15)
+    label.set_max_width_chars(64)
+    label.set_line_wrap(True)
 
     return label
 

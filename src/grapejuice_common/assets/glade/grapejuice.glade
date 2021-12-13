@@ -861,6 +861,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
       <object class="GtkBox" id="prefix_action_buttons">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="valign">start</property>
         <property name="spacing">15</property>
         <property name="homogeneous">True</property>
         <child>
@@ -970,6 +971,9 @@ Author: BrinkerVII <brinkervii@gmail.com>
                     <property name="position">3</property>
                   </packing>
                 </child>
+                <child>
+                  <placeholder/>
+                </child>
               </object>
             </child>
           </object>
@@ -981,7 +985,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
         </child>
       </object>
       <packing>
-        <property name="expand">True</property>
+        <property name="expand">False</property>
         <property name="fill">True</property>
         <property name="position">2</property>
       </packing>
@@ -990,6 +994,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
       <object class="GtkSeparator">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="valign">start</property>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -1001,15 +1006,13 @@ Author: BrinkerVII <brinkervii@gmail.com>
       <object class="GtkBox" id="feature_toggle_pane">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <child>
-          <placeholder/>
-        </child>
+        <property name="vexpand">True</property>
         <child>
           <placeholder/>
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">4</property>
       </packing>

@@ -5,8 +5,8 @@ from typing import List, Optional, Dict
 
 from grapejuice_common.errors import WineprefixNotFoundUsingHints, HardwareProfilingError
 from grapejuice_common.hardware_info.hardware_profile import HardwareProfile
+from grapejuice_common.hint_mappings import renderer_hint_mapping
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
-from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
@@ -80,13 +80,6 @@ def _wine_home(settings) -> str:
         return str(Path(settings["wine_binary"]).resolve().parent.parent)
 
     return "/usr"
-
-
-renderer_hint_mapping = {
-    RobloxRenderer.Vulkan: WineprefixHint.render_vulkan,
-    RobloxRenderer.OpenGL: WineprefixHint.render_opengl,
-    RobloxRenderer.DX11: WineprefixHint.render_dx11
-}
 
 
 def _hardware_profile() -> Optional[HardwareProfile]:
