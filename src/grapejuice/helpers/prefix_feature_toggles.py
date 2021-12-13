@@ -210,12 +210,15 @@ class PrefixFeatureToggles:
         self._groups = Groups(*list(
             map(
                 lambda c: c(prefix),
-                [
-                    _app_hints,
-                    _wine_debug_settings,
-                    _graphics_settings,
-                    _third_party
-                ]
+                filter(
+                    None,
+                    [
+                        _app_hints,
+                        _wine_debug_settings,
+                        _graphics_settings,
+                        _third_party
+                    ]
+                )
             )
         ))
 
