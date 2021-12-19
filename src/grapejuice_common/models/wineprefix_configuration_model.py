@@ -4,6 +4,7 @@ from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Dict, List
 
+from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 
@@ -19,6 +20,7 @@ class WineprefixConfigurationModel:
     use_mesa_gl_override: bool = False
     enable_winedebug: bool = False
     winedebug_string: str = ""
+    roblox_renderer: str = RobloxRenderer.Undetermined.value
     env: Dict[str, str] = field(default_factory=dict)
     hints: List[str] = field(default_factory=list)
     fast_flags: Dict[str, Dict[str, any]] = field(default_factory=dict)

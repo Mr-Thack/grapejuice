@@ -6,8 +6,8 @@ from typing import List, Optional, Dict
 
 from grapejuice_common.errors import WineprefixNotFoundUsingHints, HardwareProfilingError
 from grapejuice_common.hardware_info.hardware_profile import HardwareProfile
-from grapejuice_common.hint_mappings import renderer_hint_mapping
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
+from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
@@ -97,32 +97,19 @@ def _hardware_profile() -> Optional[HardwareProfile]:
 
 @dataclass(init=False)
 class ProfiledParameters:
-    hints: List[WineprefixHint]
     prime_offload_sink: int = -1
     use_mesa_gl_override: bool = False
+    renderer: str = RobloxRenderer.Undetermined.value
 
     def __init__(self):
         p = _hardware_profile()
 
         if p:
-            self._fill_hints(p)
-            if p.should_prime:
-                self.prime_offload_sink = p.provider_index
-
+            self.renderer = p.preferred_roblox_renderer.value
             self.use_mesa_gl_override = p.use_mesa_gl_override
 
-        else:
-            self.hints = []
-
-    def _fill_hints(self, profile: HardwareProfile):
-        render_hint = renderer_hint_mapping.get(profile.preferred_roblox_renderer, None)
-
-        self.hints = list(map(
-            lambda h: h.value,
-            filter(None, [
-                render_hint
-            ])
-        ))
+            if p.should_prime:
+                self.prime_offload_sink = p.provider_index
 
 
 def create_player_prefix_model(settings: Optional[Dict] = None):
@@ -137,9 +124,10 @@ def create_player_prefix_model(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[WineprefixHint.player.value, WineprefixHint.app.value, *params.hints],
+        hints=[WineprefixHint.player.value, WineprefixHint.app.value],
         prime_offload_sink=params.prime_offload_sink,
-        use_mesa_gl_override=params.use_mesa_gl_override
+        use_mesa_gl_override=params.use_mesa_gl_override,
+        roblox_renderer=params.renderer
     )
 
 
@@ -155,9 +143,10 @@ def create_studio_prefix_model(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[WineprefixHint.studio.value, WineprefixHint.render_dx11.value],
+        hints=[WineprefixHint.studio.value],
         prime_offload_sink=params.prime_offload_sink,
-        use_mesa_gl_override=params.use_mesa_gl_override
+        use_mesa_gl_override=params.use_mesa_gl_override,
+        roblox_renderer=RobloxRenderer.DX11.value
     )
 
 
@@ -173,9 +162,10 @@ def create_new_model_for_user(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[*params.hints],
+        hints=[],
         prime_offload_sink=params.prime_offload_sink,
-        use_mesa_gl_override=params.use_mesa_gl_override
+        use_mesa_gl_override=params.use_mesa_gl_override,
+        roblox_renderer=params.renderer
     )
 
     model.create_name_on_disk_from_display_name()

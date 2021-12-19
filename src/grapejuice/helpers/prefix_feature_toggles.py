@@ -6,7 +6,6 @@ from grapejuice_common.gtk.components.grape_setting import GrapeSetting
 from grapejuice_common.gtk.components.grape_settings_group import GrapeSettingsGroup
 from grapejuice_common.gtk.components.grape_settings_pane import GrapeSettingsPane
 from grapejuice_common.hardware_info.xrandr import XRandR, XRandRProvider
-from grapejuice_common.hint_mappings import hint_renderer_mapping, renderer_hint_mapping
 from grapejuice_common.roblox_product import RobloxProduct
 from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.wine.wineprefix import Wineprefix
@@ -53,12 +52,7 @@ def _graphics_settings(prefix: Wineprefix) -> Optional[GrapeSettingsGroup]:
     from grapejuice_common.features.settings import current_settings
 
     def _get_renderer():
-        for hint in prefix.configuration.hints:
-            renderer = hint_renderer_mapping.get(WineprefixHint(hint), None)
-            if renderer:
-                return renderer
-
-        return RobloxRenderer.Undetermined
+        return RobloxRenderer(prefix.configuration.roblox_renderer)
 
     def _renderer_setting():
         return GrapeSetting(
@@ -255,19 +249,8 @@ class PrefixFeatureToggles:
 
         model.apply_dict(self._groups.winedebug.settings_dictionary)
 
-        renderer_hints = list(map(
-            lambda h: h.value,
-            [WineprefixHint.render_vulkan,
-             WineprefixHint.render_opengl,
-             WineprefixHint.render_dx11
-             ]
-        ))
-        hints = model.hints
-        hints = list(filter(lambda h: h not in renderer_hints, hints))
-
         graphics = self._groups.graphics_settings.settings_dictionary
-        hints.append(renderer_hint_mapping[graphics["roblox_renderer"]].value)
-        model.hints = hints
+        model.roblox_renderer = graphics["roblox_renderer"].value
         graphics.pop("roblox_renderer")
 
         if graphics["should_prime"]:

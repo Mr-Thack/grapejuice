@@ -8,9 +8,9 @@ from typing import Generator, List, Iterable
 
 from grapejuice_common import paths, variables
 from grapejuice_common.errors import RobloxExecutableNotFound
-from grapejuice_common.hint_mappings import hint_renderer_mapping
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.roblox_product import RobloxProduct
+from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.util import download_file
 from grapejuice_common.wine.registry_file import RegistryFile
 from grapejuice_common.wine.wineprefix_core_control import WineprefixCoreControl, ProcessWrapper
@@ -159,11 +159,8 @@ class WineprefixRoblox:
     def _write_flags(self, product: RobloxProduct, settings_paths: Iterable[Path]):
         flags = self._configuration.fast_flags.get(product.value, None) or dict()
 
-        # Apply rendering hints
-        for hint in self._configuration.hints_as_enum:
-            if hint in hint_renderer_mapping:
-                renderer = hint_renderer_mapping[hint]
-                flags[renderer.prefer_flag] = True
+        # Apply rendering flag
+        flags[RobloxRenderer(self._configuration.roblox_renderer).prefer_flag] = True
 
         # Don't do anything when we don't have any flags
         if len(flags) <= 0:
