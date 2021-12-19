@@ -159,3 +159,15 @@ class RunLinuxApp(background.BackgroundTask):
 
     def work(self):
         self._prefix.core_control.run_linux_command(self._app)
+
+
+class KillWineserver(background.BackgroundTask):
+    _prefix: Wineprefix
+
+    def __init__(self, prefix: Wineprefix, **kwargs):
+        super().__init__(f"Killing wineserver for {prefix.configuration.display_name}", **kwargs)
+
+        self._prefix = prefix
+
+    def work(self):
+        self._prefix.core_control.kill_wine_server()

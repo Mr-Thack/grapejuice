@@ -20,7 +20,8 @@ from grapejuice.tasks import \
     RunRobloxStudio, \
     PerformUpdate, \
     RunBuiltinWineApp, \
-    RunLinuxApp
+    RunLinuxApp, \
+    KillWineserver
 from grapejuice.windows.settings_window import SettingsWindow
 from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
@@ -264,6 +265,10 @@ class MainWindow(GtkBase):
     @handler
     def open_winetricks(self, *_):
         background.tasks.add(RunLinuxApp(self._current_prefix.value, "winetricks"))
+
+    @handler
+    def kill_wineserver(self, *_):
+        gui_task_manager.run_task_once(KillWineserver, self._current_prefix.value)
 
     def _show_about_window(self):
         self.widgets.dots_menu.popdown()
