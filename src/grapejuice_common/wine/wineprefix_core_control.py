@@ -185,20 +185,10 @@ def default_dll_overrides() -> List[str]:
     ]
 
 
-def _legacy_hardware_variables():
-    from grapejuice_common.features.settings import current_settings
-
+def _legacy_hardware_variables(configuration: WineprefixConfigurationModel):
     d = dict()
-
-    try:
-        profile = current_settings.hardware_profile
-
-        if profile.use_mesa_gl_override:
-            d["MESA_GL_VERSION_OVERRIDE"] = "4.4"
-
-    except HardwareProfilingError as e:
-        LOG.error("Could not get hardware profile")
-        LOG.error(e)
+    if configuration.use_mesa_gl_override:
+        d["MESA_GL_VERSION_OVERRIDE"] = "4.4"
 
     return d
 
@@ -289,7 +279,7 @@ class WineprefixCoreControl:
             "WINEPREFIX": str(self._prefix_paths.base_directory),
             "WINEARCH": "win64",
             **(self._dri_prime_variables() if accelerate_graphics else dict()),
-            **_legacy_hardware_variables()
+            **_legacy_hardware_variables(self._configuration)
         }
 
         # Variables in os.environ take priority
