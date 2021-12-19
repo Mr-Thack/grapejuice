@@ -6,7 +6,7 @@ from grapejuice_common.gtk.components.grape_setting import GrapeSetting
 from grapejuice_common.gtk.components.grape_settings_group import GrapeSettingsGroup
 from grapejuice_common.gtk.components.grape_settings_pane import GrapeSettingsPane
 from grapejuice_common.hardware_info.xrandr import XRandR, XRandRProvider
-from grapejuice_common.hint_mappings import hint_renderer_mapping
+from grapejuice_common.hint_mappings import hint_renderer_mapping, renderer_hint_mapping
 from grapejuice_common.roblox_product import RobloxProduct
 from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.wine.wineprefix import Wineprefix
@@ -139,12 +139,12 @@ def _wine_debug_settings(prefix: Wineprefix):
             GrapeSetting(
                 key="enable_winedebug",
                 display_name="Enable Wine debugging",
-                value=True,
+                value=prefix.configuration.enable_winedebug,
             ),
             GrapeSetting(
                 key="winedebug_string",
                 display_name="WINEDEBUG string",
-                value="+seh"
+                value=prefix.configuration.winedebug_string
             )
         ]
     )
@@ -167,6 +167,11 @@ def _third_party(prefix: Wineprefix):
             )
         ]
     )
+
+
+@dataclass
+class ToggleSettings:
+    pass
 
 
 @dataclass(frozen=True)
@@ -193,6 +198,7 @@ class PrefixFeatureToggles:
     _target_widget = None
     _current_pane: Optional[GrapeSettingsPane] = None
     _groups: Optional[Groups] = None
+    _prefix: Optional[Wineprefix] = None
 
     def __init__(self, target_widget):
         self._target_widget = target_widget
@@ -207,6 +213,7 @@ class PrefixFeatureToggles:
     def use_prefix(self, prefix: Wineprefix):
         self._destroy_pane()
 
+        self._prefix = prefix
         self._groups = Groups(*list(
             map(
                 lambda c: c(prefix),
@@ -231,6 +238,49 @@ class PrefixFeatureToggles:
 
     def destroy(self):
         self._destroy_pane()
+
+    @property
+    def configured_model(self):
+        model = self._prefix.configuration.copy()
+        product_hints = list(map(lambda h: h.value, [WineprefixHint.player, WineprefixHint.app, WineprefixHint.studio]))
+
+        hints = model.hints
+        hints = list(filter(lambda h: h not in product_hints, hints))
+        for k, v in self._groups.app_hints.settings_dictionary.items():
+            if v:
+                hints.append(k)
+
+        model.hints = hints
+
+        model.apply_dict(self._groups.winedebug.settings_dictionary)
+
+        renderer_hints = list(map(
+            lambda h: h.value,
+            [WineprefixHint.render_vulkan,
+             WineprefixHint.render_opengl,
+             WineprefixHint.render_dx11
+             ]
+        ))
+        hints = model.hints
+        hints = list(filter(lambda h: h not in renderer_hints, hints))
+
+        graphics = self._groups.graphics_settings.settings_dictionary
+        hints.append(renderer_hint_mapping[graphics["roblox_renderer"]].value)
+        model.hints = hints
+        graphics.pop("roblox_renderer")
+
+        if graphics["should_prime"]:
+            model.prime_offload_sink = int(graphics["prime_offload_sink"].split(":")[0])
+
+        else:
+            model.prime_offload_sink = -1
+
+        graphics.pop("should_prime")
+        graphics.pop("prime_offload_sink")
+
+        model.apply_dict(graphics)
+
+        return model
 
     def __del__(self):
         self._destroy_pane()

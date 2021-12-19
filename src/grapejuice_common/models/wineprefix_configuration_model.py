@@ -1,5 +1,6 @@
 import re
-from dataclasses import dataclass, field
+from copy import deepcopy
+from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Dict, List
 
@@ -16,6 +17,8 @@ class WineprefixConfigurationModel:
     dll_overrides: str
     prime_offload_sink: int = -1
     use_mesa_gl_override: bool = False
+    enable_winedebug: bool = False
+    winedebug_string: str = ""
     env: Dict[str, str] = field(default_factory=dict)
     hints: List[str] = field(default_factory=list)
     fast_flags: Dict[str, Dict[str, any]] = field(default_factory=dict)
@@ -44,6 +47,14 @@ class WineprefixConfigurationModel:
         s = s.lower()
 
         self.name_on_disk = s
+
+    def copy(self):
+        data = deepcopy(asdict(self))
+        return WineprefixConfigurationModel(**data)
+
+    def apply_dict(self, d: Dict[str, any]):
+        for k, v in d.items():
+            setattr(self, k, v)
 
     @classmethod
     def from_dict(cls, data: Dict[str, any]):

@@ -72,7 +72,7 @@ class GrapeSettingWidget(Gtk.Box):
             widget.set_text(set_transformer(initial_value))
 
             self._getter = lambda: widget.get_text().strip()
-            self._setter = lambda v: widget.text_text(str(v))
+            self._setter = lambda v: widget.set_text(str(v))
 
         elif value_type is GrapeSettingAction:
             widget = Gtk.Button()
@@ -84,8 +84,11 @@ class GrapeSettingWidget(Gtk.Box):
             widget = Gtk.ComboBoxText()
             widget.set_entry_text_column(0)
 
+            mapping = dict()
+
             active_index = 0
             for i, option in enumerate(type(initial_value)):
+                mapping[i] = option
                 widget.append_text(str(option.name))
 
                 if option is initial_value:
@@ -93,18 +96,27 @@ class GrapeSettingWidget(Gtk.Box):
 
             widget.set_active(active_index)
 
+            self._getter = lambda: mapping[widget.get_active()]
+            self._setter = lambda v: widget.set_active(str(v.name))
+
         elif isinstance(value_type, list):
             widget = Gtk.ComboBoxText()
             widget.set_entry_text_column(0)
 
+            mapping = dict()
+
             active_index = 0
             for i, option in enumerate(value_type):
+                mapping[i] = option
                 widget.append_text(str(option))
 
                 if option is initial_value:
                     active_index = i
 
             widget.set_active(active_index)
+
+            self._getter = lambda: mapping[widget.get_active()]
+            self._setter = lambda v: widget.set_active(str(v.name))
 
         if widget:
             self.add(_row_auto_padding(False))

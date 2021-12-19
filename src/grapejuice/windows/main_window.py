@@ -176,6 +176,10 @@ class MainWindow(GtkBase):
             "clicked",
             lambda _b: self._delete_current_prefix()
         )
+        self.widgets.update_prefix_button.connect(
+            "clicked",
+            lambda _b: self._update_current_prefix()
+        )
 
         # Dots menu
         self.widgets.about_grapejuice_button.connect(
@@ -337,6 +341,10 @@ class MainWindow(GtkBase):
 
             shutil.rmtree(model.base_directory, ignore_errors=True)
 
+    def _update_current_prefix(self):
+        model = self._prefix_feature_toggles.configured_model
+        current_settings.save_prefix_model(model)
+
     def _create_current_prefix(self):
         self._prefix_name_handler.finish_editing()
 
@@ -368,7 +376,8 @@ class MainWindow(GtkBase):
             [
                 self.widgets.prefix_page_sep_0,
                 self.widgets.prefix_action_buttons,
-                self.widgets.delete_prefix_button
+                self.widgets.delete_prefix_button,
+                self.widgets.update_prefix_button
             ],
             prefix_exists_on_disk
         )
