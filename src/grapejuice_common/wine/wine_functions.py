@@ -1,5 +1,6 @@
 import logging
 import uuid
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Dict
 
@@ -94,32 +95,39 @@ def _hardware_profile() -> Optional[HardwareProfile]:
     return None
 
 
-def _profiled_hints() -> List[WineprefixHint]:
-    profile = _hardware_profile()
-    if profile is None:
-        return []
+@dataclass(init=False)
+class ProfiledParameters:
+    hints: List[WineprefixHint]
+    prime_offload_sink: int = -1
+    use_mesa_gl_override: bool = False
 
-    render_hint = renderer_hint_mapping.get(profile.preferred_roblox_renderer, None)
+    def __init__(self):
+        p = _hardware_profile()
 
-    return list(map(
-        lambda h: h.value,
-        filter(None, [
-            render_hint
-        ])
-    ))
+        if p:
+            self._fill_hints(p)
+            if p.should_prime:
+                self.prime_offload_sink = p.provider_index
 
+            self.use_mesa_gl_override = p.use_mesa_gl_override
 
-def _prime_offload_sink() -> int:
-    profile = _hardware_profile()
+        else:
+            self.hints = []
 
-    if profile and profile.should_prime:
-        return profile.provider_index
+    def _fill_hints(self, profile: HardwareProfile):
+        render_hint = renderer_hint_mapping.get(profile.preferred_roblox_renderer, None)
 
-    return -1
+        self.hints = list(map(
+            lambda h: h.value,
+            filter(None, [
+                render_hint
+            ])
+        ))
 
 
 def create_player_prefix_model(settings: Optional[Dict] = None):
     settings = settings or dict()
+    params = ProfiledParameters()
 
     return WineprefixConfigurationModel(
         id=str(uuid.uuid4()),
@@ -129,13 +137,15 @@ def create_player_prefix_model(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[WineprefixHint.player.value, WineprefixHint.app.value, *_profiled_hints()],
-        prime_offload_sink=_prime_offload_sink()
+        hints=[WineprefixHint.player.value, WineprefixHint.app.value, *params.hints],
+        prime_offload_sink=params.prime_offload_sink,
+        use_mesa_gl_override=params.use_mesa_gl_override
     )
 
 
 def create_studio_prefix_model(settings: Optional[Dict] = None):
     settings = settings or dict()
+    params = ProfiledParameters
 
     return WineprefixConfigurationModel(
         id=str(uuid.uuid4()),
@@ -146,12 +156,14 @@ def create_studio_prefix_model(settings: Optional[Dict] = None):
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
         hints=[WineprefixHint.studio.value, WineprefixHint.render_dx11.value],
-        prime_offload_sink=_prime_offload_sink()
+        prime_offload_sink=params.prime_offload_sink,
+        use_mesa_gl_override=params.use_mesa_gl_override
     )
 
 
 def create_new_model_for_user(settings: Optional[Dict] = None):
     settings = settings or dict()
+    params = ProfiledParameters()
 
     model = WineprefixConfigurationModel(
         id=str(uuid.uuid4()),
@@ -161,8 +173,9 @@ def create_new_model_for_user(settings: Optional[Dict] = None):
         wine_home=_wine_home(settings),
         dll_overrides=_dll_overrides(settings),
         env=_env(settings),
-        hints=[*_profiled_hints()],
-        prime_offload_sink=_prime_offload_sink()
+        hints=[*params.hints],
+        prime_offload_sink=params.prime_offload_sink,
+        use_mesa_gl_override=params.use_mesa_gl_override
     )
 
     model.create_name_on_disk_from_display_name()

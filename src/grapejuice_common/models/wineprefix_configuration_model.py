@@ -15,6 +15,7 @@ class WineprefixConfigurationModel:
     wine_home: str
     dll_overrides: str
     prime_offload_sink: int = -1
+    use_mesa_gl_override: bool = False
     env: Dict[str, str] = field(default_factory=dict)
     hints: List[str] = field(default_factory=list)
     fast_flags: Dict[str, Dict[str, any]] = field(default_factory=dict)
