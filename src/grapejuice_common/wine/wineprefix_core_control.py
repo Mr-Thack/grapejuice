@@ -299,7 +299,16 @@ class WineprefixCoreControl:
         # Wine generates giant logs for some people
         # Setting WINEDEBUG to -all *should* fix it
         if "WINEDEBUG" not in apply_env:
-            apply_env["WINEDEBUG"] = "-all"
+            winedebug_string = "-all"
+
+            if self._configuration.enable_winedebug:
+                winedebug_string = ""
+
+                configuration_winedebug_string = self._configuration.winedebug_string.strip()
+                if configuration_winedebug_string:
+                    winedebug_string = configuration_winedebug_string
+
+            apply_env["WINEDEBUG"] = winedebug_string
 
         LOG.info("Applying environment: " + json.dumps(apply_env))
 
