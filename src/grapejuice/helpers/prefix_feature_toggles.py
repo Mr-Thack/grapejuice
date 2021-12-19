@@ -156,14 +156,15 @@ def _third_party(prefix: Wineprefix):
         description="Grapejuice can assist in installing third party tools that will improve the Roblox experience",
         settings=[
             GrapeSetting(
-                key="enable_fps_unlocker",
+                key="fps_unlocker",
                 display_name="Use Roblox FPS Unlocker",
-                value=False
+                value_type=bool,
+                value=prefix.configuration.third_party.get("fps_unlocked", False)
             ),
             GrapeSetting(
-                key="use_dxvk",
+                key="dxvk",
                 display_name="Use DXVK D3D implementation",
-                value=False
+                value=prefix.configuration.third_party.get("dxvk", False)
             )
         ]
     )
@@ -279,6 +280,8 @@ class PrefixFeatureToggles:
         graphics.pop("prime_offload_sink")
 
         model.apply_dict(graphics)
+
+        model.third_party = self._groups.third_party.settings_dictionary
 
         return model
 

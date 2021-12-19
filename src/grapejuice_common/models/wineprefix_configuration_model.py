@@ -22,6 +22,7 @@ class WineprefixConfigurationModel:
     env: Dict[str, str] = field(default_factory=dict)
     hints: List[str] = field(default_factory=list)
     fast_flags: Dict[str, Dict[str, any]] = field(default_factory=dict)
+    third_party: Dict[str, bool] = field(default_factory=dict)
 
     @property
     def hints_as_enum(self) -> List[WineprefixHint]:
