@@ -64,9 +64,12 @@ def _graphics_settings(prefix: Wineprefix) -> Optional[GrapeSettingsGroup]:
         )
 
     def _prime_offload_sink():
+        provider_index = 0
+
         try:
             xrandr = XRandR()
             profile = current_settings.hardware_profile
+            provider_index = profile.provider_index
 
         except Exception as e:
             log.error(str(e))
@@ -87,7 +90,8 @@ def _graphics_settings(prefix: Wineprefix) -> Optional[GrapeSettingsGroup]:
                 key="prime_offload_sink",
                 display_name="PRIME offload sink",
                 value_type=provider_list,
-                value=provider_list
+                value=provider_list,
+                __list_index__=provider_index
             )
         ]
 

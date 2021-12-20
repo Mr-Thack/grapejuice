@@ -5,6 +5,7 @@ from gi.repository import Gtk
 
 from grapejuice_common.gtk.components.grape_setting_action import GrapeSettingAction
 from grapejuice_common.gtk.gtk_util import set_vertical_margins, set_horizontal_margins
+from grapejuice_common.util import dunder_storm
 from grapejuice_common.util.capture import Capture
 
 Transformer = Callable[[Any], Any]
@@ -53,6 +54,7 @@ class GrapeSettingWidget(Gtk.Box):
         bidirectional_transformer: Optional[Transformer] = None,
         **kwargs
     ):
+        dunder_dict, kwargs = dunder_storm(kwargs)
         super().__init__(*args, orientation=Gtk.Orientation.VERTICAL, **kwargs)
 
         widget = None
@@ -94,7 +96,7 @@ class GrapeSettingWidget(Gtk.Box):
                 if option is initial_value:
                     active_index = i
 
-            widget.set_active(active_index)
+            widget.set_active(dunder_dict.get("__list_index__", active_index))
 
             self._getter = lambda: mapping[widget.get_active()]
             self._setter = lambda v: widget.set_active(str(v.name))
@@ -113,7 +115,7 @@ class GrapeSettingWidget(Gtk.Box):
                 if option is initial_value:
                     active_index = i
 
-            widget.set_active(active_index)
+            widget.set_active(dunder_dict.get("__list_index__", active_index))
 
             self._getter = lambda: mapping[widget.get_active()]
             self._setter = lambda v: widget.set_active(str(v.name))
@@ -156,6 +158,7 @@ class GrapeSetting(Gtk.ListBoxRow):
         bidirectional_transformer: Optional[Transformer] = None,
         **kwargs
     ):
+        dunder_dict, kwargs = dunder_storm(kwargs)
         super().__init__(*args, **kwargs)
 
         self._key = key
@@ -197,7 +200,9 @@ class GrapeSetting(Gtk.ListBoxRow):
             self._value_type,
             get_transformer=get_transformer,
             set_transformer=set_transformer,
-            bidirectional_transformer=bidirectional_transformer
+            bidirectional_transformer=bidirectional_transformer,
+            **dunder_dict,
+            **kwargs
         )
         box.add(self._setting_widget)
 

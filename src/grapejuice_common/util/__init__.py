@@ -1,7 +1,7 @@
 import os
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, TypeVar, Tuple
 
 
 def prepare_uri(uri):
@@ -58,3 +58,20 @@ def working_directory_as(working_directory: Optional[Path] = None):
 
     else:
         yield
+
+
+DictValue = TypeVar("DictValue")
+
+
+def dunder_storm(input_dict: Dict[str, DictValue]) -> Tuple[Dict[str, DictValue], Dict[str, DictValue]]:
+    regular_dict = dict()
+    dunder_dict = dict()
+
+    for k, v in input_dict.items():
+        if k.startswith("__") and k.endswith("__"):
+            dunder_dict[k] = v
+
+        else:
+            regular_dict[k] = v
+
+    return dunder_dict, regular_dict
