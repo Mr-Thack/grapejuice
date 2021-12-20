@@ -15,12 +15,6 @@ from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 
-def _app_settings_paths(prefix: Wineprefix):
-    return \
-        prefix.roblox.roblox_studio_app_settings_path, \
-        prefix.roblox.roblox_player_app_settings_path
-
-
 def _base_fast_flags() -> FastFlagList:
     from grapejuice_common.wine.wine_functions import get_studio_wineprefix
 
@@ -271,7 +265,11 @@ class FastFlagEditor(GtkBase):
 
     @handler
     def delete_user_flags(self, *_):
-        for path in filter(lambda p: p and p.exists(), _app_settings_paths(self._target_prefix)):
+        settings_paths = \
+            self._target_prefix.roblox.all_studio_app_settings_paths + \
+            self._target_prefix.roblox.all_player_app_settings_paths
+
+        for path in filter(lambda p: p and p.exists(), settings_paths):
             os.remove(path)
 
     @handler
