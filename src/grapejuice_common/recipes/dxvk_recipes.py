@@ -32,6 +32,9 @@ def _dxvk_is_installed(prefix: Wineprefix) -> bool:
     hive.load()
 
     dll_overrides_key = hive.find_key(r"Software\\Wine\\DllOverrides")
+    if not dll_overrides_key:
+        return False
+
     attributes = dll_overrides_key.attributes
 
     overrides_present = all(map(
