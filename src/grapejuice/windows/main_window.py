@@ -22,7 +22,8 @@ from grapejuice.tasks import \
     RunBuiltinWineApp, \
     RunLinuxApp, \
     KillWineserver, \
-    InstallFPSUnlocker, SetDXVKState
+    InstallFPSUnlocker, \
+    SetDXVKState
 from grapejuice.windows.settings_window import SettingsWindow
 from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
@@ -388,7 +389,7 @@ class MainWindow(GtkBase):
             on_finish_callback=after_installation
         )
 
-    def _show_prefix_model(self, prefix: WineprefixConfigurationModel):
+    def _show_prefix_model(self, prefix: WineprefixConfigurationModel, have_toggles: bool = True):
         self._current_prefix.clear_cached_value()
         self._set_page(self.widgets.cc_prefix_page)
         self._current_prefix_model = prefix
@@ -411,7 +412,11 @@ class MainWindow(GtkBase):
             not prefix_exists_on_disk
         )
 
-        self._prefix_feature_toggles.use_prefix(self._current_prefix.value)
+        if have_toggles:
+            self._prefix_feature_toggles.use_prefix(self._current_prefix.value)
+
+        else:
+            self._prefix_feature_toggles.clear_toggles()
 
     def _show_page_for_new_prefix(self):
         model = create_new_model_for_user(current_settings.as_dict())
@@ -425,7 +430,7 @@ class MainWindow(GtkBase):
 
                 n += 1
 
-        self._show_prefix_model(model)
+        self._show_prefix_model(model, have_toggles=False)
 
     def _set_page(
         self,

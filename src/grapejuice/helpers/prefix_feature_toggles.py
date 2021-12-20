@@ -206,8 +206,11 @@ class PrefixFeatureToggles:
             self._current_pane = None
             self._groups = None
 
-    def use_prefix(self, prefix: Wineprefix):
+    def clear_toggles(self):
         self._destroy_pane()
+
+    def use_prefix(self, prefix: Wineprefix):
+        self.clear_toggles()
 
         self._prefix = prefix
         self._groups = Groups(*list(
