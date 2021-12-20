@@ -5,7 +5,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from grapejuice_common import paths
+from grapejuice_common import paths, variables
 from grapejuice_common.errors import HardwareProfilingError, NoHardwareProfile, PresentableError
 from grapejuice_common.hardware_info.hardware_profile import HardwareProfile, profile_hardware
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
@@ -238,13 +238,16 @@ class UserSettings:
 
         # Perform actual save
         self._location.parent.mkdir(parents=True, exist_ok=True)
-        with self._location.open("w+") as fp:
+        with self._location.open("w+", encoding=variables.text_encoding()) as fp:
             self._settings_object = {
                 **defaults,
                 **(self._settings_object or {})
             }
 
-            json.dump(self._settings_object, fp, indent=2)
+            # Dump the string, `json.dump` destroys the file when something goes wrong
+            json_string = json.dumps(self._settings_object, indent=2)
+
+            fp.write(json_string)
 
     def save_prefix_model(self, model: WineprefixConfigurationModel):
         did_update = False
