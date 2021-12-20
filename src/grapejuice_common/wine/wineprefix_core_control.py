@@ -2,11 +2,13 @@ import atexit
 import json
 import logging
 import os
+import re
 import shutil
 import signal
 import subprocess
 import sys
 import time
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from string import Template
@@ -175,6 +177,16 @@ def run_exe_in_daemon(command: List[str], post_run_function: callable = None) ->
     return wrapper
 
 
+WINE_PROCESS_PTN = re.compile(r"^\s*([a-f0-9]+)\s+(\d+).*\'([\w.]+)\'")
+
+
+@dataclass(frozen=True)
+class WineProcess:
+    pid: str
+    threads: int
+    image: str
+
+
 DLL_OVERRIDE_SEP = ";"
 
 
@@ -234,6 +246,12 @@ class WineprefixCoreControl:
     def wine_server(self) -> str:
         path = Path(self.wine_binary()).parent / "wineserver"
         assert path.exists(), f"Could not find wineserver at: {path}"
+
+        return str(path)
+
+    def wine_dbg(self) -> str:
+        path = Path(self.wine_binary()).parent / "winedbg"
+        assert path.exists(), f"Could not find winedbg at: {path}"
 
         return str(path)
 
@@ -422,6 +440,27 @@ class WineprefixCoreControl:
         self.prepare_for_launch()
 
         subprocess.check_call([self.wine_server(), "-k"])
+
+    @property
+    def process_list(self) -> List[WineProcess]:
+        self.prepare_for_launch()
+
+        the_list = []
+
+        output = subprocess.check_output([self.wine_dbg(), "--command", "info proc"])
+        output = output.decode("UTF-8")
+
+        for line in output.split("\n"):
+            match = WINE_PROCESS_PTN.search(line.strip())
+
+            if match:
+                the_list.append(WineProcess(
+                    match.group(1),
+                    int(match.group(2)),
+                    match.group(3)
+                ))
+
+        return the_list
 
 
 atexit.register(close_fds)

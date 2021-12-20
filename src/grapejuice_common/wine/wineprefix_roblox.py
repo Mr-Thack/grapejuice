@@ -156,6 +156,16 @@ class WineprefixRoblox:
         except RobloxExecutableNotFound:
             return False
 
+    @property
+    def fps_unlocker_is_running(self) -> bool:
+        executable_path = self._prefix_paths.fps_unlocker_executable_path
+
+        for proc in self._core_control.process_list:
+            if proc.image == executable_path.name:
+                return True
+
+        return False
+
     def _write_flags(self, product: RobloxProduct, settings_paths: Iterable[Path]):
         flags = self._configuration.fast_flags.get(product.value, None) or dict()
 
@@ -194,7 +204,9 @@ class WineprefixRoblox:
 
         self._write_flags(product, self.all_player_app_settings_paths)
 
-        # TODO: Reimplement FPS unlocker launch
+        if not self.fps_unlocker_is_running:
+            LOG.info("FPS unlocker is enabled, starting...")
+            self._core_control.run_exe(self._prefix_paths.fps_unlocker_executable_path, run_async=True)
 
         self._core_control.run_exe(player_launcher_path, uri, accelerate_graphics=True)
 
