@@ -5,13 +5,7 @@ from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 
 def format_exception(ex: Exception):
-    return "".join(
-        traceback.format_exception(
-            etype=type(ex),
-            value=ex,
-            tb=ex.__traceback__
-        )
-    )
+    return "".join(traceback.format_exception(type(ex), ex, ex.__traceback__))
 
 
 class PresentableError(RuntimeError):
