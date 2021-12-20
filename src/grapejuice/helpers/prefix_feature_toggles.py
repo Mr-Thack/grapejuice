@@ -257,7 +257,7 @@ class PrefixFeatureToggles:
         model.roblox_renderer = graphics["roblox_renderer"].value
         graphics.pop("roblox_renderer")
 
-        if graphics["should_prime"]:
+        if graphics.get("should_prime", False):
             model.prime_offload_sink = int(graphics["prime_offload_sink"].split(":")[0])
 
         else:
