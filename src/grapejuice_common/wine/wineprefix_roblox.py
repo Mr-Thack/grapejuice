@@ -170,7 +170,9 @@ class WineprefixRoblox:
         flags = self._configuration.fast_flags.get(product.value, None) or dict()
 
         # Apply rendering flag
-        flags[RobloxRenderer(self._configuration.roblox_renderer).prefer_flag] = True
+        renderer = self._configuration.roblox_renderer
+        if renderer is not RobloxRenderer.Undetermined:
+            flags[RobloxRenderer(self._configuration.roblox_renderer).prefer_flag] = True
 
         # Don't do anything when we don't have any flags
         if len(flags) <= 0:
