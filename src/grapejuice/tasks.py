@@ -120,7 +120,7 @@ class ShowDriveC(background.BackgroundTask):
 
 class SignIntoStudio(background.BackgroundTask):
     def __init__(self, **kwargs):
-        super().__init__(f"Opening Studio Sign-in page", **kwargs)
+        super().__init__("Opening Studio Sign-in page", **kwargs)
 
     def work(self):
         from grapejuice_common import variables
