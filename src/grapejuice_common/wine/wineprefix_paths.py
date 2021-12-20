@@ -78,3 +78,19 @@ class WineprefixPaths:
     @property
     def fps_unlocker_executable_path(self):
         return self.fps_unlocker_directory / "rbxfpsunlocker.exe"
+
+    @property
+    def system_registry_hive(self):
+        return self._base_directory / "system.reg"
+
+    @property
+    def user_registry_hive(self):
+        return self._base_directory / "user.reg"
+
+    @property
+    def dxvk_directory(self):
+        return self.vendor_directory / "DXVK"
+
+    @property
+    def system32(self):
+        return self.drive_c / "windows" / "system32"

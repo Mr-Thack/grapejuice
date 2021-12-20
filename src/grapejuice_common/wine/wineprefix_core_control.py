@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from string import Template
-from typing import Union, List, Dict
+from typing import Union, List, Dict, Optional
 
 from grapejuice_common import variables, paths
 from grapejuice_common.errors import HardwareProfilingError
@@ -114,6 +114,7 @@ def run_exe_no_daemon(
     command: List[str],
     exe_name: str,
     run_async: bool,
+    working_directory: Optional[Path] = None,
     post_run_function: callable = None
 ) -> Union[ProcessWrapper, None]:
     LOG.info("Running in no_daemon_mode")
@@ -139,7 +140,8 @@ def run_exe_no_daemon(
             subprocess.Popen(
                 command,
                 stdout=stdout_fd,
-                stderr=stderr_fd
+                stderr=stderr_fd,
+                cwd=working_directory
             ),
             on_exit=post_run_function
         )
@@ -155,7 +157,8 @@ def run_exe_no_daemon(
         subprocess.call(
             command,
             stdout=stdout_fd,
-            stderr=stderr_fd
+            stderr=stderr_fd,
+            cwd=working_directory
         )
 
         if callable(post_run_function):
@@ -165,10 +168,14 @@ def run_exe_no_daemon(
 
 
 @log_function
-def run_exe_in_daemon(command: List[str], post_run_function: callable = None) -> ProcessWrapper:
+def run_exe_in_daemon(
+    command: List[str],
+    post_run_function: callable = None,
+    working_directory: Optional[Path] = None
+) -> ProcessWrapper:
     LOG.info("Running process for daemon mode")
 
-    p = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=sys.stdout, stderr=sys.stderr)
+    p = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=sys.stdout, stderr=sys.stderr, cwd=working_directory)
     wrapper = ProcessWrapper(p, on_exit=post_run_function)
 
     processes.append(wrapper)
@@ -400,7 +407,8 @@ class WineprefixCoreControl:
         run_async=False,
         use_wine64=False,
         accelerate_graphics: bool = False,
-        post_run_function: callable = None
+        post_run_function: callable = None,
+        working_directory: Optional[Path] = None
     ) -> Union[ProcessWrapper, None]:
         from grapejuice_common.features.settings import current_settings
         from grapejuice_common.features import settings
@@ -425,16 +433,42 @@ class WineprefixCoreControl:
         command = [wine_binary, exe_path_string, *args]
 
         if current_settings.get(settings.k_no_daemon_mode):
-            return run_exe_no_daemon(command, exe_name, run_async, post_run_function=post_run_function)
+            return run_exe_no_daemon(
+                command,
+                exe_name,
+                run_async,
+                post_run_function=post_run_function,
+                working_directory=working_directory
+            )
 
         else:
-            return run_exe_in_daemon(command, post_run_function=post_run_function)
+            return run_exe_in_daemon(
+                command,
+                post_run_function=post_run_function,
+                working_directory=working_directory
+            )
 
-    def run_linux_command(self, command: str):
+    def run_linux_command(
+        self,
+        command: str,
+        arguments: Optional[List[str]] = None,
+        working_directory: Optional[Path] = None
+    ):
         self.prepare_for_launch()
 
+        command_name = Path(command).name
+        command = [command]
+
+        if arguments:
+            command.extend(arguments)
+
         # TODO: Make commands use wine defined in prefix configuration
-        run_exe_no_daemon([command], command, run_async=False)
+        return run_exe_no_daemon(
+            command,
+            command_name,
+            run_async=False,
+            working_directory=working_directory
+        )
 
     def kill_wine_server(self):
         self.prepare_for_launch()

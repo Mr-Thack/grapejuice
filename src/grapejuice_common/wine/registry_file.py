@@ -1,5 +1,6 @@
 import logging
 import re
+from copy import deepcopy
 from pathlib import Path
 from typing import Union, IO, List, Callable, Dict
 
@@ -35,6 +36,10 @@ class RegistryKey:
 
     def get_attribute(self, key: str):
         return self._attributes.get(key, None)
+
+    @property
+    def attributes(self) -> Dict[str, str]:
+        return deepcopy(self._attributes)
 
 
 class RegistryFile:

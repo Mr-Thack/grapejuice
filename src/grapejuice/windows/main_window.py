@@ -22,7 +22,7 @@ from grapejuice.tasks import \
     RunBuiltinWineApp, \
     RunLinuxApp, \
     KillWineserver, \
-    InstallFPSUnlocker
+    InstallFPSUnlocker, SetDXVKState
 from grapejuice.windows.settings_window import SettingsWindow
 from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
@@ -359,7 +359,13 @@ class MainWindow(GtkBase):
         current_settings.save_prefix_model(model)
         self._update_prefix_in_prefix_list(model)
 
-        if model.third_party[ThirdPartyKeys.fps_unlocker]:
+        gui_task_manager.run_task_once(
+            SetDXVKState,
+            self._current_prefix.value,
+            should_be_installed=model.third_party.get(ThirdPartyKeys.dxvk, False)
+        )
+
+        if model.third_party.get(ThirdPartyKeys.fps_unlocker, False):
             gui_task_manager.run_task_once(InstallFPSUnlocker, self._current_prefix.value, check_exists=True)
 
     @manually_connected_handler

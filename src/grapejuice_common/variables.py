@@ -81,7 +81,7 @@ def required_player_wine_version():
     return "wine-6.11"
 
 
-@dataclass
+@dataclass(frozen=True)
 class FpsUnlockerRelease:
     id: int
     tag: str
@@ -90,19 +90,20 @@ class FpsUnlockerRelease:
 
 
 def current_rbxfpsunlocker_release() -> FpsUnlockerRelease:
+    import requests
+
     try:
-        import requests
 
-        github_latest_release = requests.get("https://api.github.com/repos/axstin/rbxfpsunlocker/releases/latest")
-        github_latest_release.raise_for_status()
+        gh_release = requests.get("https://api.github.com/repos/axstin/rbxfpsunlocker/releases/latest")
+        gh_release.raise_for_status()
 
-        github_latest_release = github_latest_release.json()
+        gh_release = gh_release.json()
 
         url_ptn = re.compile(r"(https://github.com/axstin.rbxfpsunlocker/files/\d+/[\w-]+?\.zip)")
-        found_urls = url_ptn.findall(github_latest_release["body"])
+        found_urls = url_ptn.findall(gh_release["body"])
 
         if len(found_urls) <= 0:
-            for asset in github_latest_release["assets"]:
+            for asset in gh_release["assets"]:
                 asset_name = asset["name"].lower()
 
                 if asset_name in ("rbxfpsunlocker-x64.zip", "rbxfpsunlocker-x86.zip"):
@@ -131,8 +132,8 @@ def current_rbxfpsunlocker_release() -> FpsUnlockerRelease:
         prioritized = list(sorted(map(prioritize_url, found_urls), key=lambda x: x["priority"]))
 
         return FpsUnlockerRelease(
-            github_latest_release.get("id", -1),
-            github_latest_release.get("tag_name", "unknown_tag"),
+            gh_release.get("id", -1),
+            gh_release.get("tag_name", "unknown_tag"),
             prioritized[0]["url"],
             did_get_from_github_releases=True
         )
@@ -141,6 +142,53 @@ def current_rbxfpsunlocker_release() -> FpsUnlockerRelease:
         LOG.error(str(e))
 
         return FpsUnlockerRelease(-1, "unknown_tag")
+
+
+@dataclass(frozen=True)
+class DXVKRelease:
+    id: int
+    tag: str
+    version: str = "1.9.2"
+    download_url: str = "https://github.com/doitsujin/dxvk/releases/download/v1.9.2/dxvk-1.9.2.tar.gz"
+    did_get_from_github_releases: bool = False
+
+    @property
+    def has_version(self):
+        return not not self.version.strip()
+
+
+DXVK_VERSION_PTN = re.compile(r"^v(.*)")
+
+
+def current_dxvk_release() -> DXVKRelease:
+    import requests
+
+    try:
+
+        gh_release = requests.get("https://api.github.com/repos/doitsujin/dxvk/releases/latest")
+        gh_release.raise_for_status()
+
+        gh_release = gh_release.json()
+        version = None
+
+        tag_name = gh_release.get("tag_name", "")
+        version_match = DXVK_VERSION_PTN.search(tag_name)
+        if version_match:
+            version = version_match.group(1).strip()
+
+        for asset in gh_release["assets"]:
+            if asset.get("name", "").lower().endswith(".tar.gz"):
+                return DXVKRelease(
+                    id=int(asset.get("id", -1)),
+                    tag=gh_release.get("tag_name", "unknown_tag"),
+                    version=version or DXVKRelease.version,
+                    download_url=asset["browser_download_url"]
+                )
+
+    except Exception as e:
+        LOG.error(str(e))
+
+    return DXVKRelease(-1, "unknown_tag")
 
 
 def text_encoding() -> str:

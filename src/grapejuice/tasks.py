@@ -9,6 +9,7 @@ from typing import Optional
 
 from grapejuice import background
 from grapejuice_common import paths
+from grapejuice_common.recipes.dxvk_recipes import InstallDXVKRecipe, UninstallDXVKRecipe
 from grapejuice_common.recipes.fps_unlocker_recipe import FpsUnlockerRecipe
 from grapejuice_common.update_info_providers import UpdateInformationProvider
 from grapejuice_common.util import xdg_open
@@ -196,4 +197,25 @@ class InstallFPSUnlocker(background.BackgroundTask):
         else:
             self._log.info("Installing FPS unlocker with /style/")
 
+            recipe.make_in(self._prefix)
+
+
+class SetDXVKState(background.BackgroundTask):
+    _prefix: Wineprefix
+    _should_be_installed: bool
+
+    def __init__(self, prefix: Wineprefix, should_be_installed: bool, **kwargs):
+        super().__init__(f"Updating DXVK state for {prefix.configuration.display_name}", **kwargs)
+
+        self._prefix = prefix
+        self._should_be_installed = should_be_installed
+
+    def work(self):
+        if self._should_be_installed:
+            recipe = InstallDXVKRecipe()
+
+        else:
+            recipe = UninstallDXVKRecipe()
+
+        if not recipe.exists_in(self._prefix):
             recipe.make_in(self._prefix)

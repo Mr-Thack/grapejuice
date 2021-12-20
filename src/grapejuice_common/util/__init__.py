@@ -1,5 +1,7 @@
 import os
+from contextlib import contextmanager
 from pathlib import Path
+from typing import Optional
 
 
 def prepare_uri(uri):
@@ -43,3 +45,16 @@ def strip_pii(s: str):
         s = s.replace(getpass.getuser(), "[REDACTED]")
 
     return s
+
+
+@contextmanager
+def working_directory_as(working_directory: Optional[Path] = None):
+    if working_directory is not None:
+        current_directory = os.curdir
+        os.chdir(working_directory)
+        yield
+
+        os.chdir(current_directory)
+
+    else:
+        yield

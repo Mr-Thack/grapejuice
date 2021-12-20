@@ -11,6 +11,10 @@ from grapejuice_common.wine.wineprefix import Wineprefix
 log = logging.getLogger(__name__)
 
 
+def _fps_unlocker_metadata_path(prefix: Wineprefix):
+    return prefix.paths.fps_unlocker_directory / "grapejuice_metadata.json"
+
+
 def _is_present(prefix: Wineprefix) -> bool:
     return prefix.paths.fps_unlocker_executable_path.exists()
 
@@ -21,7 +25,7 @@ def _is_up_to_date(prefix: Wineprefix) -> bool:
     try:
         release = variables.current_rbxfpsunlocker_release()
         if release.id >= 0 and release.did_get_from_github_releases:
-            md_path = prefix.paths.fps_unlocker_directory / "metadata.json"
+            md_path = _fps_unlocker_metadata_path(prefix)
 
             with md_path.open("r", encoding=variables.text_encoding()) as fp:
                 metadata = json.load(fp)
@@ -53,5 +57,6 @@ class FpsUnlockerRecipe(Recipe):
             with zipfile.ZipFile(fp) as zf:
                 zf.extractall(package_path)
 
-        with (package_path / "metadata.json").open("w+", encoding=variables.text_encoding()) as fp:
+        md_path = _fps_unlocker_metadata_path(prefix)
+        with md_path.open("w+", encoding=variables.text_encoding()) as fp:
             json.dump({"release_id": release.id, "tag": release.tag}, fp)
