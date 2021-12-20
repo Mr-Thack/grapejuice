@@ -6,7 +6,7 @@ from itertools import chain
 from subprocess import CalledProcessError
 from typing import Dict, List
 
-from grapejuice_common.errors import HardwareProfilingError
+from grapejuice_common.errors import HardwareProfilingError, format_exception
 from grapejuice_common.hardware_info.chassis_type import is_mobile_chassis, ChassisType
 from grapejuice_common.hardware_info.glx_info import GLXInfo
 from grapejuice_common.hardware_info.graphics_card import GraphicsCard, GPU_VENDOR_PRIORITY, GPUVendor
@@ -270,7 +270,10 @@ def profile_hardware() -> HardwareProfile:
         return HardwareProfile.from_profiler(state)
 
     except Exception as e:
-        raise HardwareProfilingError(e) from e
+        log.error(f"{type(e).__name__}: {str(e)}")
+        log.error(format_exception(e))
+
+        raise HardwareProfilingError(e)
 
 
 if __name__ == '__main__':
