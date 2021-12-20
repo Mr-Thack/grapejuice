@@ -254,17 +254,17 @@ class PrefixFeatureToggles:
         model.apply_dict(self._groups.winedebug.settings_dictionary)
 
         graphics = self._groups.graphics_settings.settings_dictionary
-        model.roblox_renderer = graphics["roblox_renderer"].value
-        graphics.pop("roblox_renderer")
+        model.roblox_renderer = graphics.pop("roblox_renderer", RobloxRenderer.Undetermined.value)
+        graphics.pop("roblox_renderer", None)
 
-        if graphics.get("should_prime", False):
+        should_prime = graphics.pop("should_prime", False)
+        if should_prime and (graphics.get("prime_offload_sink", None) is not None):
             model.prime_offload_sink = int(graphics["prime_offload_sink"].split(":")[0])
 
         else:
             model.prime_offload_sink = -1
 
-        graphics.pop("should_prime")
-        graphics.pop("prime_offload_sink")
+        graphics.pop("prime_offload_sink", None)
 
         model.apply_dict(graphics)
 
