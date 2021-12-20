@@ -12,6 +12,7 @@ from grapejuice_common.hardware_info.glx_info import GLXInfo
 from grapejuice_common.hardware_info.graphics_card import GraphicsCard, GPU_VENDOR_PRIORITY, GPUVendor
 from grapejuice_common.hardware_info.lspci import LSPci
 from grapejuice_common.hardware_info.xrandr import XRandR, XRandRProvider
+from grapejuice_common.hardware_info.xrandr_factory import xrandr_factory
 from grapejuice_common.roblox_renderer import RobloxRenderer
 
 log = logging.getLogger(__name__)
@@ -137,7 +138,7 @@ class HardwareProfile:
 def _collect_information(state: ComputeParametersState):
     log.info("Getting lspci and XRandR data")
 
-    state.xrandr = XRandR()
+    state.xrandr = xrandr_factory()
     state.hardware_list = LSPci()
 
     graphics_cards = state.hardware_list.graphics_cards

@@ -5,7 +5,8 @@ from typing import Optional
 from grapejuice_common.gtk.components.grape_setting import GrapeSetting
 from grapejuice_common.gtk.components.grape_settings_group import GrapeSettingsGroup
 from grapejuice_common.gtk.components.grape_settings_pane import GrapeSettingsPane
-from grapejuice_common.hardware_info.xrandr import XRandR, XRandRProvider
+from grapejuice_common.hardware_info.xrandr import XRandRProvider
+from grapejuice_common.hardware_info.xrandr_factory import xrandr_factory
 from grapejuice_common.models.wineprefix_configuration_model import ThirdPartyKeys
 from grapejuice_common.roblox_product import RobloxProduct
 from grapejuice_common.roblox_renderer import RobloxRenderer
@@ -64,10 +65,8 @@ def _graphics_settings(prefix: Wineprefix) -> Optional[GrapeSettingsGroup]:
         )
 
     def _prime_offload_sink():
-        provider_index = 0
-
         try:
-            xrandr = XRandR()
+            xrandr = xrandr_factory()
             profile = current_settings.hardware_profile
             provider_index = profile.provider_index
 

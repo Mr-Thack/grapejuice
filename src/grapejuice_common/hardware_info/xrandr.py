@@ -1,6 +1,8 @@
 import json
+import os
 import re
 import subprocess
+from abc import ABC
 from dataclasses import dataclass, asdict
 from typing import List, Optional, Dict
 
@@ -88,14 +90,24 @@ class XRandRProvider:
         return f"<{type(self).__name__}> " + json.dumps(self.as_serializable_dict(), indent=2)
 
 
+class IXRandR(ABC):
+    @property
+    def providers(self) -> List[XRandRProvider]:
+        return []
+
+
 class XRandR:
     _providers: List[XRandRProvider]
 
     def __init__(self):
-        output = subprocess.check_output(["xrandr", "--listproviders"]).decode("UTF-8")
-        lines = list(filter(None, map(str.strip, output.split("\n"))))
+        if os.environ.get("NO_XRANDR", "0") == "1":
+            self._providers = []
 
-        self._providers = list(map(XRandRProvider.from_line, lines[1:]))
+        else:
+            output = subprocess.check_output(["xrandr", "--listproviders"]).decode("UTF-8")
+            lines = list(filter(None, map(str.strip, output.split("\n"))))
+
+            self._providers = list(map(XRandRProvider.from_line, lines[1:]))
 
     @property
     def providers(self) -> List[XRandRProvider]:

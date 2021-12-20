@@ -63,7 +63,6 @@ CONTROL_FIELDS = [
 
         # Hardware profiling
         "pciutils",
-        "x11-xserver-utils",
         "mesa-utils"
     ]),
     ("Homepage", about.package_repository),
