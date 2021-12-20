@@ -187,15 +187,21 @@ class WineprefixRoblox:
             with p.open("w+", encoding=variables.text_encoding()) as fp:
                 fp.write(json_dump)
 
-    def run_roblox_studio(self, uri=""):
+    def run_roblox_studio(self, uri: str = None, ide: bool = False):
         launcher_path = self.roblox_studio_launcher_path
 
         self._write_flags(RobloxProduct.studio, self.all_studio_app_settings_paths)
 
         run_args = [launcher_path]
-
-        if uri:
-            run_args.append(uri)
+        run_args.extend(list(
+            filter(
+                None,
+                [
+                    "-ide" if ide else None,
+                    uri
+                ]
+            )
+        ))
 
         self._core_control.run_exe(*run_args, accelerate_graphics=True)
 

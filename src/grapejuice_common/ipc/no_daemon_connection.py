@@ -31,7 +31,7 @@ class NoDaemonModeConnection(IDBusConnection):
         _with_prefix_id(prefix_id, lambda prefix: prefix.roblox.run_roblox_player(uri))
 
     def edit_local_game(self, prefix_id: str, place_path: str):
-        _with_prefix_id(prefix_id, lambda prefix: prefix.roblox.run_roblox_studio(uri=place_path))
+        _with_prefix_id(prefix_id, lambda prefix: prefix.roblox.run_roblox_studio(uri=place_path, ide=True))
 
     def edit_cloud_game(self, prefix_id: str, uri: str):
         _with_prefix_id(prefix_id, lambda prefix: prefix.roblox.run_roblox_studio(uri))
