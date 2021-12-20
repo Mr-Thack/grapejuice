@@ -398,7 +398,7 @@ class MainWindow(GtkBase):
             on_finish_callback=after_installation
         )
 
-    def _show_prefix_model(self, prefix: WineprefixConfigurationModel, have_toggles: bool = True):
+    def _show_prefix_model(self, prefix: WineprefixConfigurationModel):
         self._current_prefix.clear_cached_value()
         self._set_page(self.widgets.cc_prefix_page)
         self._current_prefix_model = prefix
@@ -421,7 +421,7 @@ class MainWindow(GtkBase):
             not prefix_exists_on_disk
         )
 
-        if have_toggles:
+        if prefix_exists_on_disk:
             self._prefix_feature_toggles.use_prefix(self._current_prefix.value)
 
         else:
@@ -439,7 +439,7 @@ class MainWindow(GtkBase):
 
                 n += 1
 
-        self._show_prefix_model(model, have_toggles=False)
+        self._show_prefix_model(model)
 
     def _set_page(
         self,
