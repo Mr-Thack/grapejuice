@@ -6,6 +6,7 @@ from grapejuice_common.gtk.components.grape_setting import GrapeSetting
 from grapejuice_common.gtk.components.grape_settings_group import GrapeSettingsGroup
 from grapejuice_common.gtk.components.grape_settings_pane import GrapeSettingsPane
 from grapejuice_common.hardware_info.xrandr import XRandR, XRandRProvider
+from grapejuice_common.models.wineprefix_configuration_model import ThirdPartyKeys
 from grapejuice_common.roblox_product import RobloxProduct
 from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.wine.wineprefix import Wineprefix
@@ -150,15 +151,15 @@ def _third_party(prefix: Wineprefix):
         description="Grapejuice can assist in installing third party tools that will improve the Roblox experience",
         settings=[
             GrapeSetting(
-                key="fps_unlocker",
+                key=ThirdPartyKeys.fps_unlocker,
                 display_name="Use Roblox FPS Unlocker",
                 value_type=bool,
-                value=prefix.configuration.third_party.get("fps_unlocked", False)
+                value=prefix.configuration.third_party.get(ThirdPartyKeys.fps_unlocker, False)
             ),
             GrapeSetting(
-                key="dxvk",
+                key=ThirdPartyKeys.dxvk,
                 display_name="Use DXVK D3D implementation",
-                value=prefix.configuration.third_party.get("dxvk", False)
+                value=prefix.configuration.third_party.get(ThirdPartyKeys.dxvk, False)
             )
         ]
     )

@@ -21,7 +21,8 @@ from grapejuice.tasks import \
     PerformUpdate, \
     RunBuiltinWineApp, \
     RunLinuxApp, \
-    KillWineserver
+    KillWineserver, \
+    InstallFPSUnlocker
 from grapejuice.windows.settings_window import SettingsWindow
 from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
@@ -29,9 +30,10 @@ from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor, handler
 from grapejuice_common.gtk.gtk_util import \
     set_gtk_widgets_visibility, \
     set_label_text_and_hide_if_no_text, \
-    set_style_class_conditionally, dialog
+    set_style_class_conditionally, \
+    dialog
 from grapejuice_common.gtk.yes_no_dialog import yes_no_dialog
-from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
+from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel, ThirdPartyKeys
 from grapejuice_common.util.computed_field import ComputedField
 from grapejuice_common.wine.wine_functions import create_new_model_for_user, get_studio_wineprefix
 from grapejuice_common.wine.wineprefix import Wineprefix
@@ -329,7 +331,7 @@ class MainWindow(GtkBase):
         for child in self.widgets.prefix_list.get_children():
             if isinstance(child, GrapeWineprefixRow):
                 if child.prefix_model.id == prefix.id:
-                    child.set_text(prefix.display_name)
+                    child.prefix_model = prefix
 
     def _delete_current_prefix(self):
         model = self._current_prefix_model
@@ -349,6 +351,10 @@ class MainWindow(GtkBase):
     def _update_current_prefix(self):
         model = self._prefix_feature_toggles.configured_model
         current_settings.save_prefix_model(model)
+        self._update_prefix_in_prefix_list(model)
+
+        if model.third_party[ThirdPartyKeys.fps_unlocker]:
+            gui_task_manager.run_task_once(InstallFPSUnlocker, self._current_prefix.value, check_exists=True)
 
     def _create_current_prefix(self):
         self._prefix_name_handler.finish_editing()

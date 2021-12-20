@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import uuid
+from dataclasses import dataclass
 from pathlib import Path
 
 from grapejuice_common.errors import NoWineError
@@ -80,7 +81,15 @@ def required_player_wine_version():
     return "wine-6.11"
 
 
-def rbxfpsunlocker_vendor_download_url():
+@dataclass
+class FpsUnlockerRelease:
+    id: int
+    tag: str
+    download_url: str = "https://github.com/axstin/rbxfpsunlocker/files/5203791/rbxfpsunlocker-x86.zip"
+    did_get_from_github_releases: bool = False
+
+
+def current_rbxfpsunlocker_release() -> FpsUnlockerRelease:
     try:
         import requests
 
@@ -91,6 +100,13 @@ def rbxfpsunlocker_vendor_download_url():
 
         url_ptn = re.compile(r"(https://github.com/axstin.rbxfpsunlocker/files/\d+/[\w-]+?\.zip)")
         found_urls = url_ptn.findall(github_latest_release["body"])
+
+        if len(found_urls) <= 0:
+            for asset in github_latest_release["assets"]:
+                asset_name = asset["name"].lower()
+
+                if asset_name in ("rbxfpsunlocker-x64.zip", "rbxfpsunlocker-x86.zip"):
+                    found_urls.append(asset["browser_download_url"])
 
         LOG.info("Found FPS unlocker urls: " + json.dumps(found_urls))
 
@@ -114,11 +130,17 @@ def rbxfpsunlocker_vendor_download_url():
 
         prioritized = list(sorted(map(prioritize_url, found_urls), key=lambda x: x["priority"]))
 
-        return prioritized[0]["url"]
+        return FpsUnlockerRelease(
+            github_latest_release.get("id", -1),
+            github_latest_release.get("tag_name", "unknown_tag"),
+            prioritized[0]["url"],
+            did_get_from_github_releases=True
+        )
 
     except Exception as e:
         LOG.error(str(e))
-        return "https://github.com/axstin/rbxfpsunlocker/files/5203791/rbxfpsunlocker-x86.zip"
+
+        return FpsUnlockerRelease(-1, "unknown_tag")
 
 
 def text_encoding() -> str:

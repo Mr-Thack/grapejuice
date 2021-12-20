@@ -9,6 +9,7 @@ from typing import Optional
 
 from grapejuice import background
 from grapejuice_common import paths
+from grapejuice_common.recipes.fps_unlocker_recipe import FpsUnlockerRecipe
 from grapejuice_common.update_info_providers import UpdateInformationProvider
 from grapejuice_common.util import xdg_open
 from grapejuice_common.wine.wineprefix import Wineprefix
@@ -171,3 +172,28 @@ class KillWineserver(background.BackgroundTask):
 
     def work(self):
         self._prefix.core_control.kill_wine_server()
+
+
+class InstallFPSUnlocker(background.BackgroundTask):
+    _prefix: Wineprefix
+    _check_exists: bool  # Horrible name
+
+    def __init__(self, prefix: Wineprefix, check_exists: bool = False, **kwargs):
+        super().__init__(f"Installing FPS unlocker in {prefix.configuration.display_name}", **kwargs)
+
+        self._prefix = prefix
+        self._check_exists = check_exists
+
+    def work(self):
+        recipe = FpsUnlockerRecipe()
+
+        if self._check_exists:
+            self._log.info("Only installing FPS unlocker if its not present")
+
+            if not recipe.exists_in(self._prefix):
+                recipe.make_in(self._prefix)
+
+        else:
+            self._log.info("Installing FPS unlocker with /style/")
+
+            recipe.make_in(self._prefix)

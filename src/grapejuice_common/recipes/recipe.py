@@ -21,10 +21,8 @@ class Recipe(ABC):
         self._hint = hint
 
     def _run_indicators(self, prefix: Wineprefix) -> bool:
-        v = True
-
-        for indicator in self._indicators:
-            v = v and indicator(prefix)
+        results = list(map(lambda fn: fn(prefix), self._indicators))
+        v = all(results)
 
         return v
 

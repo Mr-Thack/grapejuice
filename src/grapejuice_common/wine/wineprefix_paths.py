@@ -62,3 +62,19 @@ class WineprefixPaths:
     def installer_download_location(self):
         # Do not call it RobloxPlayerLauncherBeta because it will try to import itself
         return self.temp_directory / "Roblox_Installer.exe"
+
+    @property
+    def grapejuice_in_drive_c(self):
+        return self.drive_c / "Grapejuice"
+
+    @property
+    def vendor_directory(self):
+        return self.grapejuice_in_drive_c / "Vendor"
+
+    @property
+    def fps_unlocker_directory(self):
+        return self.vendor_directory / "rbxfpsunlocker"
+
+    @property
+    def fps_unlocker_executable_path(self):
+        return self.fps_unlocker_directory / "rbxfpsunlocker.exe"

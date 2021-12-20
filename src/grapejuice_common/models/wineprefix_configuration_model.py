@@ -8,6 +8,11 @@ from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 
+class ThirdPartyKeys:
+    fps_unlocker = "fps_unlocker"
+    dxvk = "dxvk"
+
+
 @dataclass
 class WineprefixConfigurationModel:
     id: str

@@ -1,7 +1,7 @@
 from gi.repository import Gtk
 
-from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.gtk.components.grape_list_box_row_with_icon import GrapeListBoxRowWithIcon
+from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
 
@@ -31,6 +31,11 @@ class GrapeWineprefixRow(GrapeListBoxRowWithIcon):
     @property
     def prefix_model(self) -> WineprefixConfigurationModel:
         return self._prefix_model
+
+    @prefix_model.setter
+    def prefix_model(self, new_model: WineprefixConfigurationModel):
+        self._prefix_model = new_model
+        self.set_text(self._prefix_model.display_name)
 
     def set_text(self, text: str):
         self._label.set_text(text)

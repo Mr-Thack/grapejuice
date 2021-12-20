@@ -14,7 +14,8 @@ class Task:
     _on_error_callback: OptionalCallback = None
 
     def __init__(
-        self, name,
+        self,
+        name,
         on_finish_callback: OptionalCallback = None,
         on_error_callback: OptionalCallback = None
     ):
