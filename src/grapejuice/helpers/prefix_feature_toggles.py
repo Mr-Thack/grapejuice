@@ -254,7 +254,7 @@ class PrefixFeatureToggles:
         model.apply_dict(self._groups.winedebug.settings_dictionary)
 
         graphics = self._groups.graphics_settings.settings_dictionary
-        model.roblox_renderer = graphics.pop("roblox_renderer", RobloxRenderer.Undetermined.value)
+        model.roblox_renderer = graphics.pop("roblox_renderer", RobloxRenderer.Undetermined).value
         graphics.pop("roblox_renderer", None)
 
         should_prime = graphics.pop("should_prime", False)
