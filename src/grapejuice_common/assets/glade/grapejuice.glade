@@ -205,18 +205,6 @@ Author: BrinkerVII <brinkervii@gmail.com>
     <property name="icon-name">application-x-addon-symbolic</property>
     <property name="icon_size">3</property>
   </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">system-run</property>
-    <property name="icon_size">6</property>
-  </object>
-  <object class="GtkImage" id="image3">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">system-run</property>
-    <property name="icon_size">6</property>
-  </object>
   <object class="GtkImage" id="install_roblox_icon">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -224,6 +212,18 @@ Author: BrinkerVII <brinkervii@gmail.com>
     <property name="margin-bottom">10</property>
     <property name="icon-name">package-x-generic-symbolic</property>
     <property name="icon_size">3</property>
+  </object>
+  <object class="GtkImage" id="open_documentation_icon">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">accessories-dictionary-symbolic</property>
+    <property name="icon_size">6</property>
+  </object>
+  <object class="GtkImage" id="sign_into_studio_icon">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">dialog-password-symbolic</property>
+    <property name="icon_size">6</property>
   </object>
   <object class="GtkImage" id="start_page_shortcut_2_icon">
     <property name="visible">True</property>
@@ -290,13 +290,14 @@ Author: BrinkerVII <brinkervii@gmail.com>
         <property name="homogeneous">True</property>
         <child>
           <object class="GtkButton">
-            <property name="label" translatable="yes">Shortcut 1</property>
+            <property name="label" translatable="yes">Sign in to Studio</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="image">image3</property>
+            <property name="image">sign_into_studio_icon</property>
             <property name="image-position">top</property>
             <property name="always-show-image">True</property>
+            <signal name="clicked" handler="sign_in_to_studio" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -323,13 +324,14 @@ Author: BrinkerVII <brinkervii@gmail.com>
         </child>
         <child>
           <object class="GtkButton">
-            <property name="label" translatable="yes">Shortcut 3</property>
+            <property name="label" translatable="yes">Documentation</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="image">image2</property>
+            <property name="image">open_documentation_icon</property>
             <property name="image-position">top</property>
             <property name="always-show-image">True</property>
+            <signal name="clicked" handler="open_grapejuice_documentation" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>

@@ -118,6 +118,15 @@ class ShowDriveC(background.BackgroundTask):
         xdg_open(str(self._path))
 
 
+class SignIntoStudio(background.BackgroundTask):
+    def __init__(self, **kwargs):
+        super().__init__(f"Opening Studio Sign-in page", **kwargs)
+
+    def work(self):
+        from grapejuice_common import variables
+        xdg_open(variables.roblox_return_to_studio())
+
+
 class FaultyOnPurpose(background.BackgroundTask):
     _timeout: int
 

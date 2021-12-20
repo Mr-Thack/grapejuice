@@ -23,7 +23,8 @@ from grapejuice.tasks import \
     RunLinuxApp, \
     KillWineserver, \
     InstallFPSUnlocker, \
-    SetDXVKState
+    SetDXVKState, \
+    SignIntoStudio
 from grapejuice.windows.settings_window import SettingsWindow
 from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
@@ -212,6 +213,14 @@ class MainWindow(GtkBase):
         studio_prefix = get_studio_wineprefix()
 
         gui_task_manager.run_task_once(RunRobloxStudio, studio_prefix)
+
+    @handler
+    def sign_in_to_studio(self, *_):
+        gui_task_manager.run_task_once(SignIntoStudio)
+
+    @handler
+    def open_grapejuice_documentation(self, *_):
+        self._show_grapejuice_documentation()
 
     @handler
     def open_settings_window(self, *_):
