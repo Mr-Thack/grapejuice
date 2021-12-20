@@ -30,8 +30,8 @@ def _is_up_to_date(prefix: Wineprefix) -> bool:
     except Exception as e:
         log.error(str(e))
 
-    # Just don't do anything if getting the release bugs out
-    return True
+    # Assume it is not up-to-date
+    return False
 
 
 class FpsUnlockerRecipe(Recipe):
