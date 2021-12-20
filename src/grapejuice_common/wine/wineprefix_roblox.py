@@ -209,7 +209,11 @@ class WineprefixRoblox:
         if self._configuration.third_party.get(ThirdPartyKeys.fps_unlocker, False):
             if not self.fps_unlocker_is_running:
                 LOG.info("FPS unlocker is enabled, starting...")
-                self._core_control.run_exe(self._prefix_paths.fps_unlocker_executable_path, run_async=True)
+                self._core_control.run_exe(
+                    self._prefix_paths.fps_unlocker_executable_path,
+                    run_async=True,
+                    working_directory=self._prefix_paths.fps_unlocker_directory
+                )
 
         self._core_control.run_exe(player_launcher_path, uri, accelerate_graphics=True)
 

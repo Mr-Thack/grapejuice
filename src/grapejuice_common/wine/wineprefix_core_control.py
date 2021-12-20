@@ -420,6 +420,9 @@ class WineprefixCoreControl:
             exe_path_string = str(exe_path.resolve())
             exe_name = exe_path.name
 
+            if not working_directory:
+                working_directory = exe_path.parent
+
         elif isinstance(exe_path, str):
             exe_path_string = exe_path
             exe_name = exe_path.split(os.path.sep)[-1]
