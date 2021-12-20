@@ -23,6 +23,9 @@ def handler(x: HandlerMethod) -> HandlerMethod:
     return wrapper
 
 
+manually_connected_handler = handler
+
+
 class WidgetAccessor:
     _builder: Optional
 

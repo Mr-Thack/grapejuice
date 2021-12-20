@@ -26,7 +26,7 @@ from grapejuice.tasks import \
 from grapejuice.windows.settings_window import SettingsWindow
 from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
-from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor, handler
+from grapejuice_common.gtk.gtk_base import GtkBase, WidgetAccessor, handler, manually_connected_handler
 from grapejuice_common.gtk.gtk_util import \
     set_gtk_widgets_visibility, \
     set_label_text_and_hide_if_no_text, \
@@ -272,6 +272,7 @@ class MainWindow(GtkBase):
     def kill_wineserver(self, *_):
         gui_task_manager.run_task_once(KillWineserver, self._current_prefix.value)
 
+    @manually_connected_handler
     def _show_about_window(self):
         self.widgets.dots_menu.popdown()
 
@@ -281,6 +282,7 @@ class MainWindow(GtkBase):
 
         del wnd
 
+    @manually_connected_handler
     def _show_grapejuice_documentation(self):
         self.widgets.dots_menu.popdown()
 
@@ -291,6 +293,7 @@ class MainWindow(GtkBase):
     def _show_start_page(self):
         self._set_page(self.widgets.cc_start_page)
 
+    @manually_connected_handler
     def _edit_prefix_name(self, _button):
         if self._prefix_name_handler.is_editing:
             self._prefix_name_handler.finish_editing()
@@ -298,6 +301,7 @@ class MainWindow(GtkBase):
         else:
             self._prefix_name_handler.activate_entry()
 
+    @manually_connected_handler
     def _prefix_row_selected(self, _prefix_list, prefix_row):
         if isinstance(prefix_row, GrapeWineprefixRow):
             self._show_prefix_model(prefix_row.prefix_model)
@@ -333,6 +337,7 @@ class MainWindow(GtkBase):
                 if child.prefix_model.id == prefix.id:
                     child.prefix_model = prefix
 
+    @manually_connected_handler
     def _delete_current_prefix(self):
         model = self._current_prefix_model
 
@@ -348,6 +353,7 @@ class MainWindow(GtkBase):
 
             shutil.rmtree(model.base_directory, ignore_errors=True)
 
+    @manually_connected_handler
     def _update_current_prefix(self):
         model = self._prefix_feature_toggles.configured_model
         current_settings.save_prefix_model(model)
@@ -356,6 +362,7 @@ class MainWindow(GtkBase):
         if model.third_party[ThirdPartyKeys.fps_unlocker]:
             gui_task_manager.run_task_once(InstallFPSUnlocker, self._current_prefix.value, check_exists=True)
 
+    @manually_connected_handler
     def _create_current_prefix(self):
         self._prefix_name_handler.finish_editing()
 
