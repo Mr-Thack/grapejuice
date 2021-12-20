@@ -8,7 +8,7 @@ from typing import Generator, List, Iterable
 
 from grapejuice_common import paths, variables
 from grapejuice_common.errors import RobloxExecutableNotFound
-from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
+from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel, ThirdPartyKeys
 from grapejuice_common.roblox_product import RobloxProduct
 from grapejuice_common.roblox_renderer import RobloxRenderer
 from grapejuice_common.util import download_file
@@ -206,9 +206,10 @@ class WineprefixRoblox:
 
         self._write_flags(product, self.all_player_app_settings_paths)
 
-        if not self.fps_unlocker_is_running:
-            LOG.info("FPS unlocker is enabled, starting...")
-            self._core_control.run_exe(self._prefix_paths.fps_unlocker_executable_path, run_async=True)
+        if self._configuration.third_party.get(ThirdPartyKeys.fps_unlocker, False):
+            if not self.fps_unlocker_is_running:
+                LOG.info("FPS unlocker is enabled, starting...")
+                self._core_control.run_exe(self._prefix_paths.fps_unlocker_executable_path, run_async=True)
 
         self._core_control.run_exe(player_launcher_path, uri, accelerate_graphics=True)
 
