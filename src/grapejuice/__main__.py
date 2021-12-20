@@ -172,6 +172,17 @@ def func_uninstall_grapejuice(*_):
         print("Uninstallation aborted")
 
 
+def func_list_processes(args):
+    from grapejuice_common.wine.wineprefix_hints import WineprefixHint
+    from grapejuice_common.wine.wine_functions import get_wineprefix
+
+    hint = WineprefixHint(args.hint)
+    prefix = get_wineprefix([hint])
+
+    for proc in prefix.core_control.process_list:
+        print(repr(proc))
+
+
 def _main(in_args=None):
     from grapejuice_common.logs import log_config
 
@@ -217,6 +228,10 @@ def _main(in_args=None):
     if update_info_provider.can_update():
         parser_uninstall_grapejuice = subparsers.add_parser("uninstall")
         parser_uninstall_grapejuice.set_defaults(func=func_uninstall_grapejuice)
+
+    parser_list_processes = subparsers.add_parser("top")
+    parser_list_processes.add_argument("hint", type=str)
+    parser_list_processes.set_defaults(func=func_list_processes)
 
     parser_app = subparsers.add_parser("app")
     parser_app.set_defaults(func=func_app)
