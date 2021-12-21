@@ -7,6 +7,7 @@ from grapejuice_common.gtk.components.grape_setting_action import GrapeSettingAc
 from grapejuice_common.gtk.gtk_util import set_vertical_margins, set_horizontal_margins
 from grapejuice_common.util import dunder_storm
 from grapejuice_common.util.capture import Capture
+from grapejuice_common.util.event import Event, Subscription
 
 Transformer = Callable[[Any], Any]
 
@@ -43,6 +44,8 @@ class GrapeSettingWidget(Gtk.Box):
     _setter: Callable[[Any], None] = _null_transformer
     _getter: Callable[[], Any] = _null_transformer
 
+    changed: Event
+
     # pylint: disable=E0102
     def __init__(
         self,
@@ -57,10 +60,15 @@ class GrapeSettingWidget(Gtk.Box):
         dunder_dict, kwargs = dunder_storm(kwargs)
         super().__init__(*args, orientation=Gtk.Orientation.VERTICAL, **kwargs)
 
+        self.changed = Event()
+
         widget = None
 
         set_transformer = set_transformer or bidirectional_transformer or _null_transformer
         get_transformer = get_transformer or bidirectional_transformer or _null_transformer
+
+        def hook_up_changed_event(signal_name):
+            widget.connect(signal_name, lambda *_: self.changed())
 
         if value_type is bool:
             widget = Gtk.Switch()
@@ -69,12 +77,16 @@ class GrapeSettingWidget(Gtk.Box):
             self._getter = widget.get_active
             self._setter = widget.set_active
 
+            hook_up_changed_event("state-set")
+
         elif value_type is str:
             widget = Gtk.Entry()
             widget.set_text(set_transformer(initial_value))
 
             self._getter = lambda: widget.get_text().strip()
             self._setter = lambda v: widget.set_text(str(v))
+
+            hook_up_changed_event("changed")
 
         elif value_type is GrapeSettingAction:
             widget = Gtk.Button()
@@ -101,6 +113,8 @@ class GrapeSettingWidget(Gtk.Box):
             self._getter = lambda: mapping[widget.get_active()]
             self._setter = lambda v: widget.set_active(str(v.name))
 
+            hook_up_changed_event("changed")
+
         elif isinstance(value_type, list):
             widget = Gtk.ComboBoxText()
             widget.set_entry_text_column(0)
@@ -119,6 +133,8 @@ class GrapeSettingWidget(Gtk.Box):
 
             self._getter = lambda: mapping[widget.get_active()]
             self._setter = lambda v: widget.set_active(str(v.name))
+
+            hook_up_changed_event("changed")
 
         if widget:
             self.add(_row_auto_padding(False))
@@ -145,6 +161,9 @@ class GrapeSetting(Gtk.ListBoxRow):
 
     _box: Gtk.Box
 
+    _widget_changed_subscription: Subscription
+    changed: Event
+
     def __init__(
         self,
         key: str,
@@ -164,6 +183,8 @@ class GrapeSetting(Gtk.ListBoxRow):
         self._key = key
         self._value_type = value_type or type(value)
         self._display_name = display_name or key
+
+        self.changed = Event()
 
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         set_horizontal_margins(box, 5)
@@ -209,6 +230,11 @@ class GrapeSetting(Gtk.ListBoxRow):
         self._box = box
         self.add(box)
 
+        self._widget_changed_subscription = Subscription(
+            self._setting_widget.changed,
+            lambda: self.changed()
+        )
+
     @property
     def key(self):
         return self._key
@@ -216,3 +242,10 @@ class GrapeSetting(Gtk.ListBoxRow):
     @property
     def value(self) -> Any:
         return self._setting_widget.value
+
+    def destroy(self):
+        if self._widget_changed_subscription:
+            self._widget_changed_subscription.unsubscribe()
+
+    def __del__(self):
+        self.destroy()

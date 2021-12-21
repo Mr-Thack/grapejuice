@@ -865,7 +865,7 @@ Author: BrinkerVII <brinkervii@gmail.com>
         </child>
         <child>
           <object class="GtkButton" id="update_prefix_button">
-            <property name="label" translatable="yes">Update</property>
+            <property name="label" translatable="yes">Save Changes</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>

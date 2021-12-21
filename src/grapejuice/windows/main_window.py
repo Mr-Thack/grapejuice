@@ -1,6 +1,6 @@
 import shutil
 import time
-from typing import Optional
+from typing import Optional, List
 
 from gi.repository import Gtk
 
@@ -37,6 +37,8 @@ from grapejuice_common.gtk.gtk_util import \
 from grapejuice_common.gtk.yes_no_dialog import yes_no_dialog
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel, ThirdPartyKeys
 from grapejuice_common.util.computed_field import ComputedField
+from grapejuice_common.util.event import Subscription
+from grapejuice_common.util.stores import WritableStore
 from grapejuice_common.wine.wine_functions import create_new_model_for_user, get_studio_wineprefix
 from grapejuice_common.wine.wineprefix import Wineprefix
 
@@ -131,10 +133,14 @@ class MainWindow(GtkBase):
     _background_task_helper: BackgroundTaskHelper
     _prefix_feature_toggles: PrefixFeatureToggles
     _current_prefix: ComputedField[Wineprefix]
+    _toggles_unsaved_changes_state: WritableStore[bool]
+    _subs: List[Subscription]
 
     def __init__(self):
         super().__init__(glade_path=paths.grapejuice_glade(), handler_instance=self)
 
+        self._subs = []
+        self._toggles_unsaved_changes_state = WritableStore(False)
         self._prefix_name_handler = PrefixNameHandler(self.widgets.prefix_name_wrapper)
         self._background_task_helper = BackgroundTaskHelper(self.widgets)
         self._prefix_feature_toggles = PrefixFeatureToggles(self.widgets.feature_toggle_pane)
@@ -207,6 +213,26 @@ class MainWindow(GtkBase):
                 self._save_current_prefix()
 
         self._prefix_name_handler.on_finish_editing(do_finish_editing_prefix_name)
+
+        def on_unsaved_changed_state_changed(v: bool):
+            set_style_class_conditionally(
+                [self.widgets.update_prefix_button],
+                "prefix-unsaved-changes-highlight",
+                v
+            )
+
+        self._subs.append(
+            Subscription(
+                self._prefix_feature_toggles.changed,
+                lambda: self._toggles_unsaved_changes_state.write(True)
+            )
+        )
+
+        self._subs.append(
+            Subscription(
+                self._toggles_unsaved_changes_state.changed,
+                on_unsaved_changed_state_changed)
+        )
 
     @handler
     def open_roblox_studio(self, *_):
@@ -365,6 +391,8 @@ class MainWindow(GtkBase):
 
     @manually_connected_handler
     def _update_current_prefix(self):
+        self._toggles_unsaved_changes_state.write(False)
+
         model = self._prefix_feature_toggles.configured_model
         current_settings.save_prefix_model(model)
         self._update_prefix_in_prefix_list(model)
@@ -426,6 +454,8 @@ class MainWindow(GtkBase):
 
         else:
             self._prefix_feature_toggles.clear_toggles()
+
+        self._toggles_unsaved_changes_state.write(False)
 
     def _show_page_for_new_prefix(self):
         model = create_new_model_for_user(current_settings.as_dict())

@@ -5,3 +5,8 @@ image.update-available-highlight {
 image.fast-flags-unsaved-changes-highlight {
     color: #f46703;
 }
+
+button.prefix-unsaved-changes-highlight {
+    color: #f46703;
+    font-weight: bold;
+}

@@ -10,6 +10,7 @@ from grapejuice_common.hardware_info.xrandr_factory import xrandr_factory
 from grapejuice_common.models.wineprefix_configuration_model import ThirdPartyKeys
 from grapejuice_common.roblox_product import RobloxProduct
 from grapejuice_common.roblox_renderer import RobloxRenderer
+from grapejuice_common.util.event import Event, Subscription
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
 
@@ -202,10 +203,18 @@ class PrefixFeatureToggles:
     _groups: Optional[Groups] = None
     _prefix: Optional[Wineprefix] = None
 
+    _pane_changed_subscription: Optional[Subscription] = None
+    changed: Event
+
     def __init__(self, target_widget):
         self._target_widget = target_widget
+        self.changed = Event()
 
     def _destroy_pane(self):
+        if self._pane_changed_subscription:
+            self._pane_changed_subscription.unsubscribe()
+            self._pane_changed_subscription = None
+
         if self._current_pane:
             self._target_widget.remove(self._current_pane)
             self._current_pane.destroy()
@@ -240,6 +249,8 @@ class PrefixFeatureToggles:
         pane.show_all()
 
         self._current_pane = pane
+
+        self._pane_changed_subscription = Subscription(pane.changed, lambda: self.changed())
 
     def destroy(self):
         self._destroy_pane()
@@ -279,4 +290,4 @@ class PrefixFeatureToggles:
         return model
 
     def __del__(self):
-        self._destroy_pane()
+        self.destroy()

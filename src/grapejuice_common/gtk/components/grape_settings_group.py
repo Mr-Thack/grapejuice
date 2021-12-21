@@ -5,6 +5,7 @@ from gi.repository import Gtk, Pango
 
 from grapejuice_common.gtk.components.grape_setting import GrapeSetting
 from grapejuice_common.gtk.gtk_util import set_all_margins
+from grapejuice_common.util.event import Event, Subscription
 
 
 def _title(title: str) -> Gtk.Label:
@@ -34,6 +35,9 @@ class GrapeSettingsGroup(Gtk.Box):
     _settings: List[GrapeSetting]
     _list: Gtk.ListBox
 
+    _settings_changed_subscriptions: List[Subscription]
+    changed: Event
+
     def __init__(
         self,
         title: str,
@@ -44,6 +48,8 @@ class GrapeSettingsGroup(Gtk.Box):
     ):
         super().__init__(*args, orientation=Gtk.Orientation.VERTICAL, **kwargs)
 
+        self.changed = Event()
+        self._settings_changed_subscriptions = []
         self._settings = []
 
         set_all_margins(self, 10)
@@ -77,6 +83,10 @@ class GrapeSettingsGroup(Gtk.Box):
     def add_setting(self, setting: GrapeSetting) -> "GrapeSettingsGroup":
         self._list.add(setting)
         self._settings.append(setting)
+
+        sub = Subscription(setting.changed, lambda: self.changed())
+        self._settings_changed_subscriptions.append(sub)
+
         return self
 
     @property
@@ -86,3 +96,12 @@ class GrapeSettingsGroup(Gtk.Box):
     @property
     def settings_json(self):
         return json.dumps(self.settings_dictionary)
+
+    def destroy(self):
+        for sub in self._settings_changed_subscriptions:
+            sub.unsubscribe()
+
+        self._settings_changed_subscriptions = []
+
+    def __del__(self):
+        self.destroy()
