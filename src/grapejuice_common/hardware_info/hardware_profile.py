@@ -72,6 +72,10 @@ class ComputeParametersState:
         return len(self.hardware_list.graphics_cards)
 
     @property
+    def is_multi_gpu(self):
+        return self.number_of_graphics_cards > 1
+
+    @property
     def all_cards_can_do_vulkan(self):
         return all(map(lambda card: card.can_do_vulkan, self.graphics_cards_unordered))
 
@@ -87,8 +91,9 @@ class HardwareProfile:
     should_prime: bool
     use_mesa_gl_override: bool
     preferred_roblox_renderer_string: str
+    is_multi_gpu: bool
 
-    version: int = 1
+    version: int = 2
 
     @property
     def gpu_vendor(self) -> GPUVendor:
@@ -131,7 +136,8 @@ class HardwareProfile:
             provider.name,
             state.should_prime,
             state.use_mesa_gl_override,
-            state.preferred_roblox_renderer.value
+            state.preferred_roblox_renderer.value,
+            state.is_multi_gpu
         )
 
 
