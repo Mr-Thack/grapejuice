@@ -57,7 +57,7 @@ class DBusService(dbus.service.Object):
         in_signature="s",
         out_signature=""
     )
-    def PlayGame(self, prefix_id: str):
+    def LaunchApp(self, prefix_id: str):
         self._dry_connection.launch_app(prefix_id)
 
     @dbus.service.method(
