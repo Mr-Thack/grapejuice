@@ -52,16 +52,12 @@ def func_player(args):
 
 def func_app(*_):
     def player_main():
-        import grapejuice_common.variables as v
         from grapejuice_common.ipc.dbus_client import dbus_connection
         from grapejuice_common.wine.wine_functions import get_app_wineprefix
 
         prefix = get_app_wineprefix()
 
-        dbus_connection().play_game(
-            prefix.configuration.id,
-            grapejuice_common.util.prepare_uri(v.roblox_app_experience_url())
-        )
+        dbus_connection().launch_app(prefix.configuration.id)
 
     gtk_boot(player_main, gtk_main=False)
 

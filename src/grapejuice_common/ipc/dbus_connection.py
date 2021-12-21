@@ -72,12 +72,15 @@ class DBusConnection(IDBusConnection):
 
     def play_game(self, prefix_id: str, uri: str):
         if uri:
-            return self.proxy.PlayGame(uri)
+            return self.proxy.PlayGame(prefix_id, uri)
 
         else:
             LOG.debug("No uri provided to play_game, returning False")
 
         return False
+
+    def launch_app(self, prefix_id: str):
+        return self.proxy.LaunchApp(prefix_id)
 
     def edit_local_game(self, prefix_id: str, place_path: str):
         return self.proxy.EditLocalGame(place_path)

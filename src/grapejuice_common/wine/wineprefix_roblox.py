@@ -205,13 +205,7 @@ class WineprefixRoblox:
 
         self._core_control.run_exe(*run_args, accelerate_graphics=True)
 
-    def run_roblox_player(self, uri):
-        player_launcher_path = self.roblox_player_launcher_path
-
-        product = RobloxProduct.app if uri == variables.roblox_app_experience_url() else RobloxProduct.player
-
-        self._write_flags(product, self.all_player_app_settings_paths)
-
+    def _run_fps_unlocker(self):
         if self._configuration.third_party.get(ThirdPartyKeys.fps_unlocker, False):
             if not self.fps_unlocker_is_running:
                 LOG.info("FPS unlocker is enabled, starting...")
@@ -221,7 +215,23 @@ class WineprefixRoblox:
                     working_directory=self._prefix_paths.fps_unlocker_directory
                 )
 
+    def run_roblox_player(self, uri):
+        player_launcher_path = self.roblox_player_launcher_path
+
+        product = RobloxProduct.app if uri == variables.roblox_app_experience_url() else RobloxProduct.player
+        self._write_flags(product, self.all_player_app_settings_paths)
+
+        self._run_fps_unlocker()
         self._core_control.run_exe(player_launcher_path, uri, accelerate_graphics=True)
+
+    def launch_app(self):
+        player_executable_path = self.locate_roblox_executable("RobloxPlayerBeta.exe")
+
+        product = RobloxProduct.app
+        self._write_flags(product, self.all_player_app_settings_paths)
+
+        self._run_fps_unlocker()
+        self._core_control.run_exe(player_executable_path, "--app", accelerate_graphics=True)
 
     def run_roblox_studio_with_events(self, run_async: bool = True, **events) -> ProcessWrapper:
         roblox_studio_path = self.roblox_studio_executable_path

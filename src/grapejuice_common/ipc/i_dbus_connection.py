@@ -18,6 +18,10 @@ class IDBusConnection(ABC):
         pass
 
     @abstractmethod
+    def launch_app(self, prefix_id: str):
+        pass
+
+    @abstractmethod
     def edit_local_game(self, prefix_id: str, place_path: str):
         pass
 

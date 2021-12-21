@@ -30,6 +30,9 @@ class NoDaemonModeConnection(IDBusConnection):
     def play_game(self, prefix_id: str, uri: str):
         _with_prefix_id(prefix_id, lambda prefix: prefix.roblox.run_roblox_player(uri))
 
+    def launch_app(self, prefix_id: str):
+        _with_prefix_id(prefix_id, lambda prefix: prefix.roblox.launch_app())
+
     def edit_local_game(self, prefix_id: str, place_path: str):
         _with_prefix_id(prefix_id, lambda prefix: prefix.roblox.run_roblox_studio(uri=place_path, ide=True))
 
