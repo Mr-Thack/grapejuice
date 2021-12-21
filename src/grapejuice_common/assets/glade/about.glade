@@ -9,7 +9,7 @@
     <property name="program_name">Grapejuice</property>
     <property name="version">version_string</property>
     <property name="copyright" translatable="yes">BrinkerVII</property>
-    <property name="comments" translatable="yes">A simple GUI and wrapper to manage Roblox on Linux running under Wine.</property>
+    <property name="comments" translatable="yes">A GUI and wrapper to manage Roblox on Linux running under Wine.</property>
     <property name="license" translatable="yes">This program comes with absolutely no warranty.
 See the &lt;a href="https://www.gnu.org/licenses/gpl-3.0.html"&gt;GNU General Public Licence, version 3 or later&lt;/a&gt; for details.</property>
     <property name="authors">BrinkerVII &lt;brinkervii@gmail.com&gt;</property>
