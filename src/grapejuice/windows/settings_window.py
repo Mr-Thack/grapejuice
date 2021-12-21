@@ -117,6 +117,15 @@ def _general_settings():
             key="ignore_wine_version",
             default_value=False,
             display_name="Ignore Wine version"
+        ),
+        _from_user_settings(
+            key="try_profiling_hardware",
+            default_value=True,
+            display_name="Try profiling hardware",
+            description="When this setting is enabled, Grapejuice will try profiling your hardware on startup. This "
+                        "profiling step only happens when the hardware profile is not set or when the current "
+                        "hardware does not match the previously profiled hardware. This setting is automatically "
+                        "disabled if hardware profiling fails."
         )
     ]
 
