@@ -74,6 +74,9 @@ def _graphics_settings(prefix: Wineprefix) -> Optional[GrapeSettingsGroup]:
             log.error(str(e))
             return []
 
+        if not profile.is_multi_gpu:
+            return []
+
         def provider_to_string(provider: XRandRProvider):
             return f"{provider.index}: {provider.name}"
 
