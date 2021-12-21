@@ -11,7 +11,6 @@ def yes_no_dialog(title: str = "Untitled Dialog", message="This is a message"):
         word = words.pop(0)
 
         if len(lines[idx]) > line_limit:
-            lines[idx] = lines[idx]
             idx += 1
             lines.append(word + " ")
 
