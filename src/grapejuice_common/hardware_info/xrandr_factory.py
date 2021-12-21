@@ -8,6 +8,8 @@ log = logging.getLogger(__name__)
 
 
 def xrandr_factory():
+    log.info("Creating XRandR instance")
+
     try:
         x = XRandR()
         if len(x.providers) > 0:
@@ -16,6 +18,8 @@ def xrandr_factory():
     except Exception as e:
         log.error(str(e))
         log.error(format_exception(e))
+
+    log.info("Falling back to PhonyXRandR")
 
     x = PhonyXRandR()
     if len(x.providers) > 0:
