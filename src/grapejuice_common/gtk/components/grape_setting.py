@@ -243,9 +243,8 @@ class GrapeSetting(Gtk.ListBoxRow):
     def value(self) -> Any:
         return self._setting_widget.value
 
-    def destroy(self):
+    def destroy(self, *args, **kwargs):
         if self._widget_changed_subscription:
             self._widget_changed_subscription.unsubscribe()
 
-    def __del__(self):
-        self.destroy()
+        super().destroy(*args, **kwargs)

@@ -49,11 +49,10 @@ class GrapeSettingsPane(Gtk.ScrolledWindow):
 
         return self
 
-    def destroy(self):
+    def destroy(self, *args, **kwargs):
         for sub in self._groups_changed_subscriptions:
             sub.unsubscribe()
 
         self._groups_changed_subscriptions = []
 
-    def __del__(self):
-        self.destroy()
+        super().destroy(*args, **kwargs)

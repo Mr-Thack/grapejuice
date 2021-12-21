@@ -97,11 +97,10 @@ class GrapeSettingsGroup(Gtk.Box):
     def settings_json(self):
         return json.dumps(self.settings_dictionary)
 
-    def destroy(self):
+    def destroy(self, *args, **kwargs):
         for sub in self._settings_changed_subscriptions:
             sub.unsubscribe()
 
         self._settings_changed_subscriptions = []
 
-    def __del__(self):
-        self.destroy()
+        super().destroy(*args, **kwargs)
