@@ -24,7 +24,8 @@ from grapejuice.tasks import \
     KillWineserver, \
     InstallFPSUnlocker, \
     SetDXVKState, \
-    SignIntoStudio
+    SignIntoStudio, \
+    PreloadXRandR
 from grapejuice.windows.settings_window import SettingsWindow
 from grapejuice_common import variables, paths
 from grapejuice_common.features.settings import current_settings
@@ -154,6 +155,8 @@ class MainWindow(GtkBase):
         )
 
         _check_for_updates(self.widgets)
+
+        gui_task_manager.run_task_once(PreloadXRandR)
 
     def _save_current_prefix(self):
         if self._current_prefix_model is not None:

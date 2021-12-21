@@ -228,3 +228,14 @@ class SetDXVKState(background.BackgroundTask):
 
         if not recipe.exists_in(self._prefix):
             recipe.make_in(self._prefix)
+
+
+class PreloadXRandR(background.BackgroundTask):
+    def __init__(self, **kwargs):
+        super().__init__("Preloading XRandR interface", **kwargs)
+
+    def work(self):
+        from grapejuice_common.hardware_info.xrandr_factory import xrandr_factory
+        x = xrandr_factory()
+
+        self._log.info(f"Have {len(x.providers)} providers on a {type(x)} instance!")

@@ -1,4 +1,5 @@
 import logging
+from functools import lru_cache as cache
 
 from grapejuice_common.errors import format_exception
 from grapejuice_common.hardware_info.phony_xrandr import PhonyXRandR
@@ -7,6 +8,7 @@ from grapejuice_common.hardware_info.xrandr import XRandR
 log = logging.getLogger(__name__)
 
 
+@cache(maxsize=1)
 def xrandr_factory():
     log.info("Creating XRandR instance")
 
