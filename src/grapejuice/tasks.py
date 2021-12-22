@@ -181,7 +181,20 @@ class KillWineserver(background.BackgroundTask):
         self._prefix = prefix
 
     def work(self):
-        self._prefix.core_control.kill_wine_server()
+        try:
+            self._prefix.core_control.kill_wine_server()
+
+        except subprocess.CalledProcessError as e:
+            if e.returncode == 1:
+                self._log.warning(str(e))
+                self._log.info(
+                    "There was an error trying to kill the Wine server, "
+                    "sunk the error assuming there wasn't one"
+                )
+
+                return
+
+            raise e
 
 
 class InstallFPSUnlocker(background.BackgroundTask):
