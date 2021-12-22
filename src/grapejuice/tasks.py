@@ -192,9 +192,8 @@ class KillWineserver(background.BackgroundTask):
                     "sunk the error assuming there wasn't one"
                 )
 
-                return
-
-            raise e
+            else:
+                raise e
 
 
 class InstallFPSUnlocker(background.BackgroundTask):
