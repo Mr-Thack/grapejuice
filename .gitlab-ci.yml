@@ -32,6 +32,7 @@ grapejuice:linux_package:
         - python3 -m grapejuice_packaging linux_package --dist-dir artifacts/linux_package
     only:
         - master
+        - staging
         - develop
 
 grapejuice:debian_package:
@@ -45,6 +46,7 @@ grapejuice:debian_package:
         - python3 -m grapejuice_packaging debian_package --dist-dir artifacts/debian_package
     only:
         - master
+        - staging
         - develop
 
 pages:
