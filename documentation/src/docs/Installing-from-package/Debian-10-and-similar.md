@@ -30,11 +30,6 @@ Debian installer, don't worry about this.
 or `sudo`. If you are running a fully fledged desktop environment, you can find a terminal emulator in your applications
 menu.
 
-## Installing Wine
-
-It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
-for more information.
-
 ## Synchronise the package repositories
 
 We have to make sure that all repositories and locally installed packages are up to date. Run the following two commands
@@ -83,3 +78,8 @@ Run the following commands in a terminal:
 sudo apt update
 sudo apt install -y grapejuice
 ```
+
+## Installing a patched Wine build
+
+It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
+for more information.

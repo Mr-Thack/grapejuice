@@ -1,15 +1,12 @@
 title: Accessing Grapejuice Logs
-
 ---
 Grapejuice logs information to both the terminal and local files. These files can be used to troubleshoot issues with
 the program.
 
 ## Log storage and access
 
-Logs are stored at `/.local/var/log/grapejuice` and are separated in categories for the main gui application and the
-daemon process. The Grapejuice gui has a shortcut button to open this directory.
-
-![Screenshot_2020-04-05_23-42-16](uploads/c554953707537877057f55fcbf12d462/Screenshot_2020-04-05_23-42-16.png)
+Logs are stored at `~/.local/var/log/grapejuice`. You can also access logs through the Grapejuice UI by clicking
+on the hamburger button (the button with 3 lines) and clicking "Open logs directory".
 
 ## Special mechanics
 

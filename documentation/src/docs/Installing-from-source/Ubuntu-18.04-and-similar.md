@@ -29,11 +29,6 @@ is due to backwards compatibility in the Windows operating system. Run the follo
 sudo dpkg --add-architecture i386
 ```
 
-## Installing Wine
-
-It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
-for more information.
-
 ## Install FAudio
 
 Wine 5.0 and newer require the FAudio audio libraries. However, these are not supplied by the Ubuntu repositories, so we
@@ -88,7 +83,7 @@ sudo apt install -y git pkg-config python3.7 python3.7-dev python3-pip libcairo2
 First, you have to aquire a copy of the source code. This is easily done by cloning the git repository.
 
 ```sh
-git clone https://gitlab.com/brinkervii/grapejuice.git
+git clone --depth=1 https://gitlab.com/brinkervii/grapejuice.git
 ```
 
 After the git clone command is finished, Grapejuice can be installed.
@@ -97,3 +92,8 @@ After the git clone command is finished, Grapejuice can be installed.
 cd grapejuice
 python3.7 ./install.py
 ```
+
+## Installing a patched Wine build
+
+It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
+for more information.

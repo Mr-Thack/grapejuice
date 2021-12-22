@@ -30,11 +30,6 @@ Debian installer, don't worry about this.
 or `sudo`. If you are running a fully fledged desktop environment, you can find a terminal emulator in your applications
 menu.
 
-## Installing Wine
-
-It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
-for more information.
-
 ## Synchronise the package repositories
 
 We have to make sure that all repositories and locally installed packages are up to date. Run the following two commands
@@ -59,7 +54,7 @@ sudo apt install -y git python3-pip python3-setuptools python3-wheel python3-dev
 First, you have to acquire a copy of the source code. This is easily done by cloning the git repository.
 
 ```sh
-git clone https://gitlab.com/brinkervii/grapejuice.git /tmp/grapejuice
+git clone --depth=1 https://gitlab.com/brinkervii/grapejuice.git /tmp/grapejuice
 ```
 
 After the git clone command is finished, Grapejuice can be installed.
@@ -68,3 +63,8 @@ After the git clone command is finished, Grapejuice can be installed.
 cd /tmp/grapejuice
 python3 ./install.py
 ```
+
+## Installing a patched Wine build
+
+It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
+for more information.

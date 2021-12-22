@@ -1,25 +1,10 @@
 title: Documentation Home
 ---
 
-## 👋 Welcome
-
-Welcome to the Grapejuice wiki. This is the repository where all the documentation for the project is kept.
-
-### ⚠ Important notices ⚠
-
-- Make sure to install Wine!
-- Grapejuice is a **management application**! Packages will in most cases not automatically install Wine for you, since
-  package management in some distributions can be extremely odd and limit your choices in custom builds.
-- You need to have Wine 6.11 or above, or Wine Staging 6.16 or above for the Roblox Player to work!
-
-Distributions mark a lot of Wine's dependencies as 'optional'. In reality, most of them aren't. If you're having issues
-with Roblox not functioning properly, make sure you have all the required 'optional' dependencies installed.
-
 ## 🚀 Installing Grapejuice
 
-Packages are available for some distributions. If a package is available for your distribution,
-it's recommended that you use the package rather than installing from source. Otherwise, you'll need to install
-Grapejuice from source.
+Grapejuice can be installed from the package or from the source code. It's recommended that you
+install Grapejuice from the package if possible.
 
 Follow the installation guide that's appropriate for your distribution. Guides:
 
@@ -63,3 +48,10 @@ Follow the installation guide that's appropriate for your distribution. Guides:
 ## 💥 Troubleshooting
 
 The [troubleshooting page](Troubleshooting) lists known issues with workarounds
+
+## Other pages
+
+These pages may be useful for experimenting with Grapejuice:
+
+- [Viewing Grapejuice's logs](Grapejuice-Logs)
+- [Installing Wine](Guides/Installing-Wine)

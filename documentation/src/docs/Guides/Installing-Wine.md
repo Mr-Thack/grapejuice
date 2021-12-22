@@ -11,15 +11,29 @@ To fix this, a patched version of Wine is required.
 
 **Warning:** You should decide if you trust the authors of the below resources before using them.
 
-There are two options available:
+There are two different options: installing Wine with patches compiled for you or compiling Wine yourself.
 
-- Use a precompiled patched Wine build by running [this Python script](https://pastebin.com/raw/5SeVb005).
-  The script requires Python 3.8 or above.
-- Compile Wine yourself using [this guide](https://github.com/e666666/robloxWineBuildGuide).
+### Installing a prebuilt patched Wine build
+
+Run [this Python script](https://pastebin.com/raw/5SeVb005) which requires Python 3.8 or above.
+
+To run it, run the following:
+
+```sh
+cd /tmp
+wget https://pastebin.com/raw/5SeVb005 -o install.py
+python3 install.py
+```
+
+### Compiling Wine TKG
+
+Use [this guide](Compiling-Wine-TKG).
 
 ## Installing vanilla Wine
 
 Vanilla Wine does not currently have the mouse patch, meaning the mouse bug will occur when using vanilla Wine.
+
+You need to install Wine 6.11 or above, or Wine Staging 6.16 or above.
 
 If your distribution provides the `wine` package, install that from your package manager.
 
