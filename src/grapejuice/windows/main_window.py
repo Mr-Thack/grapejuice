@@ -74,17 +74,9 @@ def _check_for_updates(
     from grapejuice_common.update_info_providers import guess_relevant_provider
 
     update_provider = guess_relevant_provider()
-    can_update = update_provider.can_update()
-
-    # Hide the popover if Grapejuice cannot update itself
-    if not can_update:
-        widgets.update_popover.hide()
 
     if pop_down_dots_menu:
         widgets.dots_menu.popdown()
-
-    if not can_update:
-        return
 
     class CheckForUpdates(background.BackgroundTask):
         def __init__(self, **kwargs):
