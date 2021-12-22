@@ -241,8 +241,8 @@ def _pick_renderer(state: ComputeParametersState):
             # for Roblox. In this case some mesa trickery is required.
 
             # Special nVidia case
-            if state.target_card.vendor is GPUVendor.NVIDIA and glx_info.version == (4, 60):
-                log.info("Card is an ancient nVidia one, use mesa gl override")
+            if state.target_card.vendor is GPUVendor.NVIDIA and glx_info.version == (4, 6, 0):
+                log.info("Card is a wacky nVidia one, use mesa gl override")
                 use_mesa_gl_override = True
 
             elif glx_info.version <= (4, 4):
