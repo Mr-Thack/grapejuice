@@ -110,6 +110,9 @@ def _check_for_updates(
                     update_status = "Grapejuice is up to date"
                     update_info = str(update_provider.local_version())
 
+            if not update_provider.can_update():
+                show_button = False
+
             # Make it feel like its working
             if time_to_be_wasted is not None:
                 time.sleep(time_to_be_wasted)

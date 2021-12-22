@@ -143,13 +143,13 @@ class SourceUpdateInformationProvider(UpdateInformationProvider):
 
 class NonUpgradablePackageInformationProvider(UpdateInformationProvider):
     def target_version(self) -> version.Version:
-        return version.parse("0.0.0")
+        return self.gitlab_version()
 
     def update_available(self) -> bool:
-        return False
+        return self.gitlab_version() > self.local_version()
 
     def local_is_newer(self) -> bool:
-        return False
+        return self.local_version() > self.gitlab_version()
 
     @staticmethod
     def can_update() -> bool:
