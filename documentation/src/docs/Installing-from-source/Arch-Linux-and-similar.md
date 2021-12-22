@@ -41,28 +41,12 @@ package-not-found errors.
 sudo pacman -Syu
 ```
 
-## Installing Wine
-
-It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
-for more information.
-
 ## Installing dependencies for audio
 
-In order for sound to work, you need to install some additional packages for the sound system you're using.
+Install `lib32-libpulse` with `sudo pacman -S lib32-libpulse`.
 
-If you're not sure what sound system you're using, run `pacman -Q pulseaudio`. If the PulseAudio package is
-found, PulseAudio is being used.
-
-Otherwise, run `pacman -Q pipewire`. If the Pipewire package is found, Pipewire is being used.
-
-If neither PulseAudio or PipeWire is installed, install one of them first.
-
-Use the below table to find what packages to install.
-
-| Sound system | Required Package |
-|--------------|------------------|
-| PulseAudio   | `lib32-libpulse` |
-| PipeWire     | `pipewire-pulse` |
+In addition, if you're using Pipewire (check if the `pipewire` process is running), you need to install
+`pipewire-pulse` with `sudo pacman -S pipewire-pulse`.
 
 ## Installing dependencies for networking
 
@@ -77,7 +61,7 @@ sudo pacman -S gnutls lib32-gnutls
 First, you have to acquire a copy of the source code. This is easily done by cloning the git repository.
 
 ```sh
-git clone https://gitlab.com/brinkervii/grapejuice.git /tmp/grapejuice
+git clone --depth=1 https://gitlab.com/brinkervii/grapejuice.git /tmp/grapejuice
 ```
 
 After the git clone command is finished, Grapejuice can be installed.
@@ -86,3 +70,8 @@ After the git clone command is finished, Grapejuice can be installed.
 cd /tmp/grapejuice
 ./install.py
 ```
+
+## Installing a patched Wine build
+
+It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
+for more information.

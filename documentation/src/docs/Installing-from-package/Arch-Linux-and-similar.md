@@ -16,11 +16,6 @@ minimalism, it is recommended that you run your desktop session using a display 
 
 ---
 
-## Installing Wine
-
-It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
-for more information.
-
 ## Installing Grapejuice
 
 1. Enable the [multilib repository](https://wiki.archlinux.org/title/Official_repositories#multilib).
@@ -31,18 +26,12 @@ for more information.
 
 ## Installing dependencies for audio
 
-In order for sound to work, you need to install some additional packages for the sound system you're using.
+Install `lib32-libpulse` with `sudo pacman -S lib32-libpulse`.
 
-If you're not sure what sound system you're using, run `pacman -Q pulseaudio`. If the PulseAudio package is
-found, PulseAudio is being used.
+In addition, if you're using Pipewire (check if the `pipewire` process is running), you need to install
+`pipewire-pulse` with `sudo pacman -S pipewire-pulse`.
 
-Otherwise, run `pacman -Q pipewire`. If the Pipewire package is found, Pipewire is being used.
+## Installing a patched Wine build
 
-If neither PulseAudio or PipeWire is installed, install one of them first.
-
-Use the below table to find what packages to install.
-
-| Sound system | Required Package |
-|--------------|------------------|
-| PulseAudio   | `lib32-libpulse` |
-| PipeWire     | `pipewire-pulse` |
+It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
+for more information.

@@ -29,11 +29,6 @@ is due to backwards compatibility in the Windows operating system. Run the follo
 sudo dpkg --add-architecture i386
 ```
 
-## Installing Wine
-
-It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
-for more information.
-
 ## Install FAudio
 
 Wine 5.0 and newer require the FAudio audio libraries. However, these are not supplied by the Ubuntu repositories, so we
@@ -111,3 +106,8 @@ Run the following commands in a terminal:
 sudo apt update
 sudo apt install -y grapejuice
 ```
+
+## Installing a patched Wine build
+
+It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
+for more information.
