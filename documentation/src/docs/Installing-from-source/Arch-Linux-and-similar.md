@@ -56,6 +56,27 @@ Install `gnutls` and `lib32-gnutls` with the following command:
 sudo pacman -S gnutls lib32-gnutls
 ```
 
+## Installing dependencies for Grapejuice
+Grapejuice requires several native dependencies for the user interface, plus you'll need git for cloning the source repository. Without these dependencies, Grapejuice will not function properly. The full list of dependencies is:
+
+- git
+- python-pip
+- cairo
+- gtk3
+- gobject-introspection 
+- desktop-file-utils 
+- xdg-utils 
+- xdg-user-dirs 
+- gtk-update-icon-cache 
+- shared-mime-info 
+- gobject-introspection
+- mesa-utils
+
+If you want to install them all at once, you can make use of this handy command:
+```sh
+pacman -S git python-pip cairo gtk3 gobject-introspection desktop-file-utils xdg-utils xdg-user-dirs gtk-update-icon-cache shared-mime-info gobject-introspection mesa-utils
+```
+
 ## Installing Grapejuice
 
 First, you have to acquire a copy of the source code. This is easily done by cloning the git repository.

@@ -381,6 +381,9 @@ def process_html_file(
 
         if v.startswith("http://") or v.startswith("https://"):
             tag.attrs["target"] = tag.attrs.get("target", "_blank")
+            el_image = soup.new_tag("img", src=f"/images/external_link.svg")
+            el_image["class"] = "external-link-image"
+            tag.append(el_image)
 
     for href_tag in soup.find_all(href=True):
         update_targeting_attr(href_tag, "href")
