@@ -63,18 +63,17 @@ Grapejuice requires several native dependencies for the user interface, plus you
 - python-pip
 - cairo
 - gtk3
-- gobject-introspection 
-- desktop-file-utils 
-- xdg-utils 
-- xdg-user-dirs 
-- gtk-update-icon-cache 
-- shared-mime-info 
 - gobject-introspection
+- desktop-file-utils
+- xdg-utils
+- xdg-user-dirs
+- gtk-update-icon-cache
+- shared-mime-info
 - mesa-utils
 
 If you want to install them all at once, you can make use of this handy command:
 ```sh
-pacman -S git python-pip cairo gtk3 gobject-introspection desktop-file-utils xdg-utils xdg-user-dirs gtk-update-icon-cache shared-mime-info gobject-introspection mesa-utils
+pacman -S git python-pip cairo gtk3 gobject-introspection desktop-file-utils xdg-utils xdg-user-dirs gtk-update-icon-cache shared-mime-info mesa-utils
 ```
 
 ## Installing Grapejuice
