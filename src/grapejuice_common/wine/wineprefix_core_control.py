@@ -22,7 +22,7 @@ from grapejuice_common.models.wineprefix_configuration_model import WineprefixCo
 from grapejuice_common.util.string_util import non_empty_string
 from grapejuice_common.wine.wineprefix_paths import WineprefixPaths
 
-LOG = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 class ProcessWrapper:
@@ -69,7 +69,7 @@ def _poll_processes() -> bool:
             exited.append(proc)
 
             if proc.proc.returncode != 0:
-                LOG.error(f"Process returned with non-zero exit code {proc.proc.returncode}")
+                log.error(f"Process returned with non-zero exit code {proc.proc.returncode}")
 
     for proc in exited:
         processes.remove(proc)
@@ -82,7 +82,7 @@ def _poll_processes() -> bool:
     processes_left = len(processes) > 0
     if not processes_left:
         is_polling = False
-        LOG.info("No processes left to poll, exiting thread")
+        log.info("No processes left to poll, exiting thread")
 
     return processes_left
 
@@ -91,14 +91,14 @@ def poll_processes():
     if is_polling:
         return
 
-    LOG.info("Starting polling thread")
+    log.info("Starting polling thread")
 
     from gi.repository import GObject
     GObject.timeout_add(100, _poll_processes)
 
 
 def close_fds(*_, **__):
-    LOG.info("Closing fds")
+    log.info("Closing fds")
 
     for fd in open_fds:
         fd.close()
@@ -117,12 +117,12 @@ def run_exe_no_daemon(
     working_directory: Optional[Path] = None,
     post_run_function: callable = None
 ) -> Union[ProcessWrapper, None]:
-    LOG.info("Running in no_daemon_mode")
+    log.info("Running in no_daemon_mode")
 
     log_dir = paths.logging_directory()
     os.makedirs(log_dir, exist_ok=True)
 
-    LOG.info("Opening log fds")
+    log.info("Opening log fds")
 
     ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     stdout_path = log_dir / f"{ts}_{exe_name}_stdout.log"
@@ -134,7 +134,7 @@ def run_exe_no_daemon(
     open_fds.extend((stdout_fd, stderr_fd))
 
     if run_async:
-        LOG.info("Running process asynchronously")
+        log.info("Running process asynchronously")
 
         wrapper = ProcessWrapper(
             subprocess.Popen(
@@ -152,7 +152,7 @@ def run_exe_no_daemon(
         return wrapper
 
     else:
-        LOG.info("Running process synchronously")
+        log.info("Running process synchronously")
 
         subprocess.call(
             command,
@@ -173,7 +173,7 @@ def run_exe_in_daemon(
     post_run_function: callable = None,
     working_directory: Optional[Path] = None
 ) -> ProcessWrapper:
-    LOG.info("Running process for daemon mode")
+    log.info("Running process for daemon mode")
 
     p = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=sys.stdout, stderr=sys.stderr, cwd=working_directory)
     wrapper = ProcessWrapper(p, on_exit=post_run_function)
@@ -221,10 +221,10 @@ class WineprefixCoreControl:
         self._configuration = configuration
 
     def wine_binary(self, arch="") -> str:
-        LOG.info(f"Resolving wine binary for prefix {self._prefix_paths.base_directory}")
+        log.info(f"Resolving wine binary for prefix {self._prefix_paths.base_directory}")
 
         wine_home_string = self._configuration.wine_home.strip()
-        LOG.info(f"Wine home string: {wine_home_string}")
+        log.info(f"Wine home string: {wine_home_string}")
 
         if wine_home_string.startswith(f"~{os.path.sep}"):
             wine_home = Path(wine_home_string).expanduser()
@@ -232,7 +232,7 @@ class WineprefixCoreControl:
         else:
             wine_home = Path(wine_home_string)
 
-        LOG.info(f"Wine home is {wine_home}")
+        log.info(f"Wine home is {wine_home}")
 
         # TODO: Replace assert statements with 'proper' errors
 
@@ -241,7 +241,7 @@ class WineprefixCoreControl:
 
         if wine_home:
             wine_binary = wine_home / "bin" / f"wine{arch}"
-            LOG.info(f"Resolved wine binary path: {wine_binary}")
+            log.info(f"Resolved wine binary path: {wine_binary}")
 
             assert wine_binary.exists() and wine_binary.is_file(), f"Invalid wine binary: {wine_binary}"
 
@@ -269,8 +269,8 @@ class WineprefixCoreControl:
             profile = current_settings.hardware_profile
 
         except HardwareProfilingError as e:
-            LOG.error("Could not get hardware profile")
-            LOG.error(e)
+            log.error("Could not get hardware profile")
+            log.error(e)
 
             return dict()
 
@@ -289,7 +289,7 @@ class WineprefixCoreControl:
                     "__GLX_VENDOR_LIBRARY_NAME": "nvidia"
                 }
 
-        LOG.info(f"PRIME environment variables: {json.dumps(prime_env)}")
+        log.info(f"PRIME environment variables: {json.dumps(prime_env)}")
 
         return prime_env
 
@@ -325,7 +325,7 @@ class WineprefixCoreControl:
 
             apply_env["WINEDEBUG"] = winedebug_string
 
-        LOG.info("Applying environment: " + json.dumps(apply_env))
+        log.info("Applying environment: " + json.dumps(apply_env))
 
         # Apply env
         for k, v in apply_env.items():
@@ -339,7 +339,7 @@ class WineprefixCoreControl:
         registry_file: Path,
         prepare_wine: bool = True
     ):
-        LOG.info(f"Loading registry file {registry_file} into the wineprefix")
+        log.info(f"Loading registry file {registry_file} into the wineprefix")
 
         if prepare_wine:
             self.prepare_for_launch()
@@ -387,7 +387,7 @@ class WineprefixCoreControl:
         if user_dir.exists() and user_dir.is_dir():
             for file in user_dir.glob("*"):
                 if file.is_symlink():
-                    LOG.info(f"Sandboxing {file}")
+                    log.info(f"Sandboxing {file}")
                     os.remove(file)
                     os.makedirs(file, exist_ok=True)
 
@@ -414,7 +414,7 @@ class WineprefixCoreControl:
         from grapejuice_common.features import settings
 
         self.prepare_for_launch(accelerate_graphics=accelerate_graphics)
-        LOG.info("Prepared environment for wine")
+        log.info("Prepared environment for wine")
 
         if isinstance(exe_path, Path):
             exe_path_string = str(exe_path.resolve())
@@ -430,7 +430,7 @@ class WineprefixCoreControl:
         else:
             raise ValueError(f"Invalid value type for exe_path: {type(exe_path)}")
 
-        LOG.info(f"Resolved exe path to {exe_path_string}")
+        log.info(f"Resolved exe path to {exe_path_string}")
 
         wine_binary = self.wine_binary("64" if use_wine64 else "")
         command = [wine_binary, exe_path_string, *args]
@@ -482,11 +482,17 @@ class WineprefixCoreControl:
     def process_list(self) -> List[WineProcess]:
         self.prepare_for_launch()
 
+        try:
+            output = subprocess.check_output([self.wine_dbg(), "--command", "info proc"])
+            output = output.decode("UTF-8")
+
+        except subprocess.CalledProcessError as e:
+            log.error(str(e))
+            log.info("Could not get the process list through winedbg --command 'info proc'. Assume nothing is running")
+
+            return []
+
         the_list = []
-
-        output = subprocess.check_output([self.wine_dbg(), "--command", "info proc"])
-        output = output.decode("UTF-8")
-
         for line in output.split("\n"):
             match = WINE_PROCESS_PTN.search(line.strip())
 
