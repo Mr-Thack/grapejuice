@@ -99,17 +99,10 @@ def _graphics_settings(prefix: Wineprefix) -> Optional[GrapeSettingsGroup]:
         ]
 
     def _mesa_gl_override():
-        try:
-            profile = current_settings.hardware_profile
-
-        except Exception as e:
-            log.error(e)
-            return None
-
         return GrapeSetting(
             key="use_mesa_gl_override",
             display_name="Use Mesa OpenGL version override",
-            value=profile.use_mesa_gl_override
+            value=prefix.configuration.use_mesa_gl_override
         )
 
     settings = list(filter(
