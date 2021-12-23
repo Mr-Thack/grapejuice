@@ -415,8 +415,6 @@ class WineprefixCoreControl:
         self.disable_mime_associations()
         self.sandbox()
 
-        # TODO: Set Roblox document path? Is this still required?
-
     def create_prefix(self):
         self.configure_prefix()
 
