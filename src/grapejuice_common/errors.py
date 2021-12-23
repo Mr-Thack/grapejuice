@@ -52,7 +52,7 @@ class PresentableError(RuntimeError):
         return self._traceback_value
 
 
-class NoWineError(RuntimeError):
+class CouldNotFindSystemWineHome(RuntimeError):
     def __init__(self):
         super().__init__("A valid wine binary could not be found")
 

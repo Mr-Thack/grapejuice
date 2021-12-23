@@ -14,7 +14,7 @@ from pathlib import Path
 from string import Template
 from typing import Union, List, Dict, Optional
 
-from grapejuice_common import paths
+from grapejuice_common import paths, variables
 from grapejuice_common.errors import HardwareProfilingError, WineHomeNotAbsolute, WineHomeInvalid
 from grapejuice_common.hardware_info.graphics_card import GPUVendor
 from grapejuice_common.logs.log_util import log_function
@@ -223,17 +223,18 @@ class WineprefixCoreControl:
     @property
     def wine_home(self) -> Path:
         wine_home_string = self._configuration.wine_home.strip()
-        if not wine_home_string.strip():
-            # Use default system prefix
-            wine_home_string = "/usr"
 
-        log.info(f"Wine home string: {wine_home_string}")
+        if wine_home_string.strip():
+            log.info(f"Wine home string: {wine_home_string}")
 
-        if wine_home_string.startswith(f"~{os.path.sep}"):
-            wine_home = Path(wine_home_string).expanduser()
+            if wine_home_string.startswith(f"~{os.path.sep}"):
+                wine_home = Path(wine_home_string).expanduser()
+
+            else:
+                wine_home = Path(wine_home_string)
 
         else:
-            wine_home = Path(wine_home_string)
+            wine_home = variables.system_wine_home()
 
         log.info(f"Wine home is {wine_home}")
 

@@ -6,7 +6,7 @@ import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
-from grapejuice_common.errors import NoWineError
+from grapejuice_common.errors import CouldNotFindSystemWineHome
 
 HERE = Path(__file__).resolve().parent
 INSTANCE_ID = str(uuid.uuid4())
@@ -53,24 +53,31 @@ def git_source_tarball():
     return f"{git_repository()}/-/archive/{release_channel}/grapejuice-{release_channel}.tar.gz"
 
 
-def system_wine_binary(arch=""):
-    path_search = []
+def system_wine_home():
+    for bin_directory_string in os.environ.get("PATH", "").split(os.path.pathsep):
+        wine_binary_path = Path(bin_directory_string) / "wine"
+        wine_home = wine_binary_path.parent.parent
 
-    if "PATH" in os.environ:
-        for spec in os.environ["PATH"].split(":"):
-            path_search.append(os.path.join(spec, "wine" + arch))
+        if wine_binary_path.exists() and wine_binary_path.is_file() and wine_home.is_dir():
+            return wine_home
 
     static_search = [
-        "/opt/wine-stable/bin/wine" + arch,
-        "/opt/wine-staging/bin/wine" + arch
+        "/opt/wine-stable",
+        "/opt/wine-devel",
+        "/opt/wine-staging"
     ]
 
-    for p in path_search + static_search:
-        if p and os.path.exists(p):
-            LOG.debug(f"Using wine binary at: {p}")
-            return p
+    for wine_home in map(Path, static_search):
+        if not wine_home.exists():
+            continue
 
-    raise NoWineError()
+        wine_bin = wine_home / "bin"
+        wine_binary_path = wine_bin / "wine"
+
+        if wine_home.is_dir() and wine_binary_path.is_file():
+            return wine_home
+
+    raise CouldNotFindSystemWineHome()
 
 
 def required_wine_version():

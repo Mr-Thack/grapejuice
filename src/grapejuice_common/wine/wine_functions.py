@@ -74,13 +74,15 @@ def _env(settings) -> Dict[str, str]:
 
 
 def _wine_home(settings) -> str:
+    from grapejuice_common import variables
+
     if "wine_home" in settings:
         return settings.get("wine_home")
 
     if "wine_binary" in settings:
         return str(Path(settings["wine_binary"]).resolve().parent.parent)
 
-    return "/usr"
+    return variables.system_wine_home()
 
 
 def _hardware_profile() -> Optional[HardwareProfile]:
