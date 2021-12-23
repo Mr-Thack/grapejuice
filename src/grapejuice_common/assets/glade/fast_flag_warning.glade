@@ -1,31 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
+<!-- Generated with glade 3.38.2 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk+" version="3.22"/>
   <object class="GtkWindow" id="fast_flag_warning">
-    <property name="can_focus">False</property>
-    <property name="icon_name">grapejuice</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">grapejuice</property>
     <signal name="destroy" handler="on_close" swapped="no"/>
-    <child type="titlebar">
-      <object class="GtkHeaderBar">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="title" translatable="yes">WARNING!</property>
-        <property name="show_close_button">True</property>
-        <property name="decoration_layout">menu:close</property>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
-    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="halign">start</property>
             <property name="valign">baseline</property>
             <property name="vexpand">True</property>
@@ -33,13 +21,13 @@
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
-                <property name="margin_top">10</property>
-                <property name="margin_bottom">10</property>
-                <property name="pixel_size">48</property>
-		<property name="stock">gtk-dialog-warning</property>
+                <property name="can-focus">False</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <property name="pixel-size">48</property>
+                <property name="icon-name">gtk-dialog-warning</property>
                 <property name="icon_size">6</property>
               </object>
               <packing>
@@ -51,7 +39,7 @@
             <child>
               <object class="GtkFixed">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="vexpand">True</property>
               </object>
               <packing>
@@ -63,14 +51,14 @@
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="valign">end</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
-                <property name="margin_top">10</property>
-                <property name="margin_bottom">10</property>
-                <property name="pixel_size">48</property>
-		<property name="stock">gtk-dialog-warning</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <property name="pixel-size">48</property>
+                <property name="icon-name">gtk-dialog-warning</property>
                 <property name="icon_size">6</property>
               </object>
               <packing>
@@ -89,18 +77,18 @@
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_left">10</property>
-            <property name="margin_right">10</property>
-            <property name="margin_top">20</property>
-            <property name="margin_bottom">20</property>
+            <property name="can-focus">False</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <property name="margin-top">20</property>
+            <property name="margin-bottom">20</property>
             <property name="hexpand">True</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_bottom">25</property>
+                <property name="can-focus">False</property>
+                <property name="margin-bottom">25</property>
                 <property name="label" translatable="yes">If you proceed, the fast flag editor will open.</property>
                 <property name="justify">center</property>
               </object>
@@ -113,12 +101,12 @@
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_bottom">25</property>
+                <property name="can-focus">False</property>
+                <property name="margin-bottom">25</property>
                 <property name="label" translatable="yes">Fast flags are a way of toggling and changing the behaviour of unreleased Roblox features.
 Changing any fast flags, may lead to data corruption and unstable behaviour of Roblox.
 &lt;b&gt;You should only use this tool if you know what you are doing!&lt;/b&gt;</property>
-                <property name="use_markup">True</property>
+                <property name="use-markup">True</property>
                 <property name="justify">center</property>
               </object>
               <packing>
@@ -131,9 +119,9 @@ Changing any fast flags, may lead to data corruption and unstable behaviour of R
               <object class="GtkLinkButton" id="devforum_link">
                 <property name="label" translatable="yes">button</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="margin_bottom">25</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="margin-bottom">25</property>
                 <property name="relief">none</property>
                 <property name="uri">https://devforum.roblox.com/t/warning-about-developers-using-fast-flags/51003</property>
               </object>
@@ -146,7 +134,7 @@ Changing any fast flags, may lead to data corruption and unstable behaviour of R
             <child>
               <object class="GtkFixed">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="vexpand">True</property>
               </object>
               <packing>
@@ -158,16 +146,16 @@ Changing any fast flags, may lead to data corruption and unstable behaviour of R
             <child>
               <object class="GtkCheckButton" id="warn_check">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="margin_top">10</property>
-                <property name="margin_bottom">10</property>
-                <property name="draw_indicator">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <property name="draw-indicator">True</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_left">10</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-start">10</property>
                     <property name="label" translatable="yes">Show this dialog before opening the Fast Flag Editor</property>
                   </object>
                 </child>
@@ -180,17 +168,17 @@ Changing any fast flags, may lead to data corruption and unstable behaviour of R
             </child>
             <child>
               <object class="GtkBox">
-                <property name="height_request">75</property>
+                <property name="height-request">75</property>
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="valign">end</property>
                 <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Open editor</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <signal name="clicked" handler="open_editor" swapped="no"/>
                   </object>
                   <packing>
@@ -202,7 +190,7 @@ Changing any fast flags, may lead to data corruption and unstable behaviour of R
                 <child>
                   <object class="GtkFixed">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="hexpand">True</property>
                   </object>
                   <packing>
@@ -215,8 +203,8 @@ Changing any fast flags, may lead to data corruption and unstable behaviour of R
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Do not open</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <signal name="clicked" handler="abort" swapped="no"/>
                   </object>
                   <packing>
@@ -242,7 +230,7 @@ Changing any fast flags, may lead to data corruption and unstable behaviour of R
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="halign">end</property>
             <property name="valign">baseline</property>
             <property name="vexpand">True</property>
@@ -250,13 +238,13 @@ Changing any fast flags, may lead to data corruption and unstable behaviour of R
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
-                <property name="margin_top">10</property>
-                <property name="margin_bottom">10</property>
-                <property name="pixel_size">48</property>
-		<property name="stock">gtk-dialog-warning</property>
+                <property name="can-focus">False</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <property name="pixel-size">48</property>
+                <property name="icon-name">gtk-dialog-warning</property>
                 <property name="icon_size">6</property>
               </object>
               <packing>
@@ -268,7 +256,7 @@ Changing any fast flags, may lead to data corruption and unstable behaviour of R
             <child>
               <object class="GtkFixed">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="vexpand">True</property>
               </object>
               <packing>
@@ -280,14 +268,14 @@ Changing any fast flags, may lead to data corruption and unstable behaviour of R
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="valign">end</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
-                <property name="margin_top">10</property>
-                <property name="margin_bottom">10</property>
-                <property name="pixel_size">48</property>
-		<property name="stock">gtk-dialog-warning</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <property name="pixel-size">48</property>
+                <property name="icon-name">gtk-dialog-warning</property>
                 <property name="icon_size">6</property>
               </object>
               <packing>
@@ -302,6 +290,18 @@ Changing any fast flags, may lead to data corruption and unstable behaviour of R
             <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
+        </child>
+      </object>
+    </child>
+    <child type="titlebar">
+      <object class="GtkHeaderBar">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="title" translatable="yes">WARNING!</property>
+        <property name="show-close-button">True</property>
+        <property name="decoration-layout">menu:close</property>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>
