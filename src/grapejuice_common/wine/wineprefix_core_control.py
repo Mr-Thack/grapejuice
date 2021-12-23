@@ -336,6 +336,15 @@ class WineprefixCoreControl:
 
             apply_env["WINEDEBUG"] = winedebug_string
 
+        # Make Wine defined in wine_home available in $PATH
+        path_string = apply_env.get("PATH", None) or os.environ.get("PATH", None)
+        path_components = path_string.split(os.path.pathsep)
+        wine_bin_string = str(self.wine_bin)
+
+        if wine_bin_string not in path_components:
+            path_components.insert(0, wine_bin_string)
+            apply_env["PATH"] = os.path.pathsep.join(path_components)
+
         log.info("Applying environment: " + json.dumps(apply_env))
 
         # Apply env
@@ -476,7 +485,6 @@ class WineprefixCoreControl:
         if arguments:
             command.extend(arguments)
 
-        # TODO: Make commands use wine defined in prefix configuration
         return run_exe_no_daemon(
             command,
             command_name,
