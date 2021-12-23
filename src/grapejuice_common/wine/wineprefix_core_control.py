@@ -14,8 +14,8 @@ from pathlib import Path
 from string import Template
 from typing import Union, List, Dict, Optional
 
-from grapejuice_common import variables, paths
-from grapejuice_common.errors import HardwareProfilingError
+from grapejuice_common import paths
+from grapejuice_common.errors import HardwareProfilingError, WineHomeNotAbsolute, WineHomeInvalid
 from grapejuice_common.hardware_info.graphics_card import GPUVendor
 from grapejuice_common.logs.log_util import log_function
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
@@ -220,10 +220,13 @@ class WineprefixCoreControl:
         self._prefix_paths = prefix_paths
         self._configuration = configuration
 
-    def wine_binary(self, arch="") -> str:
-        log.info(f"Resolving wine binary for prefix {self._prefix_paths.base_directory}")
-
+    @property
+    def wine_home(self) -> Path:
         wine_home_string = self._configuration.wine_home.strip()
+        if not wine_home_string.strip():
+            # Use default system prefix
+            wine_home_string = "/usr"
+
         log.info(f"Wine home string: {wine_home_string}")
 
         if wine_home_string.startswith(f"~{os.path.sep}"):
@@ -234,33 +237,41 @@ class WineprefixCoreControl:
 
         log.info(f"Wine home is {wine_home}")
 
-        # TODO: Replace assert statements with 'proper' errors
+        if not wine_home.is_absolute():
+            raise WineHomeNotAbsolute(wine_home)
 
-        assert wine_home.is_absolute(), f"Wine home '{wine_home}' is not an absolute path"
-        assert wine_home.exists() and wine_home.is_dir(), f"Invalid wine_home: {wine_home}"
+        wine_bin = wine_home / "bin"
+        wine_home_valid = wine_home.exists() and wine_home.is_dir() and wine_bin.exists() and wine_bin.is_dir()
+        if not wine_home_valid:
+            raise WineHomeInvalid(wine_home)
 
-        if wine_home:
-            wine_binary = wine_home / "bin" / f"wine{arch}"
-            log.info(f"Resolved wine binary path: {wine_binary}")
+        return wine_home
 
-            assert wine_binary.exists() and wine_binary.is_file(), f"Invalid wine binary: {wine_binary}"
+    @property
+    def wine_bin(self):
+        return self.wine_home / "bin"
 
-            return str(wine_binary)
+    def wine_binary(self, arch="") -> Path:
+        log.info(f"Resolving wine binary for prefix {self._prefix_paths.base_directory}")
 
-        else:
-            return variables.system_wine_binary(arch)
+        wine_binary = self.wine_bin / f"wine{arch}"
+        log.info(f"Resolved wine binary path: {wine_binary}")
 
-    def wine_server(self) -> str:
-        path = Path(self.wine_binary()).parent / "wineserver"
+        assert wine_binary.exists() and wine_binary.is_file(), f"Invalid wine binary: {wine_binary}"
+
+        return wine_binary
+
+    def wine_server(self) -> Path:
+        path = self.wine_bin / "wineserver"
         assert path.exists(), f"Could not find wineserver at: {path}"
 
-        return str(path)
+        return path
 
-    def wine_dbg(self) -> str:
-        path = Path(self.wine_binary()).parent / "winedbg"
+    def wine_dbg(self) -> Path:
+        path = self.wine_bin / "winedbg"
         assert path.exists(), f"Could not find winedbg at: {path}"
 
-        return str(path)
+        return path
 
     def _dri_prime_variables(self) -> Dict[str, str]:
         from grapejuice_common.features.settings import current_settings
@@ -433,7 +444,7 @@ class WineprefixCoreControl:
         log.info(f"Resolved exe path to {exe_path_string}")
 
         wine_binary = self.wine_binary("64" if use_wine64 else "")
-        command = [wine_binary, exe_path_string, *args]
+        command = [str(wine_binary), exe_path_string, *args]
 
         if current_settings.get(settings.k_no_daemon_mode):
             return run_exe_no_daemon(
@@ -476,14 +487,14 @@ class WineprefixCoreControl:
     def kill_wine_server(self):
         self.prepare_for_launch()
 
-        subprocess.check_call([self.wine_server(), "-k"])
+        subprocess.check_call([str(self.wine_server()), "-k"])
 
     @property
     def process_list(self) -> List[WineProcess]:
         self.prepare_for_launch()
 
         try:
-            output = subprocess.check_output([self.wine_dbg(), "--command", "info proc"])
+            output = subprocess.check_output([str(self.wine_dbg()), "--command", "info proc"])
             output = output.decode("UTF-8")
 
         except subprocess.CalledProcessError as e:

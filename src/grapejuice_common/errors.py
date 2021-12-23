@@ -1,4 +1,5 @@
 import traceback
+from pathlib import Path
 from typing import List, Optional
 
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
@@ -85,3 +86,22 @@ class HardwareProfilingError(RuntimeError):
 
 class NoHardwareProfile(HardwareProfilingError):
     pass
+
+
+class WineHomeNotAbsolute(PresentableError):
+    def __init__(self, wine_home: Path):
+        super().__init__(
+            title="Wine home path is not absolute",
+            description=f"The Wine home path pointing to {wine_home} could not be resolved to an absolute directory. "
+                        "Make sure the path is valid and points to an existing directory!"
+        )
+
+
+class WineHomeInvalid(PresentableError):
+    def __init__(self, wine_home: Path):
+        super().__init__(
+            title="Wine home path is invalid",
+            description=f"The wine home path pointing to {wine_home} is invalid! Make sure the directory at this "
+                        "location contains a valid wine installation. 'wine_home' must point to a directory "
+                        "containing your Wine installation files (bin, lib, etc... "
+        )
