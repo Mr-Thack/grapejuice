@@ -337,7 +337,7 @@ class WineprefixCoreControl:
             apply_env["WINEDEBUG"] = winedebug_string
 
         # Make Wine defined in wine_home available in $PATH
-        path_string = apply_env.get("PATH", None) or os.environ.get("PATH", None)
+        path_string = apply_env.get("PATH", None) or os.environ.get("PATH", None) or ""
         path_components = path_string.split(os.path.pathsep)
         wine_bin_string = str(self.wine_bin)
 
