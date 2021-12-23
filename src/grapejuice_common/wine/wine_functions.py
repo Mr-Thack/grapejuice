@@ -82,7 +82,7 @@ def _wine_home(settings) -> str:
     if "wine_binary" in settings:
         return str(Path(settings["wine_binary"]).resolve().parent.parent)
 
-    return variables.system_wine_home()
+    return str(variables.system_wine_home())
 
 
 def _hardware_profile() -> Optional[HardwareProfile]:

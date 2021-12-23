@@ -53,7 +53,7 @@ def git_source_tarball():
     return f"{git_repository()}/-/archive/{release_channel}/grapejuice-{release_channel}.tar.gz"
 
 
-def system_wine_home():
+def system_wine_home() -> Path:
     for bin_directory_string in os.environ.get("PATH", "").split(os.path.pathsep):
         wine_binary_path = Path(bin_directory_string) / "wine"
         wine_home = wine_binary_path.parent.parent
