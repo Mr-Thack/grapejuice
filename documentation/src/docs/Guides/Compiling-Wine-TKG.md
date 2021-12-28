@@ -11,28 +11,6 @@ git clone --depth=1 https://github.com/TheComputerGuy96/wine-tkg-git.git
 cd wine-tkg-git/wine-tkg-git
 ```
 
-## Configuring Wine TKG
-
-Edit `customization.cfg` and add the below line:
-
-```ini
-_user_patches="true"
-```
-
-In addition, replace
-
-```ini
-_community_patches=""
-```
-
-with
-
-```ini
-_community_patches="roblox_mouse_fix.mypatch"
-```
-
-to fix the mouse bug.
-
 ## Installing dependencies
 
 See [this page](https://wiki.winehq.org/Building_Wine#Satisfying_Build_Dependencies) for a list of required
