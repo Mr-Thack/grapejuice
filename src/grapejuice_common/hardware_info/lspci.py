@@ -6,7 +6,11 @@ import subprocess
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
-from grapejuice_common import variables
+
+def _text_encoding():
+    from grapejuice_common import variables
+
+    return variables.text_encoding()
 
 
 @dataclass
@@ -75,7 +79,7 @@ class LSPci:
             pass
 
         try:
-            content = subprocess.check_output(["lspci", "-vvv"]).decode(variables.text_encoding())
+            content = subprocess.check_output(["lspci", "-vvv"]).decode(_text_encoding())
             self._parse(content)
 
         except Exception as e:
@@ -136,6 +140,6 @@ class LSPci:
     @property
     def graphics_id(self) -> str:
         h = hashlib.new("blake2s")
-        h.update(json.dumps([card.gpu_id_string for card in self.graphics_cards]).encode(variables.text_encoding()))
+        h.update(json.dumps([card.gpu_id_string for card in self.graphics_cards]).encode(_text_encoding()))
 
         return h.hexdigest()
