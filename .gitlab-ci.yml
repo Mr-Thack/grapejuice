@@ -4,6 +4,7 @@ stages:
     - test
     - package
     - deploy
+    - release
 
 grapejuice:quality_control:
     stage: test
@@ -64,3 +65,16 @@ pages:
         - ls -hal public
     only:
         - master
+
+make_release:
+    stage: release
+    image: registry.gitlab.com/gitlab-org/release-cli:latest
+    rules:
+        -   if: $CI_COMMIT_TAG
+    script:
+        - echo "Running the release job."
+    release:
+        name: 'Release $CI_COMMIT_TAG'
+        description: 'Release created using the release-cli.'
+        tag_name: '$CI_COMMIT_TAG'
+        ref: '$CI_COMMIT_TAG'
