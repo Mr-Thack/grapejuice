@@ -105,7 +105,7 @@ class SourceUpdateInformationProvider(UpdateInformationProvider):
     def do_update(self):
         from grapejuice_common.features.settings import current_settings
 
-        tmp_path = paths.temporary_directory()
+        tmp_path = variables.temporary_directory()
         LOG.info(f"Temporary files path at: {tmp_path}")
         update_package_path = os.path.join(tmp_path, "update")
 

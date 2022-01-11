@@ -1,6 +1,4 @@
-import atexit
 import os
-import shutil
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -144,22 +142,6 @@ def grapejuice_cache_directory() -> Path:
 
 def fast_flag_cache_location() -> Path:
     return grapejuice_cache_directory() / "fast_flags.json"
-
-
-def temporary_directory() -> Path:
-    from grapejuice_common.variables import INSTANCE_ID
-
-    path = Path(os.path.sep, "tmp", f"grapejuice-{INSTANCE_ID}").resolve()
-    if path.exists():
-        return path
-
-    def on_exit(*_, **__):
-        if path.exists():
-            shutil.rmtree(path, ignore_errors=True)
-
-    atexit.register(on_exit)
-
-    return _ensure_directory(path)
 
 
 # TODO: Add method to extract this data

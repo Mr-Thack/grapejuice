@@ -88,8 +88,7 @@ disable=print-statement,
         unnecessary-lambda,
         too-many-arguments,
         raise-missing-from,
-        too-many-public-methods,
-        cyclic-import
+        too-many-public-methods
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

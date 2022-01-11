@@ -1,7 +1,9 @@
+import atexit
 import json
 import logging
 import os
 import re
+import shutil
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
@@ -200,3 +202,19 @@ def current_dxvk_release() -> DXVKRelease:
 
 def text_encoding() -> str:
     return "UTF-8"
+
+
+def temporary_directory() -> Path:
+    path = Path(os.path.sep, "tmp", f"grapejuice-{INSTANCE_ID}").resolve()
+    if path.exists():
+        return path
+
+    def on_exit(*_, **__):
+        if path.exists():
+            shutil.rmtree(path, ignore_errors=True)
+
+    atexit.register(on_exit)
+
+    path.mkdir(parents=True, exist_ok=True)
+
+    return path
