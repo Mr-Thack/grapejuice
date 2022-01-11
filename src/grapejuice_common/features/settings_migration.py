@@ -18,6 +18,7 @@ migration_index = dict()
 
 log = logging.getLogger(__name__)
 
+
 def register_migration(version_from: int, version_to: int):
     def decorator(migration_function):
         migration_index[(version_from, version_to)] = migration_function
@@ -49,8 +50,10 @@ def _get_wine_home(wine_binary_string: str, default_value: str) -> str:
 
     if wine_binary.name != "wine":
         log.warning("Could not migrate Wine binary because its name is not 'wine'")
+
     elif wine_binary.parent.name != "bin":
         log.warning("Could not migrate Wine binary because it's not in a folder named 'bin'")
+
     else:
         can_be_used = True
 
@@ -94,7 +97,7 @@ def upgrade_wineprefix(current_settings: Dict):
 
     new_player_prefix = create_player_prefix_model(current_settings)
     new_studio_prefix = create_studio_prefix_model(current_settings)
-    unsupported_settings = current_settings.get("unsupported_settings")
+    unsupported_settings = current_settings.get("unsupported_settings", {})
 
     legacy_wineprefix_path = paths.local_share_grapejuice() / "wineprefix"
     do_wineprefix_migration(
@@ -119,13 +122,15 @@ def upgrade_wineprefix(current_settings: Dict):
 
         prefix_configuration.fast_flags = _get_fast_flags(prefix)
 
-        env = unsupported_settings.get(settings.k_environment_variables, {})
-        if env.get("MESA_GL_VERSION_OVERRIDE") == "4.4":
+        env = dict(unsupported_settings.get(settings.k_environment_variables, {}))
+        if env.get("MESA_GL_VERSION_OVERRIDE", "") == "4.4":
             prefix_configuration.use_mesa_gl_override = True
             env.pop("MESA_GL_VERSION_OVERRIDE")
+
         if "WINEDEBUG" in env:
             prefix_configuration.enable_winedebug = True
             prefix_configuration.winedebug_string = env.pop("WINEDEBUG")
+
         prefix_configuration.env = env
 
         use_fps_unlocker = "rbxfpsunlocker" in unsupported_settings.get(settings.k_enabled_tweaks, [])
