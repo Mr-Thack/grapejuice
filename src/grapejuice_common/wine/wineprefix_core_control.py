@@ -14,7 +14,7 @@ from pathlib import Path
 from string import Template
 from typing import Union, List, Dict, Optional
 
-from grapejuice_common import paths, variables
+from grapejuice_common import paths
 from grapejuice_common.errors import HardwareProfilingError, WineHomeNotAbsolute, WineHomeInvalid
 from grapejuice_common.hardware_info.graphics_card import GPUVendor
 from grapejuice_common.logs.log_util import log_function
@@ -222,6 +222,8 @@ class WineprefixCoreControl:
 
     @property
     def wine_home(self) -> Path:
+        from grapejuice_common import variables
+
         wine_home_string = self._configuration.wine_home.strip()
 
         if wine_home_string.strip():
