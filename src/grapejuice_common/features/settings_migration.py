@@ -8,7 +8,6 @@ from typing import Dict
 
 from grapejuice_common import paths
 from grapejuice_common.errors import RobloxExecutableNotFound
-from grapejuice_common.features import settings
 from grapejuice_common.models.wineprefix_configuration_model import ThirdPartyKeys
 from grapejuice_common.recipes.fps_unlocker_recipe import FpsUnlockerRecipe
 from grapejuice_common.roblox_product import RobloxProduct
@@ -87,6 +86,7 @@ def _get_fast_flags(prefix: Wineprefix) -> Dict[str, Dict[str, any]]:
 def upgrade_wineprefix(current_settings: Dict):
     from grapejuice_common.features.wineprefix_migration import do_wineprefix_migration
     from grapejuice_common.wine.wine_functions import create_player_prefix_model, create_studio_prefix_model
+    from grapejuice_common.features import settings
 
     prefixes = current_settings.get(settings.k_wineprefixes, [])
 
@@ -149,6 +149,8 @@ def upgrade_wineprefix(current_settings: Dict):
 
 @register_migration(2, 1)
 def downgrade_wineprefix(user_settings: Dict):
+    from grapejuice_common.features import settings
+
     if len(user_settings[settings.k_wineprefixes]) <= 0:
         return
 
