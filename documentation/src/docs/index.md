@@ -31,6 +31,7 @@ Follow the installation guide that's appropriate for your distribution. Guides:
   [install from source](Installing-from-source/Arch-Linux-and-similar)
 - Manjaro Linux: [Install from package](Installing-from-package/Arch-Linux-and-similar) or
   [install from source](Installing-from-source/Arch-Linux-and-similar)
+- Void Linux: [Install from source](Installing-from-source/Void-Linux)
 - NixOS: [Install from package](Installing-from-package/NixOS)
 - Solus: [Install from source](Installing-from-source/Solus)
 - Fedora Workstation: [Install from source](Installing-from-source/Fedora-Workstation)
