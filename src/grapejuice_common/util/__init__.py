@@ -1,7 +1,7 @@
 import os
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Optional, Dict, TypeVar, Tuple
+from typing import Optional, Dict, TypeVar, Tuple, Iterable
 
 
 def prepare_uri(uri):
@@ -58,6 +58,47 @@ def working_directory_as(working_directory: Optional[Path] = None):
 
     else:
         yield
+
+
+EnvironmentValue = Optional[str]
+Environment = Dict[str, EnvironmentValue]
+
+
+def _environment_snapshot(keys: Iterable[str]) -> Environment:
+    snapshot = {}
+
+    for k in keys:
+        snapshot[k] = os.environ.get(k, None)
+
+    return snapshot
+
+
+def _apply_environment(environment: Environment):
+    for k, v in environment.items():
+        if v is None:
+            os.environ.pop(k, None)
+
+        else:
+            os.environ[k] = v
+
+
+@contextmanager
+def environment_as(environment: Environment):
+    err = None
+
+    snapshot = _environment_snapshot(environment.keys())
+    _apply_environment(environment)
+
+    try:
+        yield
+
+    except Exception as e:
+        err = e
+
+    _apply_environment(snapshot)
+
+    if err is not None:
+        raise err
 
 
 DictValue = TypeVar("DictValue")

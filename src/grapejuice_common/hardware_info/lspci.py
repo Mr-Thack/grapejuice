@@ -1,10 +1,11 @@
 import hashlib
 import json
-import os
 import re
 import subprocess
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
+
+from grapejuice_common.util import environment_as
 
 
 def _stdout_encoding():
@@ -66,28 +67,9 @@ class LSPci:
     def __init__(self):
         self._entries = []
 
-        lc_all = os.environ.get("LC_ALL", "")
-        lang = os.environ.get("LANG")
-        os.environ["LC_ALL"] = "C"
-
-        try:
-            os.environ.pop("LANG")
-
-        except KeyError:
-            pass
-
-        try:
+        with environment_as({"LC_ALL": "C", "LANG": None}):
             content = subprocess.check_output(["lspci", "-vvv"]).decode(_stdout_encoding())
             self._parse(content)
-
-        except Exception as e:
-            if lc_all:
-                os.environ["LC_ALL"] = lc_all
-
-            if lang:
-                os.environ["LANG"] = lang
-
-            raise e
 
     def _parse(self, content: str):
         work: Optional[LSPciEntry] = None
