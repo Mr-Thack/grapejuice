@@ -83,7 +83,11 @@ def _apply_environment(environment: Environment):
 
 
 @contextmanager
-def environment_as(environment: Environment):
+def environment_as(environment: Optional[Environment]):
+    if environment is None:
+        yield
+        return
+
     err = None
 
     snapshot = _environment_snapshot(environment.keys())

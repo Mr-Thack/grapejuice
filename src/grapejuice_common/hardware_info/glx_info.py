@@ -1,9 +1,10 @@
 import json
-import os
 import re
 import subprocess
 from copy import deepcopy
 from typing import Dict, Optional, Tuple
+
+from grapejuice_common.util import environment_as
 
 OPENGL_ATTRIBUTE_PTN = re.compile(r"(OpenGL.+):(.+)")
 
@@ -17,24 +18,16 @@ def _parse_opengl_version(s):
     return None
 
 
+def _get_glx_info() -> str:
+    return subprocess.check_output(["glxinfo"]).decode("UTF-8")
+
+
 class GLXInfo:
     _attributes: Dict[str, str]
 
     def __init__(self, env: Optional[Dict[str, str]] = None):
-        # TODO: Undo env changes properly
-        if env:
-            for k, v in env.items():
-                os.environ[k] = v
-
-        info_string = subprocess.check_output(["glxinfo"]).decode("UTF-8")
-
-        if env:
-            for k in env.keys():
-                try:
-                    os.environ.pop(k)
-
-                except KeyError:
-                    pass
+        with environment_as(env):
+            info_string = _get_glx_info()
 
         lines_of_interest = list(
             map(
