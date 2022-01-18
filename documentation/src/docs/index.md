@@ -1,6 +1,14 @@
 title: Documentation Home
 ---
 
+## Hardware Requirements
+
+**Grapejuice is not supported on ARM devices (such as a Raspberry Pi) at this time.**
+
+Your GPU must support OpenGL 4.0 or Vulkan, which are features on most modern GPUs.
+
+Grapejuice can only be run on 64-Bit Linux with glibc, and an X or XWayland window system, which is provided by most modern distributions.
+
 ## 🚀 Installing Grapejuice
 
 Grapejuice can be installed from the package or from the source code. It's recommended that you
