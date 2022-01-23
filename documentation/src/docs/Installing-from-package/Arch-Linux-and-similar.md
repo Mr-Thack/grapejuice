@@ -11,8 +11,7 @@ to the following distributions:
 
 ---
 
-:computer: Grapejuice assumes your desktop is configured properly. Even though Arch Linux to some, is all about
-minimalism, it is recommended that you run your desktop session using a display manager.
+:computer: Grapejuice assumes your desktop is configured properly.
 
 ---
 
@@ -31,7 +30,14 @@ Install `lib32-libpulse` with `sudo pacman -S lib32-libpulse`.
 In addition, if you're using Pipewire (check if the `pipewire` process is running), you need to install
 `pipewire-pulse` with `sudo pacman -S pipewire-pulse`.
 
-## Installing a patched Wine build
+Once Grapejuice has been installed, you can proceed to the section below.
 
-It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
-for more information.
+## 🍷 Installing Wine
+
+**You will need to install Wine before you can use Grapejuice**.
+It's recommended to install the patched wine version. Not installing it can lead to crashes, or the in-game cursor not moving properly.
+See [this guide](../Guides/Installing-Wine) for instructions on installing the patched Wine build.
+
+## 🤔 Still having issues?
+
+Even after installing Grapejuice and the patched wine version above, you may still have issues (examples: bad performance, Roblox not opening, etc). Usually, you can find the solutions here: [Troubleshooting page](../Troubleshooting)

@@ -1,5 +1,10 @@
 title: Compiling Wine TKG
 ---
+
+## About compiling Wine
+
+Compiling Wine is generally for people who want extra control over their build, or people who do not trust the precompiled versions. If you just want to quickly get Roblox up and running, you can [install a precompiled version instead](Installing-Wine).
+
 This guide will be using a [customized version of Wine TKG](https://github.com/TheComputerGuy96/wine-tkg-git).
 
 ## Downloading Wine TKG

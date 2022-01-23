@@ -1,9 +1,8 @@
 title: Install Wine
 ---
-## About the mouse bug
+## About Wine issues
 
-When locking the cursor (not allowing the cursor to move) like by adjusting the camera with right click,
-the cursor does not get unlocked.
+Using a version of Wine that has not been patched may lead to issues like the in-game cursor getting stuck, the game crashing, or being kicked automatically with an error code.
 
 To fix this, a patched version of Wine is required.
 
@@ -11,13 +10,11 @@ To fix this, a patched version of Wine is required.
 
 **Warning:** You should decide if you trust the authors of the below resources before using them.
 
-There are two different options: installing Wine with patches compiled for you or compiling Wine yourself.
+There are two different options: Installing a prebuilt patched Wine build, or compiling it yourself. **Generally, it is easier to install the prebuilt version.**
 
 ### Installing a prebuilt patched Wine build
 
-Run [this Python script](https://pastebin.com/raw/5SeVb005) which requires Python 3.8 or above.
-
-To run it, run the following:
+Run the commands below to automatically download a pre-compiled patched Wine:
 
 ```sh
 cd /tmp
@@ -27,7 +24,7 @@ python3 install.py
 
 ### Compiling Wine TKG
 
-Use [this guide](Compiling-Wine-TKG).
+If you'd like to instead compile Wine, you can use [this guide](Compiling-Wine-TKG).
 
 ## Installing vanilla Wine
 
