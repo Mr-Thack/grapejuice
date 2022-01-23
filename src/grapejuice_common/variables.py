@@ -83,11 +83,11 @@ def system_wine_home() -> Path:
 
 
 def required_wine_version():
-    return "wine-6.0"
+    return "wine-7.0"
 
 
 def required_player_wine_version():
-    return "wine-6.11"
+    return "wine-7.0"
 
 
 @dataclass(frozen=True)

@@ -52,12 +52,6 @@ cd $GRAPEJUICE_SOURCES_ROOT
 ./install.py
 ```
 
-## Black box follows the cursor in Studio
-
-This is caused by [a regression in Wine](https://source.winehq.org/git/wine.git/commit/db2b266).
-
-You can revert this commit and compile Wine, or use Wine 7.0-rc2 which fixes this issue.
-
 ## Built-in screen recorder doesn't work
 
 You should consider using another screen recorder.
@@ -84,11 +78,9 @@ Grapejuice UI, go to the player wineprefix, and disable "Desktop App".
 
 - Window decorations (bar on the top of windows) can disappear after entering and exiting fullscreen.
 - Screenshot key in the player doesn't work, but the screenshot button does.
-- Player process occasionally stays after closing the window.
 - Non-QWERTY keyboard layouts can cause problems with controls.
 - Voice chat doesn't work.
 - The warning "Unable to read VR Path Registry" usually appears. However, this doesn't seem to affect anything.
-- Player freezes when visiting an experience due to a [regression in Wine](https://source.winehq.org/git/wine.git/commit/7ef35b3).
 
 ## Automated Troubleshooter
 

@@ -33,8 +33,7 @@ Use [this guide](Compiling-Wine-TKG).
 
 Vanilla Wine does not currently have the mouse patch, meaning the mouse bug will occur when using vanilla Wine.
 
-You need to install Wine 6.11 or above, or Wine Staging 6.16 or above.
-
-If your distribution provides the `wine` package, install that from your package manager.
+If your distribution provides a package for Wine, usually named `wine`, which provides Wine 7.0 or above,
+install that from your package manager.
 
 Otherwise, use the [download page for Wine](https://wiki.winehq.org/Download).
