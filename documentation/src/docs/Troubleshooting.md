@@ -71,8 +71,8 @@ You need a patched version of Wine to solve this. See [this guide](Guides/Instal
 
 ## Desktop application is being used
 
-This is part of the [app beta](https://devforum.roblox.com/t/925069). If you'd like to opt-out, go to the
-Grapejuice UI, go to the player wineprefix, and disable "Desktop App".
+This is part of the [app beta](https://devforum.roblox.com/t/925069). If you'd like to opt-out, go to the Grapejuice UI,
+go to the player wineprefix, and disable "Desktop App".
 
 ## Known issues with no known workarounds
 
@@ -81,13 +81,3 @@ Grapejuice UI, go to the player wineprefix, and disable "Desktop App".
 - Non-QWERTY keyboard layouts can cause problems with controls.
 - Voice chat doesn't work.
 - The warning "Unable to read VR Path Registry" usually appears. However, this doesn't seem to affect anything.
-
-## Automated Troubleshooter
-
-Grapejuice has a distribution
-independent [troubleshooter](https://gitlab.com/brinkervii/grapejuice/-/raw/master/troubleshooter.py) that can detect
-some issues with your system. You can run it with:
-
-```sh
-python3 <(curl -L https://gitlab.com/brinkervii/grapejuice/-/raw/master/troubleshooter.py)
-```
