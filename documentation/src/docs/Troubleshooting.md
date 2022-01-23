@@ -9,16 +9,29 @@ latest version of Grapejuice!** Do you have an issue that is not described here?
 
 ---
 
+## The in-game cursor gets stuck after right-clicking
+
+You need a patched version of Wine to solve this. See [this guide](Guides/Installing-Wine).
+
+## Roblox launcher with the Roblox logo shows up, however the game does not start
+
+Open the Grapejuice app, select `Player` on the left panel, and then enable `Use Mesa OpenGL version override`.
+
+## Game is slow or laggy/not enough FPS
+
+[Click here](Guides/Performance-Tweaks) to go to the performance tweaks page.
+
+## Desktop application is being used
+
+This is part of the [app beta](https://devforum.roblox.com/t/925069). If you'd like to opt-out, go to the
+Grapejuice UI, go to the player wineprefix, and disable "Desktop App".
+
 ## An error occurred trying to launch the experience. Please try again later.
 
 If you're using Firefox, go to about:config and set `network.http.referer.XOriginPolicy`
 and `network.http.sendRefererHeader` to `1`.
 
-## The server name or address could not be resolved
-
-Start the `nscd` service from `glibc`.
-
-## Grapejuice does not launch
+## Grapejuice does not launch at all
 
 This is a problem that can have many causes. The first step to fixing an issue that presents itself this way is by
 running Grapejuice in a terminal session.
@@ -29,6 +42,10 @@ executing
 ```sh
 ~/.local/bin/grapejuice gui
 ```
+
+## The server name or address could not be resolved
+
+Start the `nscd` service from `glibc`.
 
 ## Missing shared object libffi.so.[number]
 

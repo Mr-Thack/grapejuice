@@ -34,13 +34,20 @@ See [Graphics Drivers](https://docs.voidlinux.org/config/graphical-session/graph
 sudo xbps-install -S libpulseaudio-32bit
 ```
 
-## Installing a patched Wine build
+Once Grapejuice has been installed, you can proceed to the section below.
 
-It's recommended that you install a patched version of Wine. See [this guide](../Guides/Installing-Wine)
-for more information.
+## 🍷 Installing Wine
+
+**You will need to install Wine before you can use Grapejuice**.
+It's recommended to install the patched wine version. Not installing it can lead to crashes, or the in-game cursor not moving properly.
+See [this guide](../Guides/Installing-Wine) for instructions on installing the patched Wine build.
 
 Wine will also require dependencies to make Roblox function correctly.
 
 ```sh
 sudo xbps-install -S freetype-32bit gnutls-32bit libgcc-32bit
 ```
+
+## 🤔 Still having issues?
+
+Even after installing Grapejuice and the patched wine version above, you may still have issues (examples: bad performance, Roblox not opening, etc). Usually, you can find the solutions here: [Troubleshooting page](../Troubleshooting)
