@@ -98,7 +98,9 @@ class WineHomeNotAbsolute(PresentableError):
 
 
 class WineHomeInvalid(PresentableError):
-    def __init__(self, wine_home: Path):
+    def __init__(self, wine_home: Optional[Path]):
+        wine_home = wine_home or "(undefined)"
+
         super().__init__(
             title="Wine home path is invalid",
             description=f"The wine home path pointing to {wine_home} is invalid! Make sure the directory at this "

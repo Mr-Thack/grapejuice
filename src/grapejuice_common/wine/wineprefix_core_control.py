@@ -241,7 +241,7 @@ class WineprefixCoreControl:
                 wine_home = variables.system_wine_home()
 
             except CouldNotFindSystemWineHome as e:
-                raise WineHomeInvalid from e
+                raise WineHomeInvalid(None) from e
 
         log.info(f"Wine home is {wine_home}")
 
