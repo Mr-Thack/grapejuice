@@ -31,6 +31,12 @@ def perform_install():
 
     subprocess.check_call([sys.executable, "setup.py", "install_locally"])
 
+    unofficial_guide_warning = "WARNING: Unofficial installation guides are not supported!\n" \
+            "If you did not use the official documentation, found at https://brinkervii.gitlab.io/grapejuice/docs/," \
+            "Grapejuice may not work properly!\n" \
+            "Otherwise, if you're using the official documentation or know what you're doing, ignore this message."
+    print(unofficial_guide_warning, file=sys.stderr)
+
     if "CI_JOB_ID" not in os.environ:
         subprocess.check_call([
             str(Path(os.environ["HOME"], ".local", "bin", "grapejuice").resolve()),
