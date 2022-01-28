@@ -1,8 +1,11 @@
+import logging
 from abc import ABC
 from typing import Callable, Union, List
 
 from grapejuice_common.wine.wineprefix import Wineprefix
 from grapejuice_common.wine.wineprefix_hints import WineprefixHint
+
+log = logging.getLogger(__name__)
 
 RecipeIndicator = Callable[[Wineprefix], bool]
 RecipeIndicatorList = List[RecipeIndicator]
@@ -41,6 +44,7 @@ class Recipe(ABC):
         raise NotImplementedError()
 
     def _can_make_in(self, prefix: Wineprefix):
+        log.debug(f"Returning True for _can_make_in prefix {prefix}")
         return True
 
     def make_in(self, prefix: Wineprefix):
