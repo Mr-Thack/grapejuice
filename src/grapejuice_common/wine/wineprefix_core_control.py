@@ -15,7 +15,8 @@ from string import Template
 from typing import Union, List, Dict, Optional
 
 from grapejuice_common import paths
-from grapejuice_common.errors import HardwareProfilingError, WineHomeNotAbsolute, WineHomeInvalid
+from grapejuice_common.errors import HardwareProfilingError, WineHomeNotAbsolute, WineHomeInvalid, \
+    CouldNotFindSystemWineHome
 from grapejuice_common.hardware_info.graphics_card import GPUVendor
 from grapejuice_common.logs.log_util import log_function
 from grapejuice_common.models.wineprefix_configuration_model import WineprefixConfigurationModel
@@ -236,7 +237,11 @@ class WineprefixCoreControl:
                 wine_home = Path(wine_home_string)
 
         else:
-            wine_home = variables.system_wine_home()
+            try:
+                wine_home = variables.system_wine_home()
+
+            except CouldNotFindSystemWineHome as e:
+                raise WineHomeInvalid from e
 
         log.info(f"Wine home is {wine_home}")
 
