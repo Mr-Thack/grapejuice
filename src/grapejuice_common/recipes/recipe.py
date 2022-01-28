@@ -8,6 +8,10 @@ RecipeIndicator = Callable[[Wineprefix], bool]
 RecipeIndicatorList = List[RecipeIndicator]
 
 
+class CannotMakeRecipe(RuntimeError):
+    ...
+
+
 class Recipe(ABC):
     _indicators: RecipeIndicatorList
     _hint: Union[WineprefixHint, None]
@@ -36,5 +40,11 @@ class Recipe(ABC):
     def _make_in(self, prefix: Wineprefix):
         raise NotImplementedError()
 
+    def _can_make_in(self, prefix: Wineprefix):
+        return True
+
     def make_in(self, prefix: Wineprefix):
+        if not self._can_make_in(prefix):
+            raise CannotMakeRecipe()
+
         self._make_in(prefix)

@@ -6,6 +6,7 @@ from typing import Callable
 import grapejuice_common.util
 from grapejuice_common.gtk.gtk_util import gtk_boot
 from grapejuice_common.logs.log_vacuum import vacuum_logs
+from grapejuice_common.recipes.recipe import CannotMakeRecipe
 
 
 def handle_fatal_error(ex: Exception):
@@ -122,7 +123,12 @@ def func_first_time_setup(_args):
     player_recipe = RobloxPlayerRecipe()
     if not player_recipe.exists_in(player_prefix):
         log.info("Roblox is not installed!")
-        player_recipe.make_in(player_prefix)
+
+        try:
+            player_recipe.make_in(player_prefix)
+
+        except CannotMakeRecipe:
+            log.warning("Could not make Roblox Player recipe")
 
     log.info("Getting studio Wineprefix")
     try:
