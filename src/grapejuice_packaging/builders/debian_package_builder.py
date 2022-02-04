@@ -33,7 +33,8 @@ FIELD_BUILD_DEPENDS = ("Build-Depends", [
     "python3",
     "python3-pip",
     "python3-virtualenv",
-    "git", "unzip"
+    "git",
+    "unzip"
 ])
 
 CONTROL_FIELDS = [
@@ -54,6 +55,7 @@ CONTROL_FIELDS = [
         "python3-requests",
         "python3-gi",
         "python3-unidecode",
+        "python3-click",
         "libcairo2",
         "libgirepository-1.0-1",
         "libgtk-3-0",

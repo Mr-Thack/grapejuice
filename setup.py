@@ -60,7 +60,8 @@ def main():
         install_requires=install_requires(),
         entry_points={
             "console_scripts": [
-                "grapejuice=grapejuice.__main__:main",
+                "grapejuice=grapejuice.cli.main:easy_install_main",
+                "grapejuice-gui=grapejuice.cli.gui:east_install_main",
                 "grapejuiced=grapejuiced.__main__:main"
             ]
         },

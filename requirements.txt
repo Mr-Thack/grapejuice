@@ -6,3 +6,4 @@ wheel
 setuptools
 requests
 Unidecode
+Click
