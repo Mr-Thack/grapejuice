@@ -48,6 +48,10 @@ title: Documentation Home
 - Solus: [Install from source](Installing-from-source/Solus)
 - Fedora Workstation: [Install from source](Installing-from-source/Fedora-Workstation)
 - OpenSUSE: [Install from source](Installing-from-source/OpenSUSE)
+- Gentoo: [Install from source](Installing-from-source/Gentoo-Linux-and-similar)
+- Calculate: [Install from source](Installing-from-source/Gentoo-Linux-and-similar)
+- Funtoo: [Install from source](Installing-from-source/Gentoo-Linux-and-similar)
+- Sabayon: [Install from source](Installing-from-source/Gentoo-Linux-and-similar)
 
 **Please note that the following distributions are NOT supported:**
 
