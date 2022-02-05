@@ -1,10 +1,14 @@
 import json
-import re
+import logging
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import Optional, Dict
 
+from grapejuice_common import paths
 from grapejuice_common.hardware_info.lspci import LSPciEntry
+
+log = logging.getLogger(__name__)
 
 
 # nVidia Vulkan reference: https://developer.nvidia.com/vulkan-driver
@@ -35,18 +39,6 @@ DRIVER_TO_VENDOR_MAPPING = {
     "nouveau": GPUVendor.NVIDIA
 }
 
-special_nvidia_vulkan_cards = [
-    "GeForce MX250", "GeForce MX230", "Quadro T2000", "Quadro T1000", "Quadro GV100", "Quadro GP100",
-    "Quadro P6000", "Quadro P5200", "Quadro P5000", "Quadro P4200", "Quadro P4000", "Quadro P3200",
-    "Quadro P3000", "Quadro P2200", "Quadro P2000", "Quadro P1000", "Quadro P620", "Quadro P600",
-    "Quadro P520", "Quadro P500", "Quadro P400", "Quadro M6000", "Quadro M6000", "Quadro M5500",
-    "Quadro M5000", "Quadro M5000M", "Quadro M4000", "Quadro M4000M", "Quadro M3000M", "Quadro M2200",
-    "Quadro M2000", "GeForce GTX 860M", "GeForce GTX 850M", "GeForce 845M", "GeForce 840M", "GeForce 830M",
-    "GeForce GTX 750 Ti", "GeForce GTX 750", "GeForce GTX 745", "GeForce MX130", "Quadro M2000M",
-    "Quadro M1000M", "Quadro M600M", "Quadro M500M", "Quadro M1200", "Quadro M620", "Quadro M520",
-    "Quadro K2200M", "Quadro K620M"
-]
-
 
 @dataclass()
 class GraphicsCard:
@@ -65,84 +57,44 @@ class GraphicsCard:
     def pci_id(self) -> str:
         return self.lspci_entry.pci_id
 
-    # pylint: disable=R1702,R0911,R0912
     @property
     def can_do_vulkan(self):
         if self._can_do_vulkan_value is not None:
             return self._can_do_vulkan_value
 
-        id_string = self.lspci_entry.gpu_id_string
-        id_string_l = id_string.lower()
-
         def resolve(x):
             self._can_do_vulkan_value = x
             return x
 
+        def can_use_icd(icd_name):
+            search_paths = [
+                Path("/usr/share/vulkan/icd.d"),
+                paths.local_share() / "vulkan" / "icd.d"
+            ]
+
+            for search_path in search_paths:
+                icd_path = search_path / icd_name
+
+                if icd_path.exists():
+                    log.info(f"Found ICD at '{str(icd_path)}'")
+                    return True
+
+                else:
+                    log.info(f"Could not find ICD at '{str(icd_path)}'")
+
+            return False
+
         if self.vendor is GPUVendor.NVIDIA:
-            # Any RTX card can do Vulkan
-            if "RTX" in id_string:
-                return resolve(True)
-
-            # Any GTX card in the 900+ series can do vulkan
-            match = re.search(r"GeForce\s+GTX\s+(\d+)", id_string)
-            if match:
-                series = int(match.group(1))
-                if series > 900:
-                    return resolve(True)
-
-            # Any card that got some TLC from nVidia
-            return resolve(
-                any(
-                    map(
-                        lambda x: x in id_string_l,
-                        map(
-                            str.lower,
-                            special_nvidia_vulkan_cards
-                        )
-                    )
-                )
-            )
+            return resolve(can_use_icd("nvidia_icd.json"))
 
         elif self.vendor is GPUVendor.AMD:
-            if "RX" in id_string:
-                match = re.search(r"\[Radeon RX\s+(.+)]", id_string)
-                if match:
-                    for product in list(filter(None, map(str.strip, match.group(1).split("/")))):
-                        match = re.search(r"^(\d+)", product)
-                        if match:
-                            v = int(match.group(1))
-
-                            if v >= 5700:
-                                return resolve(True)
-
-                            if 400 < v < 600:
-                                return resolve(True)
-
-            # R7 and R9 series graphics
-            if ("r7" in id_string_l) or ("r9" in id_string_l):
-                return resolve(True)
-
-            # R5 series graphics (but only 240 and up)
-            match = re.search(r"r5\s+(\d+)", id_string_l)
-            if match:
-                if int(match.group(1)) >= 240:
-                    return resolve(True)
-
-            # HD 8000 and up
-            match = re.search(r"hd (\d+)", id_string_l)
-            if match:
-                if int(match.group(1)) >= 8570:
-                    return resolve(True)
-
-            # HD7000 and lower technically do support Vulkan, but the version is not high
-            # enough for Roblox.
-
-            return resolve(False)
+            return resolve(
+                (can_use_icd("radeon_icd.x86_64.json") and can_use_icd("radeon_icd.i686.json")) or
+                (can_use_icd("amd_icd64.json") and can_use_icd("amd_icd32.json"))
+            )
 
         elif self.vendor is GPUVendor.INTEL:
-            # Assume any 'gaming' laptop has a new enough intel GPU
-            # Other code should ignore the vulkan value if another GPU vendor card is present
-            return resolve(True)
+            return resolve(can_use_icd("intel_icd.x86_64.json") and can_use_icd("intel_icd.i686.json"))
 
         return resolve(False)
 
