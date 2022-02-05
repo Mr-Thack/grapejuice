@@ -22,7 +22,7 @@ def main():
     common_exit()
 
 
-def east_install_main():
+def easy_install_main():
     main()
 
 
