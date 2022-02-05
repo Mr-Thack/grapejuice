@@ -135,7 +135,7 @@ def first_time_setup():
 
 @cli.command()
 def uninstall():
-    from grapejuice_common import uninstall
+    from grapejuice_common import uninstall as uninstall_module
 
     uninstall_grapejuice_response = input(
         "Are you sure you want to uninstall grapejuice? [y/N] "
@@ -151,8 +151,8 @@ def uninstall():
 
         delete_prefix = (delete_prefix_response[0] == "y") if delete_prefix_response else False
 
-        params = uninstall.UninstallationParameters(delete_prefix, for_reals=True)
-        uninstall.go(params)
+        params = uninstall_module.UninstallationParameters(delete_prefix, for_reals=True)
+        uninstall_module.go(params)
 
         print("Grapejuice has been uninstalled, have a nice day!")
 
