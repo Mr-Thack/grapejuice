@@ -7,8 +7,8 @@ title: Install Grapejuice on Ubuntu 18.04 and similar distributions
 to the following distributions:
 
 - Ubuntu 18.04 (Bionic Beaver)
-- Zorin OS 15.2 (Follow Ubuntu 18.04 instructions)
-- Linux Mint 19.3 (Tricia, Follow Ubuntu 18.04 instructions)
+- Zorin OS 15.2
+- Linux Mint 19.3 (Tricia)
 
 ---
 
@@ -31,8 +31,7 @@ sudo dpkg --add-architecture i386
 
 ## Install FAudio
 
-Wine 5.0 and newer require the FAudio audio libraries. However, these are not supplied by the Ubuntu repositories, so we
-will have to install these manually.
+FAudio audio libraries are not supplied by the Ubuntu repositories, so we will have to install these manually.
 
 **01:** Download the FAudio packages to a temporary location
 
