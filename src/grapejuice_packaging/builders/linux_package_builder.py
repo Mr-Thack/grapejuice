@@ -37,6 +37,7 @@ def _build_package(configuration: LinuxPackageConfiguration):
 
     bin_path_components = [configuration.level_1_directory, "bin"]
     grapejuice_exec_name = "grapejuice"
+    grapejuice_gui_exec_name = "grapejuice-gui"
 
     if configuration.copy_packages:
         python_site = Path(
@@ -87,6 +88,11 @@ def _build_package(configuration: LinuxPackageConfiguration):
                 configuration.target_system_root,
                 *bin_path_components,
                 grapejuice_exec_name
+            ),
+            "GRAPEJUICE_GUI_EXECUTABLE": os.path.join(
+                configuration.target_system_root,
+                *bin_path_components,
+                grapejuice_gui_exec_name
             ),
             "PLAYER_ICON": "grapejuice-roblox-player",
             "STUDIO_ICON": "grapejuice-roblox-studio"

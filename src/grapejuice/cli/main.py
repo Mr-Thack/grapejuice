@@ -1,40 +1,21 @@
-import argparse
 import logging
-import sys
-from typing import Callable
+
+import click
 
 import grapejuice_common.util
+from grapejuice.cli.cli_common import handle_fatal_error, common_prepare, common_exit
 from grapejuice_common.gtk.gtk_util import gtk_boot
-from grapejuice_common.logs.log_vacuum import vacuum_logs
 from grapejuice_common.recipes.recipe import CannotMakeRecipe
 
 
-def handle_fatal_error(ex: Exception):
-    print("Fatal error: " + str(ex))
-
-    def make_exception_window():
-        from grapejuice.windows.exception_viewer import ExceptionViewer
-        window = ExceptionViewer(exception=ex, is_main=True)
-
-        window.show()
-
-    gtk_boot(make_exception_window)
+@click.group()
+def cli():
+    ...
 
 
-def main_gui():
-    def make_main_window():
-        from grapejuice.windows.main_window import MainWindow
-        window = MainWindow()
-        window.show()
-
-    gtk_boot(make_main_window)
-
-
-def func_gui(_args):
-    main_gui()
-
-
-def func_player(args):
+@cli.command()
+@click.argument("uri", type=str)
+def player(uri: str):
     def player_main():
         from grapejuice_common.ipc.dbus_client import dbus_connection
         from grapejuice_common.wine.wine_functions import get_player_wineprefix
@@ -43,7 +24,7 @@ def func_player(args):
 
         dbus_connection().play_game(
             prefix.configuration.id,
-            grapejuice_common.util.prepare_uri(args.uri)
+            grapejuice_common.util.prepare_uri(uri)
         )
 
     gtk_boot(player_main, gtk_main=False)
@@ -51,7 +32,8 @@ def func_player(args):
     return 0
 
 
-def func_app(*_):
+@cli.command()
+def app():
     def player_main():
         from grapejuice_common.ipc.dbus_client import dbus_connection
         from grapejuice_common.wine.wine_functions import get_app_wineprefix
@@ -65,12 +47,14 @@ def func_app(*_):
     return 0
 
 
-def func_studio(args):
+@cli.command()
+@click.argument("uri", nargs=-1)
+def studio(uri):
     from grapejuice_common.wine.wine_functions import get_studio_wineprefix
     from grapejuice_common.ipc.dbus_client import dbus_connection
 
     prefix = get_studio_wineprefix()
-    uri = grapejuice_common.util.prepare_uri(args.uri)
+    uri = grapejuice_common.util.prepare_uri(next(iter(uri), None))
 
     if uri:
         is_local = False
@@ -88,7 +72,8 @@ def func_studio(args):
         dbus_connection().launch_studio(prefix.configuration.id)
 
 
-def func_first_time_setup(_args):
+@cli.command()
+def first_time_setup():
     from grapejuice_common.features.settings import current_settings
     from grapejuice_common.errors import WineprefixNotFoundUsingHints
     from grapejuice_common.wine.wineprefix import Wineprefix
@@ -148,8 +133,9 @@ def func_first_time_setup(_args):
     log.info("Completed first time setup!")
 
 
-def func_uninstall_grapejuice(*_):
-    from grapejuice_common import uninstall
+@cli.command()
+def uninstall():
+    from grapejuice_common import uninstall as uninstall_module
 
     uninstall_grapejuice_response = input(
         "Are you sure you want to uninstall grapejuice? [y/N] "
@@ -165,8 +151,8 @@ def func_uninstall_grapejuice(*_):
 
         delete_prefix = (delete_prefix_response[0] == "y") if delete_prefix_response else False
 
-        params = uninstall.UninstallationParameters(delete_prefix, for_reals=True)
-        uninstall.go(params)
+        params = uninstall_module.UninstallationParameters(delete_prefix, for_reals=True)
+        uninstall_module.go(params)
 
         print("Grapejuice has been uninstalled, have a nice day!")
 
@@ -174,101 +160,34 @@ def func_uninstall_grapejuice(*_):
         print("Uninstallation aborted")
 
 
-def func_list_processes(args):
+@cli.command()
+@click.argument("hint", type=str)
+def top(hint: str):
     from grapejuice_common.wine.wineprefix_hints import WineprefixHint
     from grapejuice_common.wine.wine_functions import get_wineprefix
 
-    hint = WineprefixHint(args.hint)
+    hint = WineprefixHint(hint)
     prefix = get_wineprefix([hint])
 
     for proc in prefix.core_control.process_list:
         print(repr(proc))
 
 
-def _main(in_args=None):
-    from grapejuice_common.logs import log_config
-
-    log_config.configure_logging("grapejuice")
-    log = logging.getLogger(f"{__name__}/main")
-
-    from grapejuice_common.features.settings import current_settings
-    from grapejuice_common.update_info_providers import guess_relevant_provider
-
-    update_info_provider = guess_relevant_provider()
-
-    if current_settings:
-        current_settings.perform_migrations()
-        log.info("Loaded and migrated settings")
-
-    if in_args is None:
-        in_args = sys.argv
-
-    parser = argparse.ArgumentParser(prog="grapejuice", description="Manage Roblox on Linux")
-    subparsers = parser.add_subparsers(title="subcommands", help="sub-command help")
-
-    parser_gui = subparsers.add_parser("gui")
-    parser_gui.set_defaults(func=func_gui)
-
-    parser_player = subparsers.add_parser("player")
-    parser_player.add_argument("uri", type=str, help="Your Roblox token to join a game")
-    parser_player.set_defaults(func=func_player)
-
-    parser_studio = subparsers.add_parser("studio")
-    parser_studio.add_argument(
-        "uri",
-        nargs="?",
-        type=str,
-        help="The URI or file to open roblox studio with",
-        default=None
-    )
-
-    parser_studio.set_defaults(func=func_studio)
-
-    parser_install_roblox = subparsers.add_parser("first-time-setup")
-    parser_install_roblox.set_defaults(func=func_first_time_setup)
-
-    if update_info_provider.can_update():
-        parser_uninstall_grapejuice = subparsers.add_parser("uninstall")
-        parser_uninstall_grapejuice.set_defaults(func=func_uninstall_grapejuice)
-
-    parser_list_processes = subparsers.add_parser("top")
-    parser_list_processes.add_argument("hint", type=str)
-    parser_list_processes.set_defaults(func=func_list_processes)
-
-    parser_app = subparsers.add_parser("app")
-    parser_app.set_defaults(func=func_app)
-
-    args = parser.parse_args(in_args[1:])
-
-    exit_code = 1
-
-    if hasattr(args, "func"):
-        f: Callable[[any], int] = getattr(args, "func")
-        exit_code = f(args) or 0
-
-    else:
-        parser.print_help()
+def main():
+    common_prepare()
 
     try:
-        log.info("Vacuuming logs")
-        vacuum_logs()
+        cli()
 
     except Exception as e:
-        # Vacuuming logs appears to break on some systems
-        # So let's just catch any exception
-        log.error(str(e))
+        handle_fatal_error(e)
 
-    return exit_code
+    common_exit()
 
 
-def main(in_args=None):
-    try:
-        return _main(in_args)
-
-    except Exception as fatal_error:
-        handle_fatal_error(fatal_error)
-        return -1
+def easy_install_main():
+    main()
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

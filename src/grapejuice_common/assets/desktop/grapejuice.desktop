@@ -4,6 +4,6 @@ Type=Application
 Name=Grapejuice
 Comment=Manage Roblox
 Icon=$GRAPEJUICE_ICON
-Exec=$GRAPEJUICE_EXECUTABLE gui
+Exec=$GRAPEJUICE_GUI_EXECUTABLE
 Categories=Development;
 StartupWMClass=Grapejuice
