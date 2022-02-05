@@ -117,6 +117,7 @@ def _build_package(configuration: LinuxPackageConfiguration):
 
         shutil.copyfile(res.bin_grapejuice_path(), usr_bin.joinpath(grapejuice_exec_name))
         shutil.copyfile(res.bin_grapejuiced_path(), usr_bin.joinpath("grapejuiced"))
+        shutil.copyfile(res.bin_grapejuice_gui_path(), usr_bin.joinpath("grapejuice-gui"))
 
         for file in usr_bin.glob("*"):
             file.chmod(0o755)

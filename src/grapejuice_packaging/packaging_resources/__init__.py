@@ -9,3 +9,7 @@ def bin_grapejuice_path():
 
 def bin_grapejuiced_path():
     return os.path.join(HERE, "bin", "grapejuiced")
+
+
+def bin_grapejuice_gui_path():
+    return os.path.join(HERE, "bin", "grapejuice-gui")
