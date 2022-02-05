@@ -40,6 +40,25 @@ DRIVER_TO_VENDOR_MAPPING = {
 }
 
 
+def _can_use_icd(icd_name):
+    search_paths = [
+        Path("/usr/share/vulkan/icd.d"),
+        paths.local_share() / "vulkan" / "icd.d"
+    ]
+
+    for search_path in search_paths:
+        icd_path = search_path / icd_name
+
+        if icd_path.exists():
+            log.info(f"Found ICD at '{str(icd_path)}'")
+            return True
+
+        else:
+            log.info(f"Could not find ICD at '{str(icd_path)}'")
+
+    return False
+
+
 @dataclass()
 class GraphicsCard:
     lspci_entry: LSPciEntry
@@ -63,38 +82,21 @@ class GraphicsCard:
             return self._can_do_vulkan_value
 
         def resolve(x):
+            # Return with side effects
             self._can_do_vulkan_value = x
             return x
 
-        def can_use_icd(icd_name):
-            search_paths = [
-                Path("/usr/share/vulkan/icd.d"),
-                paths.local_share() / "vulkan" / "icd.d"
-            ]
-
-            for search_path in search_paths:
-                icd_path = search_path / icd_name
-
-                if icd_path.exists():
-                    log.info(f"Found ICD at '{str(icd_path)}'")
-                    return True
-
-                else:
-                    log.info(f"Could not find ICD at '{str(icd_path)}'")
-
-            return False
-
         if self.vendor is GPUVendor.NVIDIA:
-            return resolve(can_use_icd("nvidia_icd.json"))
+            return resolve(_can_use_icd("nvidia_icd.json"))
 
         elif self.vendor is GPUVendor.AMD:
             return resolve(
-                (can_use_icd("radeon_icd.x86_64.json") and can_use_icd("radeon_icd.i686.json")) or
-                (can_use_icd("amd_icd64.json") and can_use_icd("amd_icd32.json"))
+                (_can_use_icd("radeon_icd.x86_64.json") and _can_use_icd("radeon_icd.i686.json")) or
+                (_can_use_icd("amd_icd64.json") and _can_use_icd("amd_icd32.json"))
             )
 
         elif self.vendor is GPUVendor.INTEL:
-            return resolve(can_use_icd("intel_icd.x86_64.json") and can_use_icd("intel_icd.i686.json"))
+            return resolve(_can_use_icd("intel_icd.x86_64.json") and _can_use_icd("intel_icd.i686.json"))
 
         return resolve(False)
 
