@@ -189,5 +189,9 @@ def easy_install_main():
     main()
 
 
+def module_invocation_main():
+    main()
+
+
 if __name__ == "__main__":
     main()
