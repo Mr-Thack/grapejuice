@@ -14,13 +14,12 @@ title: Documentation Home
  - 📦 Grapejuice can be installed from the package or from the source code. 
  - 🚀 It's recommended that you install Grapejuice from the package if possible.
  - 🌱 Follow the installation guide that's appropriate for your distribution.
- - 💻 If you're trying to install Grapejuice on a **supported** Chromebook, you need to follow the Debian guide below. Otherwise, pick your distribution below.
- - 💻 If you're having issues with Grapejuice (cursor getting stuck, Roblox not starting, bad performance, etc) you can go to the [troubleshooting page](Troubleshooting).
- - 💡 Please read each guide to the end, as it contains important information from start to finish.
 
 **Guides**:
 
 - Debian: [Install from package](Installing-from-package/Debian-10-and-similar) or
+  [install from source](Installing-from-source/Debian-10-and-similar)
+- Chrome OS: [Install from package](Installing-from-package/Debian-10-and-similar) or
   [install from source](Installing-from-source/Debian-10-and-similar)
 - Ubuntu
   - Ubuntu 18.04 (Bionic Beaver): [Install from package](Installing-from-package/Ubuntu-18.04-and-similar) or

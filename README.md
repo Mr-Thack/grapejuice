@@ -9,9 +9,9 @@ website!
 
 Note that Grapejuice is unofficial software. This is not officially supported by Roblox.
 
-## Installing Grapejuice from source
+## Installing Grapejuice
 
-The installation guide can be found in the [documentation](https://brinkervii.gitlab.io/grapejuice/docs/).
+The installation guides can be found in the [documentation](https://brinkervii.gitlab.io/grapejuice/docs/).
 
 ## Troubleshooting
 

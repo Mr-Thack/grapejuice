@@ -8,18 +8,17 @@ following distributions:
 
 - Debian 10 (buster)
 - Debian 11 (bullseye)
+- Ubuntu 21.10 (Impish Indri)
 - Ubuntu 21.04 (Hirsute Hippo)
 - Ubuntu 20.04 (Focal Fossa)
-- Ubuntu 19.10 (Eoan Ermine)
 - LMDE 4 (Debbie)
 - Linux Mint 20 (Ulyana)
 - Zorin OS 16
+- Chrome OS
 
 ---
 
-❗ This guide assumes that you've properly set up `sudo` on your Debian system and that dbus is properly configured. If
-you are using a display manager like `lightdm` or are using a desktop environment provided by the distributor, dbus
-should be in place properly.
+❗ This guide assumes that you've properly set up `sudo` on your Debian system.
 
 Don't know what any of that means? If you've installed Ubuntu, Linux Mint, or selected a desktop environment in the
 Debian installer, don't worry about this.
@@ -48,12 +47,12 @@ sudo apt update
 sudo apt upgrade -y
 ```
 
-## Installing required utilities
+## Installing curl
 
-The `wget` and `gpg` utilities are required for the following steps. Run the following command in a terminal:
+The `curl` utility is required for the following step. Run the following command in a terminal:
 
 ```sh
-sudo apt install -y wget gpg
+sudo apt install -y curl
 ```
 
 ## Downloading Grapejuice's keyring
@@ -62,9 +61,7 @@ In order to ensure that the Grapejuice package hasn't been tampered with, you ne
 To download the keyring, run the following commands in a terminal:
 
 ```sh
-wget -O- https://gitlab.com/brinkervii/grapejuice/-/raw/master/ci_scripts/signing_keys/public_key.gpg | gpg --dearmor > /tmp/grapejuice-archive-keyring.gpg
-sudo cp /tmp/grapejuice-archive-keyring.gpg /usr/share/keyrings/
-rm /tmp/grapejuice-archive-keyring.gpg
+curl https://gitlab.com/brinkervii/grapejuice/-/raw/master/ci_scripts/signing_keys/public_key.gpg | sudo tee /usr/share/keyrings/grapejuice-archive-keyring.gpg > /dev/null
 ```
 
 ## Adding the Grapejuice repository
@@ -75,7 +72,6 @@ Run the following command in a terminal:
 ```sh
 sudo tee /etc/apt/sources.list.d/grapejuice.list <<< 'deb [signed-by=/usr/share/keyrings/grapejuice-archive-keyring.gpg] https://brinkervii.gitlab.io/grapejuice/repositories/debian/ universal main' > /dev/null
 ```
-
 
 ## Installing Grapejuice
 

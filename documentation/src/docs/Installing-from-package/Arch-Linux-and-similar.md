@@ -31,14 +31,14 @@ for us to control the quality of them!
 3. Install the `base-devel` package group with `sudo pacman -S base-devel`.
 4. Install [grapejuice-git](https://aur.archlinux.org/packages/grapejuice-git/) through an AUR helper or manually.
 
+Once Grapejuice has been installed, you can proceed to the section below.
+
 ## Installing dependencies for audio
 
-Install `lib32-libpulse` with `sudo pacman -S lib32-libpulse`.
+If you're using Pipewire (check if the `pipewire` process is running), follow
+[these instructions](https://wiki.archlinux.org/title/PipeWire#PulseAudio_clients).
 
-In addition, if you're using Pipewire (check if the `pipewire` process is running), you need to install
-`pipewire-pulse` with `sudo pacman -S pipewire-pulse`.
-
-Once Grapejuice has been installed, you can proceed to the section below.
+If you're not using Pipewire, you don't need to do anything.
 
 ## 🍷 Installing Wine
 

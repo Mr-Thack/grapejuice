@@ -15,8 +15,8 @@ for us to control the quality of them!
 to the following distributions:
 
 - Ubuntu 18.04 (Bionic Beaver)
-- Zorin OS 15.2 (Follow Ubuntu 18.04 instructions)
-- Linux Mint 19.3 (Tricia, Follow Ubuntu 18.04 instructions)
+- Zorin OS 15.2
+- Linux Mint 19.3 (Tricia)
 
 ---
 
@@ -39,8 +39,7 @@ sudo dpkg --add-architecture i386
 
 ## Install FAudio
 
-Wine 5.0 and newer require the FAudio audio libraries. However, these are not supplied by the Ubuntu repositories, so we
-will have to install these manually.
+FAudio audio libraries are not supplied by the Ubuntu repositories, so we will have to install these manually.
 
 **01:** Download the FAudio packages to a temporary location
 
@@ -77,12 +76,12 @@ sudo apt update
 sudo apt upgrade -y
 ```
 
-## Installing required utilities
+## Installing curl
 
-The `wget` and `gpg` utilities are required for the following steps. Run the following command in a terminal:
+The `curl` utility is required for the following step. Run the following command in a terminal:
 
 ```sh
-sudo apt install -y wget gpg
+sudo apt install -y curl
 ```
 
 ## Downloading Grapejuice's keyring
@@ -91,9 +90,7 @@ In order to ensure that the Grapejuice package hasn't been tampered with, you ne
 To download the keyring, run the following commands in a terminal:
 
 ```sh
-wget -O- https://gitlab.com/brinkervii/grapejuice/-/raw/master/ci_scripts/signing_keys/public_key.gpg | gpg --dearmor > /tmp/grapejuice-archive-keyring.gpg
-sudo cp /tmp/grapejuice-archive-keyring.gpg /usr/share/keyrings/
-rm /tmp/grapejuice-archive-keyring.gpg
+curl https://gitlab.com/brinkervii/grapejuice/-/raw/master/ci_scripts/signing_keys/public_key.gpg | sudo tee /usr/share/keyrings/grapejuice-archive-keyring.gpg > /dev/null
 ```
 
 ## Adding the Grapejuice repository

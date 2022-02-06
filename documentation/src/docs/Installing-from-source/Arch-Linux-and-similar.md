@@ -50,10 +50,10 @@ sudo pacman -Syu
 
 ## Installing dependencies for audio
 
-Install `lib32-libpulse` with `sudo pacman -S lib32-libpulse`.
+Install `libpulse` and `lib32-libpulse` with `sudo pacman -S libpulse lib32-libpulse`.
 
-In addition, if you're using Pipewire (check if the `pipewire` process is running), you need to install
-`pipewire-pulse` with `sudo pacman -S pipewire-pulse`.
+In addition, if you're using Pipewire (check if the `pipewire` process is running), follow
+[these instructions](https://wiki.archlinux.org/title/PipeWire#PulseAudio_clients).
 
 ## Installing dependencies for networking
 

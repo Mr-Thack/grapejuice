@@ -8,12 +8,13 @@ following distributions:
 
 - Debian 10 (buster)
 - Debian 11 (bullseye)
+- Ubuntu 21.10 (Impish Indri)
 - Ubuntu 21.04 (Hirsute Hippo)
 - Ubuntu 20.04 (Focal Fossa)
-- Ubuntu 19.10 (Eoan Ermine)
 - LMDE 4 (Debbie)
 - Linux Mint 20 (Ulyana)
 - Zorin OS 16
+- Chrome OS
 
 ---
 
