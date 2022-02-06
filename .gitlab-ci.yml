@@ -58,11 +58,11 @@ pages:
     script:
         - pushd ./documentation
         - make dist
-        - make sitemap
         - popd
         - mkdir public
         - cp -frax ./documentation/dist/* ./public
         - bash ./ci_scripts/update_repositories.sh
+        - bash -c 'source ./documentation/venv/bin/activate && python3 ./documentation/tools/sitemap.py grapejuice public public/sitemap.html'
         - ls -hal public
     only:
         - master
