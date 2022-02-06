@@ -1,5 +1,13 @@
 title: Install Grapejuice on Ubuntu 18.04 and similar distributions
 ---
+## Outdated content warning
+
+⚠️  If you are not viewing this page on [https://brinkervii.gitlab.io/grapejuice](https://brinkervii.gitlab.io/grapejuice),
+you may be viewing an out-of-date guide which may cause problems!
+
+Outdated guides and guides outside of this website, such as video guides, are not supported as there is no way
+for us to control the quality of them!
+
 ## Preamble
 
 ❓ If you didn't click on the guide for Ubuntu 18.04, but ended up on this page regardless, please do not panic! Ubuntu
