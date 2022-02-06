@@ -58,6 +58,7 @@ pages:
     script:
         - pushd ./documentation
         - make dist
+        - make sitemap
         - popd
         - mkdir public
         - cp -frax ./documentation/dist/* ./public
