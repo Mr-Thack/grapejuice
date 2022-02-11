@@ -4,14 +4,6 @@ title: Install Grapejuice on Solus
 
 ⚠ These instructions have only been tested on Solus 4.1 Budgie!
 
-## Outdated content warning
-
-⚠️  If you are not viewing this page on [https://brinkervii.gitlab.io/grapejuice](https://brinkervii.gitlab.io/grapejuice),
-you may be viewing an out-of-date guide which may cause problems!
-
-Outdated guides and guides outside of this website, such as video guides, are not supported as there is no way
-for us to control the quality of them!
-
 ## Installing Grapejuice dependencies
 
 Grapejuice requires a set of libraries to be installed and to be run. These dependencies can be installed by running the

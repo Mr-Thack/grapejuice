@@ -29,14 +29,6 @@ Debian installer, don't worry about this.
 or `sudo`. If you are running a fully fledged desktop environment, you can find a terminal emulator in your applications
 menu.
 
-## Outdated content warning
-
-⚠️  If you are not viewing this page on [https://brinkervii.gitlab.io/grapejuice](https://brinkervii.gitlab.io/grapejuice),
-you may be viewing an out-of-date guide which may cause problems!
-
-Outdated guides and guides outside of this website, such as video guides, are not supported as there is no way
-for us to control the quality of them!
-
 ## Synchronise the package repositories
 
 We have to make sure that all repositories and locally installed packages are up to date. Run the following two commands
