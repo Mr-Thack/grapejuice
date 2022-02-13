@@ -13,6 +13,10 @@ latest version of Grapejuice!** Do you have an issue that is not described here?
 
 You need a patched version of Wine to solve this. See [this guide](Guides/Installing-Wine).
 
+## Game crashing with "An unexpected error occurred and Roblox needs to quit."
+
+This is due to an outdated version of Wine. See [this guide](Guides/Installing-Wine).
+
 ## Roblox launcher with the Roblox logo shows up, however the game does not start
 
 Open the Grapejuice app, select `Player` on the left panel, and then enable `Use Mesa OpenGL version override`.
