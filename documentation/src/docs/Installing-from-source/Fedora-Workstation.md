@@ -9,14 +9,6 @@ title: Install Grapejuice on Fedora
 🖥 If you are using the Wayland display server, you might not get any graphical output from Roblox. In that case you
 should try running Roblox Studio using an Xorg session.
 
-## Outdated content warning
-
-⚠️  If you are not viewing this page on [https://brinkervii.gitlab.io/grapejuice](https://brinkervii.gitlab.io/grapejuice),
-you may be viewing an out-of-date guide which may cause problems!
-
-Outdated guides and guides outside of this website, such as video guides, are not supported as there is no way
-for us to control the quality of them!
-
 ## Installing Grapejuice dependencies
 
 Grapejuice requires a set of libraries to be installed and to be run. These dependencies can be installed by running the

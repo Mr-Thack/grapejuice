@@ -18,14 +18,6 @@ to the following distributions:
 :package: This setup guide assumes you have AUR support enabled on your system, which implies that the `base-devel`
 package is installed and that your account can use the `sudo` command.
 
-## Outdated content warning
-
-⚠️  If you are not viewing this page on [https://brinkervii.gitlab.io/grapejuice](https://brinkervii.gitlab.io/grapejuice),
-you may be viewing an out-of-date guide which may cause problems!
-
-Outdated guides and guides outside of this website, such as video guides, are not supported as there is no way
-for us to control the quality of them!
-
 ## Enabling 32-bit support
 
 Even though Roblox Studio runs in 64-bit mode, 32-bit libraries are still required for some parts of the program. This
