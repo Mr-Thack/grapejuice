@@ -6,7 +6,7 @@ Grapejuice requires a set of libraries to be installed and to be run. These depe
 following command:
 
 ```sh
-sudo zypper install git python3-devel python3-pip cairo-devel gobject-introspection-devel make xdg-utils
+sudo zypper install git python3-devel python3-pip python3-cairo python3-gobject-Gdk cairo-devel gobject-introspection-devel make xdg-utils typelib-1_0-Gtk-3_0
 ```
 
 ## Installing Grapejuice
